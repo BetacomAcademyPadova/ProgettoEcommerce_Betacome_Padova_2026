@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.betacom.fe.dto.input.RuoloReq;
+import com.betacom.fe.dto.input.CategoriaReq;
 import com.betacom.fe.dto.input.ValidationGroups;
+import com.betacom.fe.dto.output.CategoriaDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
-import com.betacom.fe.dto.output.RuoliDTO;
-import com.betacom.fe.services.interfaces.IRuoliServices;
+import com.betacom.fe.services.interfaces.ICategoriaServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,25 +24,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/rest/Ruoli")
-public class RuoliController {
-
-	private final IRuoliServices ruoliS;
+@RequestMapping("/rest/Categoria")
+public class CategoriaControllo {
+	
+	private final ICategoriaServices catS;
 	
 	@PostMapping("create")
-    public ResponseEntity<ResponseDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) RuoloReq req) throws Exception {
-		ruoliS.create(req);
+    public ResponseEntity<ResponseDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) CategoriaReq req) throws Exception {
+		catS.create(req);
         return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
     }
 	
-	@DeleteMapping("delete/{Ruolo}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable("Ruolo") String idReq) throws Exception {
-		ruoliS.delete(idReq);
+	@DeleteMapping("delete/{Categoria}")
+    public ResponseEntity<ResponseDTO> delete(@PathVariable("Categoria") String Categoria) throws Exception {
+		catS.delete(Categoria);
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
 	
 	@GetMapping("getAll")
-    public ResponseEntity<List<RuoliDTO>> getAll() throws Exception {
-        return ResponseEntity.ok(ruoliS.getAll());
+    public ResponseEntity<List<CategoriaDTO>> getAll() throws Exception {
+        return ResponseEntity.ok(catS.getAll());
     }
 }
