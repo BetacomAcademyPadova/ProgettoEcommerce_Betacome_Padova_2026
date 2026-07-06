@@ -31,7 +31,7 @@ public class Indirizzi {
     @Column(nullable=false)
     private String cap;
 
-    private Boolean isPredefinito;
+    private Boolean predefinito;
 
     @ManyToOne
     @JoinColumn(name="user")

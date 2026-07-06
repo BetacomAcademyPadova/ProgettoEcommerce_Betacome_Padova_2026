@@ -1,7 +1,7 @@
 package com.betacom.fe.models;
 
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table (name="messaggi_sistema")
-public class Messaggi {
-
-	@EmbeddedId
-	private MessageID msgID;
-	
-	private String messagio;
+@Table(name="stato_pagamenti")
+public class StatoPagamento {
+	@Id
+	private String Stato;
 }
