@@ -1,26 +1,58 @@
 package com.betacom.fe.services.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.betacom.fe.dto.input.RuoloReq;
+import com.betacom.fe.dto.output.RuoliDTO;
+import com.betacom.fe.exception.AcademyException;
+import com.betacom.fe.mapping.RuoliMapper;
+import com.betacom.fe.models.Ruoli;
+import com.betacom.fe.repositories.IRuoliRepository;
+import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IRuoliServices;
+import com.betacom.fe.utils.Normalizzazione;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RuoliImpl implements IRuoliServices{@Override
+public class RuoliImpl implements IRuoliServices{
+	private final IRuoliRepository ruoliRep;
+    private final IMessaggioServices msgS;
+	
+	@Override
+	@Transactional
 	public void create(RuoloReq req) throws Exception {
-		// TODO Auto-generated method stub
-		
+		String ruolo = Normalizzazione.norm(req.getRuolo());
+	    ruoliRep.findById(ruolo)
+	            .ifPresent(r -> {
+	                throw new RuntimeException(msgS.get("role.exists"));
+	            });
+
+	    Ruoli r = new Ruoli();
+	    r.setRuolo(ruolo);
+
+	    ruoliRep.save(r);
 	}
 
 	@Override
-	public void delete(Integer idRuolo) throws Exception {
-		// TODO Auto-generated method stub
-		
+	@Transactional
+	public void delete(String idRuolo) throws Exception {
+		Ruoli r = ruoliRep.findById(idRuolo)
+				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
+		ruoliRep.delete(r);
+	}
+
+	@Override
+	public List<RuoliDTO> getAll() throws Exception {
+		return ruoliRep.findAll().stream()
+                .map(a -> RuoliMapper.toDTO(a))
+                .toList();
 	}
 
 }
