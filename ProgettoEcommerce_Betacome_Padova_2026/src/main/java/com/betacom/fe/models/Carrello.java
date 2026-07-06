@@ -25,6 +25,6 @@ public class Carrello {
     private LocalDate dataUltimoAgg;
 
     @OneToOne
-    @JoinColumn(name="user")
-    private User user;
+    @JoinColumn(name="userId")
+    private User userId;
 }

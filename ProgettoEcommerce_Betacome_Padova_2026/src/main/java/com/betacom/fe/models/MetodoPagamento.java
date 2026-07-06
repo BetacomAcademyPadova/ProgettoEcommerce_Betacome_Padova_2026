@@ -30,6 +30,6 @@ public class MetodoPagamento {
     private Boolean isPredefinito;
 
     @ManyToOne
-    @JoinColumn(name="user")
-    private User user;
+    @JoinColumn(name="userId")
+    private User userId;
 }

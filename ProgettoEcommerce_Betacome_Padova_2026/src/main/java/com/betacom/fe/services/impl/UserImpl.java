@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.UserDTO;
+import com.betacom.fe.models.User;
+import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IUserServices;
-
+import com.betacom.fe.exception.AcademyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,8 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserImpl implements IUserServices{
 
+	private final IUserRepository repUser;
+	
 	@Override
-	public void create(UserReq req) throws Exception {
+	public void create(AutentiacazioneReq req) throws Exception {
 		
 	}
 
@@ -29,8 +34,8 @@ public class UserImpl implements IUserServices{
 
 	@Override
 	public void delete(Integer idUser) throws Exception {
-		// TODO Auto-generated method stub
-		
+		User usr = repUser.findById(idUser)
+				.orElseThrow(() -> new AcademyException(""));
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class User {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idUser;
+    private Integer userId;
     
     @Email
     @Column(nullable = false, unique = true)
@@ -38,7 +38,7 @@ public class User {
     @Column(nullable=false)
     private String telefono;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userId")
     private List<Indirizzi> indirizzi;
     
     @ManyToOne
