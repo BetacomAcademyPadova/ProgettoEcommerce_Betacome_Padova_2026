@@ -1,5 +1,7 @@
 package com.betacom.fe.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,8 +38,8 @@ public class User {
     @Column(nullable=false)
     private String telefono;
 
-    @OneToMany(mappedBy ="inririzzi")
-    private Indirizzi indirizzi;
+    @OneToMany(mappedBy = "user")
+    private List<Indirizzi> indirizzi;
     
     @ManyToOne
     @JoinColumn(name = "ruolo")

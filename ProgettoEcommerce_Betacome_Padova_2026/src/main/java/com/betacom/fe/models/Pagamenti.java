@@ -39,7 +39,7 @@ public class Pagamenti {
 
     @ManyToOne
     @JoinColumn(name="stato_pagamento")
-    private String statoPagamento;
+    private StatoPagamento statoPagamento;
 
     private String transazioneId;
 

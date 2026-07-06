@@ -2,49 +2,61 @@
     set client_min_messages = WARNING;
 
     alter table if exists autenticazione 
-       drop constraint if exists FKpy1kj4dfd284wkrcai8httg07;
+       drop constraint if exists FKhp9xykeporddr021barv2u5y6;
 
     alter table if exists carrello 
-       drop constraint if exists FK8wocb69w6jyqefu7etmxgni2p;
+       drop constraint if exists FK4lus6odvncyml62i4k7wakij6;
 
     alter table if exists indirizzi 
-       drop constraint if exists FKplpq215m028r1n3bo6n2hkb2s;
+       drop constraint if exists FKsn1d63u2l9aospedj6wsojpps;
 
     alter table if exists metodo_pagamento 
-       drop constraint if exists FKkimw751gpi5ktca1qj9x33dit;
+       drop constraint if exists FKkfhintbbf2ysrb8gjb9wap6ga;
 
     alter table if exists ordini 
-       drop constraint if exists FK6odl1p603s8jmass6j0h3bhna;
+       drop constraint if exists FKj77333p7l9ognbsgl5q7sroux;
+
+    alter table if exists ordini 
+       drop constraint if exists FKn9pthby85h3scynafely8xjxj;
+
+    alter table if exists ordini 
+       drop constraint if exists FKp9v03irbus4f4l5urhtyu8rwe;
+
+    alter table if exists ordini 
+       drop constraint if exists FK8f7bjdq6rbfl3g290697eyilx;
 
     alter table if exists pagamenti 
-       drop constraint if exists FK6qxunpjghhj5j09spov7i8vuf;
+       drop constraint if exists FKaj1gphc6v5nsuetqyf5ykc9d9;
 
     alter table if exists pagamenti 
-       drop constraint if exists FKb19bn6ntprd4pcu61w9fpyqin;
+       drop constraint if exists FKf2x11hvonh4h2qu4f4oloiv4y;
+
+    alter table if exists pagamenti 
+       drop constraint if exists FKq77eli5kv3okbvr7p1smf7v28;
 
     alter table if exists prodotti 
        drop constraint if exists FKbtowcuwota1u5q8828gyrhxnk;
 
     alter table if exists prodotti 
-       drop constraint if exists FK4048s4fgw4f6m3qphnjv5jloe;
+       drop constraint if exists FK3gc52tocic1v0wpn9wts41tv4;
 
     alter table if exists prodotti_carrello 
-       drop constraint if exists FKgv1pg75xggqeq3s0xmvy9k9lg;
+       drop constraint if exists FKculjnbh3efj9cqtjwhrf57vyk;
 
     alter table if exists prodotti_carrello 
-       drop constraint if exists FK3bqrhc1ybxv7a3ioweqoo2chm;
+       drop constraint if exists FK7j387fc10rblygr2p6ufv30jb;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FKrbg6wjfkm0ahqtiy3vuivkfaf;
+       drop constraint if exists FKoryut1a41bxv1hvmqxv3few9q;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FK90duas5hnh3p3kb88dg9oswa0;
+       drop constraint if exists FKgb812bitx3s292cna1852ykjg;
 
     alter table if exists ricevuta 
-       drop constraint if exists FK3dsdedap0rkk2ptltsi5fxvt5;
+       drop constraint if exists FKnob6wi8vsui2745e42pkabc9c;
 
     alter table if exists sconti 
-       drop constraint if exists FK8wq2bkcqu3wvmsfw4fatf6xap;
+       drop constraint if exists FKsm4cljgbr05sljbp6l9qw7ray;
 
     alter table if exists users 
        drop constraint if exists FK7vgts5e6ne7mf7uw9nrd8kpc3;
@@ -77,6 +89,8 @@
 
     drop table if exists sconti cascade;
 
-    drop table if exists status_ordine cascade;
+    drop table if exists stato_ordine cascade;
+
+    drop table if exists stato_pagamenti cascade;
 
     drop table if exists users cascade;
