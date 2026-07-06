@@ -34,6 +34,6 @@ public class Indirizzi {
     private Boolean predefinito;
 
     @ManyToOne
-    @JoinColumn(name="user")
-    private User user;
+    @JoinColumn(name="userId")
+    private User userId;
 }

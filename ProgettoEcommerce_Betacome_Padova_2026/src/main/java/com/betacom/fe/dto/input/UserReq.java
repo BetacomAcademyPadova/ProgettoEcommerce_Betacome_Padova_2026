@@ -11,17 +11,17 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserReq {
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="user.email.req")
+	@NotBlank(groups = ValidationGroups.Create.class, message ="user.email.req")
 	@Email(message = "user.email.inv")
 	private String email;
 
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="user.nome.req")
+	@NotBlank(groups = ValidationGroups.Create.class, message ="user.nome.req")
 	private String nome;
 
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="user.cognome.req")
+	@NotBlank(groups = ValidationGroups.Create.class, message ="user.cognome.req")
 	private String cognome;
 
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="user.telefono.req")
+	@NotBlank(groups = ValidationGroups.Create.class, message ="user.telefono.req")
 	@Pattern(regexp = "^\\+[0-9]{10, 15}$", message = "user.telefono.notvalid")
 	private String telefono;
 }

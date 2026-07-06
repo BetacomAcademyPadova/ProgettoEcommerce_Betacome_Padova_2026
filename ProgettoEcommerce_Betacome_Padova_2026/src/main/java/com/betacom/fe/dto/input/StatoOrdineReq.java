@@ -9,6 +9,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class StatoOrdineReq {
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="stato.order.req")
+	@NotBlank(groups = ValidationGroups.Create.class, message ="stato.order.req")
 	private String stato;
 }

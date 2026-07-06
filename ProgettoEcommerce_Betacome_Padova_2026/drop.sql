@@ -2,16 +2,16 @@
     set client_min_messages = WARNING;
 
     alter table if exists autenticazione 
-       drop constraint if exists FKhp9xykeporddr021barv2u5y6;
+       drop constraint if exists FKpy1kj4dfd284wkrcai8httg07;
 
     alter table if exists carrello 
-       drop constraint if exists FK4lus6odvncyml62i4k7wakij6;
+       drop constraint if exists FK8wocb69w6jyqefu7etmxgni2p;
 
     alter table if exists indirizzi 
-       drop constraint if exists FKsn1d63u2l9aospedj6wsojpps;
+       drop constraint if exists FKplpq215m028r1n3bo6n2hkb2s;
 
     alter table if exists metodo_pagamento 
-       drop constraint if exists FKkfhintbbf2ysrb8gjb9wap6ga;
+       drop constraint if exists FKkimw751gpi5ktca1qj9x33dit;
 
     alter table if exists ordini 
        drop constraint if exists FKj77333p7l9ognbsgl5q7sroux;
@@ -23,7 +23,7 @@
        drop constraint if exists FKp9v03irbus4f4l5urhtyu8rwe;
 
     alter table if exists ordini 
-       drop constraint if exists FK8f7bjdq6rbfl3g290697eyilx;
+       drop constraint if exists FK6odl1p603s8jmass6j0h3bhna;
 
     alter table if exists pagamenti 
        drop constraint if exists FKaj1gphc6v5nsuetqyf5ykc9d9;
@@ -38,7 +38,7 @@
        drop constraint if exists FKbtowcuwota1u5q8828gyrhxnk;
 
     alter table if exists prodotti 
-       drop constraint if exists FK3gc52tocic1v0wpn9wts41tv4;
+       drop constraint if exists FK4048s4fgw4f6m3qphnjv5jloe;
 
     alter table if exists prodotti_carrello 
        drop constraint if exists FKculjnbh3efj9cqtjwhrf57vyk;

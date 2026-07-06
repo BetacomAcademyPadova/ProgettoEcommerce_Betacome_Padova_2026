@@ -9,9 +9,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class AutentiacazioneReq extends UserReq{
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="user.username.req")
+	@NotBlank(groups = ValidationGroups.Create.class , message ="user.username.req")
     private String username;
 
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="user.password.req")
+	@NotBlank(groups = ValidationGroups.Create.class , message ="user.password.req")
     private String password;
 }

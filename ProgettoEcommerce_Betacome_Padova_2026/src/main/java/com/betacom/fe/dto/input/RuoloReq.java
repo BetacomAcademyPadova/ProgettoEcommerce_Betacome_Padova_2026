@@ -9,6 +9,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class RuoloReq {
-	@NotBlank(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class} , message ="ruolo.user.req")
+	@NotBlank(groups = ValidationGroups.Create.class, message ="ruolo.user.req")
 	private String ruolo;
 }

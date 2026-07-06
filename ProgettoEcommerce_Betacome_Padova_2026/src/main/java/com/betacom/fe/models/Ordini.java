@@ -31,8 +31,8 @@ public class Ordini {
     private Float totale;
 
     @ManyToOne
-    @JoinColumn(name="user")
-    private User user;
+    @JoinColumn(name="userId")
+    private User userId;
     
     @OneToOne
     @JoinColumn(name="indirizzo_spedizione")
