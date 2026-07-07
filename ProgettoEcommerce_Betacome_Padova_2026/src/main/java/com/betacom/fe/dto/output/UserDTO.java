@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @ToString
 public class UserDTO {
+	private Integer userId;
 	private String email;
 	private String nome;
 	private String cognome;

@@ -1,7 +1,9 @@
 package com.betacom.fe.dto.input;
 
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserReq {
+	
+	@NotNull(groups = ValidationGroups.Update.class, message = "user.no.id")
+	private Integer userId;
+	
 	@NotBlank(groups = ValidationGroups.Create.class, message ="user.email.req")
 	@Email(message = "user.email.inv")
 	private String email;
@@ -22,6 +28,6 @@ public class UserReq {
 	private String cognome;
 
 	@NotBlank(groups = ValidationGroups.Create.class, message ="user.telefono.req")
-	@Pattern(regexp = "^\\+[0-9]{10, 15}$", message = "user.telefono.notvalid")
+	@Pattern(regexp = "^\\+[0-9]{10,15}$", message = "user.telefono.notvalid")
 	private String telefono;
 }
