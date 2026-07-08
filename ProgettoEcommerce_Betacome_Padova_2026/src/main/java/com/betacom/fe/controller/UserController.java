@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.AutentiacazioneReq;
+import com.betacom.fe.dto.input.LogInReq;
+import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.input.ValidationGroups;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.dto.output.UserDTO;
@@ -38,17 +40,18 @@ public class UserController {
     }
 	
     @PutMapping("update")
-    public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) AutentiacazioneReq req) throws Exception {
+    public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) UserReq req) throws Exception {
         userS.update(req);
         return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
     }
     
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("delete/{idUser}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idUser) throws Exception {
     	userS.delete(idUser);
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
-    @GetMapping("getById")
+    
+    @GetMapping("getById/{idUser}")
     public ResponseEntity<Object> getById(@RequestParam Integer idUser) throws Exception {
 
         return ResponseEntity.ok(userS.getById(idUser));
@@ -57,5 +60,10 @@ public class UserController {
     @GetMapping("getAll")
     public ResponseEntity<List<UserDTO>> getAll() throws Exception {
         return ResponseEntity.ok(userS.getAll());
+    }
+    
+    @PostMapping("login")
+    public ResponseEntity<UserDTO> login(@RequestBody @Validated(ValidationGroups.Login.class) LogInReq req) throws Exception {
+        return ResponseEntity.ok(userS.login(req));
     }
 }

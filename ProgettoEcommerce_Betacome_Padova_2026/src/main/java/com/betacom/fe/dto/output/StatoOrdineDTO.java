@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
 @Setter
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CategoriaDTO {
-	private String categoria;
+public class StatoOrdineDTO{
+	private String statoOrdine;
 }

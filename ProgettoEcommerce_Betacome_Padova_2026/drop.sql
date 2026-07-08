@@ -7,6 +7,9 @@
     alter table if exists carrello 
        drop constraint if exists FK8wocb69w6jyqefu7etmxgni2p;
 
+    alter table if exists divisione_prodotto 
+       drop constraint if exists FKiqmfnoidit0issivaghj4xd8f;
+
     alter table if exists indirizzi 
        drop constraint if exists FKplpq215m028r1n3bo6n2hkb2s;
 
@@ -35,7 +38,7 @@
        drop constraint if exists FKq77eli5kv3okbvr7p1smf7v28;
 
     alter table if exists prodotti 
-       drop constraint if exists FKbtowcuwota1u5q8828gyrhxnk;
+       drop constraint if exists FKdm04ygtndmmkfja3wnluv6256;
 
     alter table if exists prodotti 
        drop constraint if exists FK4048s4fgw4f6m3qphnjv5jloe;
@@ -58,6 +61,9 @@
     alter table if exists sconti 
        drop constraint if exists FKsm4cljgbr05sljbp6l9qw7ray;
 
+    alter table if exists sotto_categoria 
+       drop constraint if exists FKomk3y46dvuqvh9wqja81ce6ii;
+
     alter table if exists users 
        drop constraint if exists FK7vgts5e6ne7mf7uw9nrd8kpc3;
 
@@ -66,6 +72,8 @@
     drop table if exists carrello cascade;
 
     drop table if exists categorie cascade;
+
+    drop table if exists divisione_prodotto cascade;
 
     drop table if exists indirizzi cascade;
 
@@ -88,6 +96,8 @@
     drop table if exists ruoli cascade;
 
     drop table if exists sconti cascade;
+
+    drop table if exists sotto_categoria cascade;
 
     drop table if exists stato_ordine cascade;
 
