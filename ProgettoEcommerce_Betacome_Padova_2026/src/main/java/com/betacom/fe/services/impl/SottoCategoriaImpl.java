@@ -14,6 +14,7 @@ import com.betacom.fe.repositories.ICategoriaRepository;
 import com.betacom.fe.repositories.ISottoCategoriaRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.ISottoCategoriaServices;
+import com.betacom.fe.utils.Normalizzazione;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +31,17 @@ public class SottoCategoriaImpl implements ISottoCategoriaServices{
 	@Override
     @Transactional
 	public void create(SottoCategoriaReq req) throws Exception {
-	    Categoria categoria = catR.findById(req.getCategoria())
+    	String cat = Normalizzazione.norm(req.getCategoria());
+	    Categoria categoria = catR.findById(cat)
 	            .orElseThrow(() ->
 	                    new Exception(msgS.get("cat.not.exists")));
-
-	    sottoCatR.findById(req.getSottoCategoria())
+	    
+	    String sotocat = Normalizzazione.norm(req.getSottoCategoria());
+	    sottoCatR.findById(sotocat)
 	    	.orElseThrow(() -> new AcademyException(msgS.get("sotcat.exists")));
 
 	    SottoCategoria sotto = new SottoCategoria();
-	    sotto.setSottoCategoria(req.getSottoCategoria());
+	    sotto.setSottoCategoria(sotocat);
 	    sotto.setCategoria(categoria);
 
 	    sottoCatR.save(sotto);
@@ -54,7 +57,7 @@ public class SottoCategoriaImpl implements ISottoCategoriaServices{
 	@Override
     @Transactional
 	public void delete(String idSottoCategoria) throws Exception {
-		SottoCategoria sotto = sottoCatR.findById(idSottoCategoria)
+		SottoCategoria sotto = sottoCatR.findById(Normalizzazione.norm(idSottoCategoria))
 				.orElseThrow(() -> new AcademyException(msgS.get("sottocat.no.exists")));
 		sottoCatR.delete(sotto);		
 	}

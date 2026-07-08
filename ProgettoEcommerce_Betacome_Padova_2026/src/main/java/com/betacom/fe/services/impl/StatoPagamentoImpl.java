@@ -12,6 +12,7 @@ import com.betacom.fe.models.StatoPagamento;
 import com.betacom.fe.repositories.IStatoPagamentoRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IStatoPagamentoServices;
+import com.betacom.fe.utils.Normalizzazione;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,12 @@ public class StatoPagamentoImpl implements IStatoPagamentoServices{
 	@Override
     @Transactional
 	public void create(StatoPagReq req) throws Exception {
-	    statoPagR.findById(req.getStatoPag())
+    	String stato = Normalizzazione.norm(req.getStatoPag());
+	    statoPagR.findById(stato)
 	    	.orElseThrow(() -> new AcademyException(msgS.get("statopag.exists")));
 
 	    StatoPagamento statoPag = new StatoPagamento();
-	    statoPag.setStato(req.getStatoPag());
+	    statoPag.setStato(stato);
 	    statoPagR.save(statoPag);
 	}
 
@@ -45,7 +47,7 @@ public class StatoPagamentoImpl implements IStatoPagamentoServices{
 	@Override
     @Transactional
 	public void delete(String idStatoPag) throws Exception {
-		StatoPagamento statoPag = statoPagR.findById(idStatoPag)
+		StatoPagamento statoPag = statoPagR.findById(Normalizzazione.norm(idStatoPag))
 				.orElseThrow(() -> new AcademyException(msgS.get("statopag.no.exists")));
 		statoPagR.delete(statoPag);		
 	}
