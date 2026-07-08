@@ -32,7 +32,7 @@ public class CategoriaImpl implements ICategoriaServices{
     	String categoria = Normalizzazione.norm(req.getCategoria());
     	catRep.findById(categoria)
         .ifPresent(cat -> {
-            throw new RuntimeException(msgS.get("role.exists"));
+            throw new RuntimeException(msgS.get("cat.exists"));
         });
 		
 		Categoria cat = new Categoria();
@@ -40,13 +40,14 @@ public class CategoriaImpl implements ICategoriaServices{
 		catRep.save(cat);		
 	}
     
-    @Transactional
 	@Override
 	public List<CategoriaDTO> getAll() throws Exception {
 		return catRep.findAll().stream()
                 .map(a -> CategoriaMapper.toDTO(a))
                 .toList();
 	}
+	
+    @Transactional
 	@Override
 	public void delete(String idCat) throws Exception {
 		Categoria cat = catRep.findById(idCat)

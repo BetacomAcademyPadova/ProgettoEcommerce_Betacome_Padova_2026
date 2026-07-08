@@ -64,7 +64,6 @@ public class UserController {
     
     @PostMapping("login")
     public ResponseEntity<UserDTO> login(@RequestBody @Validated(ValidationGroups.Login.class) LogInReq req) throws Exception {
-
         return ResponseEntity.ok(userS.login(req));
     }
 }
