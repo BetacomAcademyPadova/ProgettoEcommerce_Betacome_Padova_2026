@@ -30,7 +30,7 @@ public class StatoOrdineImpl implements IStatoOrdineServices{
 	public void create(StatoOrdineReq req) throws Exception {
     	String stato = Normalizzazione.norm(req.getStato());
     	statoOrdineR.findById(stato)
-	    	.orElseThrow(() -> new AcademyException(msgS.get("statopag.exists")));
+	    	.orElseThrow(() -> new AcademyException(msgS.get("statoordine.exists")));
 
 	    StatoOrdine statoPag = new StatoOrdine();
 	    statoPag.setStato(stato);
@@ -48,7 +48,7 @@ public class StatoOrdineImpl implements IStatoOrdineServices{
     @Transactional
 	public void delete(String idStatoOrdine) throws Exception {
 		StatoOrdine statoPag = statoOrdineR.findById(Normalizzazione.norm(idStatoOrdine))
-				.orElseThrow(() -> new AcademyException(msgS.get("statopag.no.exists")));
+				.orElseThrow(() -> new AcademyException(msgS.get("statoordine.no.exists")));
 		statoOrdineR.delete(statoPag);		
 	}
 
