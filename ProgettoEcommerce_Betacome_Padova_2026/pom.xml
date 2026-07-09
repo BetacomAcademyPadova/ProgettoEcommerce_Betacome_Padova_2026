@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.betacom</groupId>
-	<artifactId>projectJPA</artifactId>
+	<artifactId>ProgettoEcommerceBetacomePadova2026Application</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>projectJPA</name>
+	<name>ProgettoEcommerceBetacomePadova2026Application</name>
 	<description>Spring Boot JPA</description>
 	<url />
 	<licenses>
