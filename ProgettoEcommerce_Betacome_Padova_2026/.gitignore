@@ -39,6 +39,7 @@ yarn-error.log*
 
 *.db
 *.sqlite
-
+.DS_Store
 *.bak
 *.swp
+.DS_Store
