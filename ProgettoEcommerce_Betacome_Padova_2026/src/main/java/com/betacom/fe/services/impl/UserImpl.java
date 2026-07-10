@@ -11,8 +11,10 @@ import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.models.Autenticazione;
+import com.betacom.fe.models.Indirizzi;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IAutenticazioneRepository;
+import com.betacom.fe.repositories.IIndirizziRepository;
 import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IUserServices;
@@ -34,6 +36,7 @@ public class UserImpl implements IUserServices{
 	private final IAutenticazioneRepository repAut;
     private final IMessaggioServices msgS;
     private final PasswordEncoder passwordEncoder;
+    private final IIndirizziRepository indR;
 	
 	@Override
 	@Transactional
@@ -56,7 +59,7 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void update(UserReq req) throws Exception {
 		User usr = repUser.findById(req.getUserId())
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 		Optional.ofNullable(req.getNome()).ifPresent(t -> usr.setNome(t));
 		Optional.ofNullable(req.getCognome()).ifPresent(t -> usr.setCognome(t));
 		Optional.ofNullable(req.getEmail()).ifPresent(t -> usr.setEmail(t));
@@ -68,25 +71,19 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void delete(Integer idUser) throws Exception {
 		User usr = repUser.findById(idUser)
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 		Autenticazione aut =  repAut.findByUserUserId(idUser)
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
+		List<Indirizzi> ind = indR.findByUserIdUserId(idUser);
+		ind.stream().forEach(indt -> indR.delete(indt));
 		repAut.delete(aut);
 		repUser.delete(usr);
 	}
 
 	@Override
 	public UserDTO getById(Integer idUser) throws Exception {
-		 User usr = repUser.findById(idUser)
-		            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
-
-		    UserDTO dto = new UserDTO();
-		    dto.setNome(usr.getNome());
-		    dto.setCognome(usr.getCognome());
-		    dto.setEmail(usr.getEmail());
-		    dto.setTelefono(usr.getTelefono());
-
-		    return dto;
+		 return UserMapper.toDTO(repUser.findById(idUser)
+				 .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste"))));
 	}
 
 	@Override
