@@ -9,4 +9,5 @@ public interface ICategoriaServices {
 	void create(CategoriaReq req) throws Exception;
 	List<CategoriaDTO> getAll() throws Exception;
 	void delete(String idCategoria) throws Exception;
+	void update(CategoriaReq req, Integer cat) throws Exception;
 }
