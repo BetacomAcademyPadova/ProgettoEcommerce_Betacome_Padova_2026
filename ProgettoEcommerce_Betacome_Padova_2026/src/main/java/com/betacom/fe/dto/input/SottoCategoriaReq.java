@@ -9,6 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SottoCategoriaReq extends CategoriaReq{
+	private Integer idSottoCategoria;
 	@NotBlank(groups = ValidationGroups.Create.class, message ="sotcat.empty")
 	private String sottoCategoria;
 }

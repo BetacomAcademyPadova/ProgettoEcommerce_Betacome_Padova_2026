@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,4 +46,11 @@ public class CategoriaControllo {
     public ResponseEntity<List<CategoriaDTO>> getAll() throws Exception {
         return ResponseEntity.ok(catS.getAll());
     }
+	
+	@PatchMapping("update/{id}")
+	public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) CategoriaReq req,
+			@PathVariable("id") Integer cat) throws Exception{
+		catS.update(req, cat);
+		return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
+	}
 }

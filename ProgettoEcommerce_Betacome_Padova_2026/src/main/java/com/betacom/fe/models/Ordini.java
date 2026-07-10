@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,18 +31,18 @@ public class Ordini {
     private Float totale;
 
     @ManyToOne
-    @JoinColumn(name="userId", nullable = false)
+    @JoinColumn(name="userId")
     private User userId;
     
-    @ManyToOne
-    @JoinColumn(name="indirizzo_spedizione", nullable = false)
+    @OneToOne
+    @JoinColumn(name="indirizzo_spedizione")
     private Indirizzi indirizzoSpedizione;
     
-    @ManyToOne
-    @JoinColumn(name="indirizzo_fatturazione", nullable = false)
+    @OneToOne
+    @JoinColumn(name="indirizzo_fatturazione")
     private Indirizzi indirizzoFatturazione;
     
     @ManyToOne
-    @JoinColumn(name="stato_ordine", nullable = false)
+    @JoinColumn(name="stato_ordine")
     private StatoOrdine stato;
 }
