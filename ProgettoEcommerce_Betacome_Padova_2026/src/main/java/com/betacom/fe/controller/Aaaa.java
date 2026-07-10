@@ -1,5 +1,5 @@
 package com.betacom.fe.controller;
 
-public class Test {
+public class Aaaa {
 
 }
