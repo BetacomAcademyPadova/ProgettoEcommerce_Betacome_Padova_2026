@@ -13,4 +13,5 @@ public interface IProdottiServices {
 	void delete(Integer idProdotto) throws Exception;
 	ProdottoDTO getById(Integer idProdotto) throws Exception;
 	List<ProdottoDTO> getAll() throws Exception;
+	
 }
