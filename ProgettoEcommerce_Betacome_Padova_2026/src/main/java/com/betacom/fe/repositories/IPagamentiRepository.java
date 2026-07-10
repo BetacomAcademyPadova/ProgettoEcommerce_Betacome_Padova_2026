@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.betacom.fe.models.Pagamenti;
-import com.betacom.fe.models.StatoPagamento;
 
-public interface IStatoPagamentoRepository extends JpaRepository<StatoPagamento, String>{
+public interface IPagamentiRepository extends JpaRepository<Pagamenti, Integer> {
+    Optional<Pagamenti> findByTransazioneId(String transazioneId);
 }
