@@ -30,9 +30,9 @@ public class CategoriaImpl implements ICategoriaServices{
     @Transactional
 	public void create(CategoriaReq req) throws Exception {
     	String categoria = Normalizzazione.norm(req.getCategoria());
-    	catRep.findById(categoria)
+    	catRep.findByCategoria(categoria)
         .ifPresent(cat -> {
-            throw new RuntimeException(msgS.get("cat.exists"));
+            throw new AcademyException(msgS.get("cat.exists"));
         });
 		
 		Categoria cat = new Categoria();
@@ -50,8 +50,19 @@ public class CategoriaImpl implements ICategoriaServices{
     @Transactional
 	@Override
 	public void delete(String idCat) throws Exception {
-		Categoria cat = catRep.findById(idCat)
+		Categoria cat = catRep.findByCategoria(idCat)
 				.orElseThrow(() -> new AcademyException(msgS.get("cat.no.exists")));
 		catRep.delete(cat);		
+	}
+
+    @Transactional
+	@Override
+	public void update(CategoriaReq req, Integer idCat) throws Exception {
+		Categoria c = catRep.findById(idCat)
+				.orElseThrow(() -> new AcademyException(msgS.get("cat.no.exists")));
+		
+		c.setCategoria(Normalizzazione.norm(req.getCategoria()));
+		catRep.save(c);
+		catRep.flush();
 	}
 }

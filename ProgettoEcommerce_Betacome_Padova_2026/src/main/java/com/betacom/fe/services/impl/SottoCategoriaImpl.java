@@ -32,13 +32,12 @@ public class SottoCategoriaImpl implements ISottoCategoriaServices{
     @Transactional
 	public void create(SottoCategoriaReq req) throws Exception {
     	String cat = Normalizzazione.norm(req.getCategoria());
-	    Categoria categoria = catR.findById(cat)
-	            .orElseThrow(() ->
-	                    new Exception(msgS.get("cat.not.exists")));
+	    Categoria categoria = catR.findByCategoria(cat)
+	            .orElseThrow(() -> new AcademyException(msgS.get("cat.not.exists")));
 	    
 	    String sotocat = Normalizzazione.norm(req.getSottoCategoria());
-	    sottoCatR.findById(sotocat)
-	    	.orElseThrow(() -> new AcademyException(msgS.get("sotcat.exists")));
+	    sottoCatR.findBySottoCategoria(sotocat)
+	    	.ifPresent(st -> new AcademyException(msgS.get("sotcat.exists")));
 
 	    SottoCategoria sotto = new SottoCategoria();
 	    sotto.setSottoCategoria(sotocat);
@@ -56,10 +55,26 @@ public class SottoCategoriaImpl implements ISottoCategoriaServices{
 
 	@Override
     @Transactional
-	public void delete(String idSottoCategoria) throws Exception {
-		SottoCategoria sotto = sottoCatR.findById(Normalizzazione.norm(idSottoCategoria))
+	public void delete(Integer id) throws Exception {
+		SottoCategoria sotto = sottoCatR.findById(id)
 				.orElseThrow(() -> new AcademyException(msgS.get("sottocat.no.exists")));
 		sottoCatR.delete(sotto);		
+	}
+
+	@Override
+	@Transactional
+	public void update(SottoCategoriaReq req, Integer id) throws Exception {
+
+	    SottoCategoria sotto = sottoCatR.findById(id)
+	            .orElseThrow(() -> new AcademyException(msgS.get("sottocat.no.exists")));
+
+	    Categoria categoria = catR.findByCategoria(Normalizzazione.norm(req.getCategoria()))
+	            .orElseThrow(() -> new AcademyException(msgS.get("cat.not.exists")));
+
+	    sotto.setSottoCategoria(Normalizzazione.norm(req.getSottoCategoria()));
+	    sotto.setCategoria(categoria);
+
+	    sottoCatR.save(sotto);
 	}
 
 }
