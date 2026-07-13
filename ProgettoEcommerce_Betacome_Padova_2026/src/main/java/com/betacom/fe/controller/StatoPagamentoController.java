@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,8 +37,8 @@ public class StatoPagamentoController {
     }
 	
 	@DeleteMapping("delete/{StatoPagamento}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable("StatoPagamento") String StatoPagamento) throws Exception {
-		statpPS.delete(StatoPagamento);
+    public ResponseEntity<ResponseDTO> delete(@PathVariable("StatoPagamento") String stato) throws Exception {
+		statpPS.delete(stato);
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
 	
@@ -45,4 +46,11 @@ public class StatoPagamentoController {
     public ResponseEntity<List<StatoPagDTO>> getAll() throws Exception {
         return ResponseEntity.ok(statpPS.getAll());
     }
+	
+	@PatchMapping("update/{id}")
+	public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) StatoPagReq req,
+			@PathVariable("id") Integer stato) throws Exception{
+		statpPS.update(req, stato);
+		return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
+	}
 }
