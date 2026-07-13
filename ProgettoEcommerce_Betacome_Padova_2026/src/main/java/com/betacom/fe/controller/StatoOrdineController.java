@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.StatoOrdineReq;
-import com.betacom.fe.dto.input.StatoPagReq;
 import com.betacom.fe.dto.input.ValidationGroups;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.dto.output.StatoOrdineDTO;

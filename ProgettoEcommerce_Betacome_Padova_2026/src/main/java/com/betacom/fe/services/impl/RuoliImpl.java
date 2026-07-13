@@ -29,9 +29,9 @@ public class RuoliImpl implements IRuoliServices{
 	@Transactional
 	public void create(RuoloReq req) throws Exception {
 		String ruolo = Normalizzazione.norm(req.getRuolo());
-	    ruoliRep.findById(ruolo)
+	    ruoliRep.findByRuolo(ruolo)
 	            .ifPresent(r -> {
-	                throw new RuntimeException(msgS.get("role.exists"));
+	            	throw new RuntimeException(msgS.get("role.exists"));
 	            });
 
 	    Ruoli r = new Ruoli();
@@ -42,8 +42,8 @@ public class RuoliImpl implements IRuoliServices{
 
 	@Override
 	@Transactional
-	public void delete(String idRuolo) throws Exception {
-		Ruoli r = ruoliRep.findById(idRuolo)
+	public void delete(String ruolo) throws Exception {
+		Ruoli r = ruoliRep.findByRuolo(ruolo)
 				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
 		ruoliRep.delete(r);
 	}
@@ -53,6 +53,17 @@ public class RuoliImpl implements IRuoliServices{
 		return ruoliRep.findAll().stream()
                 .map(a -> RuoliMapper.toDTO(a))
                 .toList();
+	}
+
+	@Override
+	@Transactional
+	public void update(RuoloReq req, Integer idRuolo) throws Exception {
+		Ruoli ruolo = ruoliRep.findById(idRuolo)
+				.orElseThrow(() -> new AcademyException(msgS.get("ruolo.no.exists")));
+		
+		ruolo.setRuolo(Normalizzazione.norm(req.getRuolo()));
+		ruoliRep.save(ruolo);
+		ruoliRep.flush();
 	}
 
 }
