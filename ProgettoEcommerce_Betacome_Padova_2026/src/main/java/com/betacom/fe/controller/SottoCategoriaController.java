@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,14 +36,21 @@ public class SottoCategoriaController {
         return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
     }
 	
-	@DeleteMapping("delete/{SottoCategoria}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable("SottoCategoria") String SottoCategoria) throws Exception {
-		sotcatS.delete(SottoCategoria);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
-    }
+	@DeleteMapping("delete/{id}")
+	public ResponseEntity<ResponseDTO> delete(@PathVariable Integer id) throws Exception {
+		sotcatS.delete(id);
+	    return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
+	}
 	
 	@GetMapping("getAll")
     public ResponseEntity<List<SottoCategoriaDTO>> getAll() throws Exception {
         return ResponseEntity.ok(sotcatS.getAll());
     }
+	
+	@PatchMapping("update/{id}")
+	public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) SottoCategoriaReq req,
+			@PathVariable("id") Integer sotoCat) throws Exception{
+		sotcatS.update(req, sotoCat);
+		return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
+	}
 }
