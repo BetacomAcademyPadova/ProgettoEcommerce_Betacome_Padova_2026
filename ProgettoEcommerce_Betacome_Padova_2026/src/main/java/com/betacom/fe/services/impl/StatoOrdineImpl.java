@@ -29,12 +29,12 @@ public class StatoOrdineImpl implements IStatoOrdineServices{
     @Transactional
 	public void create(StatoOrdineReq req) throws Exception {
     	String stato = Normalizzazione.norm(req.getStato());
-    	statoOrdineR.findById(stato)
-	    	.orElseThrow(() -> new AcademyException(msgS.get("statopag.exists")));
+    	statoOrdineR.findByStato_stato(stato)
+	    	.orElseThrow(() -> new AcademyException(msgS.get("statoord.exists")));
 
-	    StatoOrdine statoPag = new StatoOrdine();
-	    statoPag.setStato(stato);
-	    statoOrdineR.save(statoPag);
+	    StatoOrdine statoOrd = new StatoOrdine();
+	    statoOrd.setStato(stato);
+	    statoOrdineR.save(statoOrd);
 	}
 
 	@Override
@@ -46,10 +46,21 @@ public class StatoOrdineImpl implements IStatoOrdineServices{
 
 	@Override
     @Transactional
-	public void delete(String idStatoOrdine) throws Exception {
-		StatoOrdine statoPag = statoOrdineR.findById(Normalizzazione.norm(idStatoOrdine))
-				.orElseThrow(() -> new AcademyException(msgS.get("statopag.no.exists")));
-		statoOrdineR.delete(statoPag);		
+	public void delete(String stato) throws Exception {
+		StatoOrdine statoOrd = statoOrdineR.findByStato_stato(Normalizzazione.norm(stato))
+				.orElseThrow(() -> new AcademyException(msgS.get("statoord.no.exists")));
+		statoOrdineR.delete(statoOrd);		
+	}
+
+	@Override
+    @Transactional
+	public void update(StatoOrdineReq req, Integer stato) throws Exception {
+		StatoOrdine statoOrd = statoOrdineR.findById(stato)
+				.orElseThrow(() -> new AcademyException(msgS.get("statoord.no.exists")));
+		
+		statoOrd.setStato(Normalizzazione.norm(req.getStato()));
+		statoOrdineR.save(statoOrd);
+		statoOrdineR.flush();
 	}
 
 
