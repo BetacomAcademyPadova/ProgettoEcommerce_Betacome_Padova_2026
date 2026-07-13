@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,4 +46,11 @@ public class RuoliController {
     public ResponseEntity<List<RuoliDTO>> getAll() throws Exception {
         return ResponseEntity.ok(ruoliS.getAll());
     }
+	
+	@PatchMapping("update/{id}")
+	public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) RuoloReq req,
+			@PathVariable("id") Integer idRuolo) throws Exception{
+		ruoliS.update(req, idRuolo);
+		return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
+	}
 }

@@ -8,6 +8,6 @@ import com.betacom.fe.models.StatoOrdine;
 
 public interface IStatoOrdineRepository extends JpaRepository<StatoOrdine, Integer>{
 
-	Optional<StatoOrdine> findByStato_stato(String stato);
+	Optional<StatoOrdine> findByStato(String stato);
 
 }

@@ -29,8 +29,10 @@ public class StatoPagamentoImpl implements IStatoPagamentoServices{
     @Transactional
 	public void create(StatoPagReq req) throws Exception {
     	String stato = Normalizzazione.norm(req.getStatoPag());
-	    statoPagR.findByStato_stato(stato)
-	    	.orElseThrow(() -> new AcademyException(msgS.get("statopag.exists")));
+	    statoPagR.findByStato(stato)
+        .ifPresent(cat -> {
+            throw new AcademyException(msgS.get("statoord.exists"));
+        });
 
 	    StatoPagamento statoPag = new StatoPagamento();
 	    statoPag.setStato(stato);
@@ -47,7 +49,7 @@ public class StatoPagamentoImpl implements IStatoPagamentoServices{
 	@Override
     @Transactional
 	public void delete(String stato) throws Exception {
-		StatoPagamento statoPag = statoPagR.findByStato_stato(Normalizzazione.norm(stato))
+		StatoPagamento statoPag = statoPagR.findByStato(Normalizzazione.norm(stato))
 				.orElseThrow(() -> new AcademyException(msgS.get("statopag.no.exists")));
 		statoPagR.delete(statoPag);		
 	}

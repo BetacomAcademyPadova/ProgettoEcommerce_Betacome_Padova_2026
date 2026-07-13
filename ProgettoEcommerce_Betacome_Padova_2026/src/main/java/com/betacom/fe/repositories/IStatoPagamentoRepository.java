@@ -8,6 +8,6 @@ import com.betacom.fe.models.StatoPagamento;
 
 public interface IStatoPagamentoRepository extends JpaRepository<StatoPagamento, Integer>{
 
-	Optional<StatoPagamento> findByStato_stato(String stato);
+	Optional<StatoPagamento> findByStato(String stato);
 
 }

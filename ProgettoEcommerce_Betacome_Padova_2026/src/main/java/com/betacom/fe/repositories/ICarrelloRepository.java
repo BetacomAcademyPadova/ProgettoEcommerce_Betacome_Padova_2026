@@ -9,7 +9,7 @@ import com.betacom.fe.models.Carrello;
 public interface ICarrelloRepository
         extends JpaRepository<Carrello, Integer> {
 
-    Optional<Carrello> findByUserUserId(Integer userId);
+    Optional<Carrello> findByUserId(Integer userId);
 
-    boolean existsByUserIdUserId(Integer userId);
+    boolean existsByUserId(Integer userId);
 }

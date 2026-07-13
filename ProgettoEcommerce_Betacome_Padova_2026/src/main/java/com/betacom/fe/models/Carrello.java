@@ -36,5 +36,5 @@ public class Carrello {
             cascade = CascadeType.ALL,
             orphanRemoval = true
         )
-        private List<ProdottiCarrello> prodotti;
+    private List<ProdottiCarrello> prodotti;
 }
