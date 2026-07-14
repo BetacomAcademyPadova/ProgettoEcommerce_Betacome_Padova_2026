@@ -43,7 +43,7 @@ public class RuoliImpl implements IRuoliServices{
 	@Override
 	@Transactional
 	public void delete(String ruolo) throws Exception {
-		Ruoli r = ruoliRep.findByRuolo(ruolo)
+		Ruoli r = ruoliRep.findByRuolo(Normalizzazione.norm(ruolo))
 				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
 		ruoliRep.delete(r);
 	}

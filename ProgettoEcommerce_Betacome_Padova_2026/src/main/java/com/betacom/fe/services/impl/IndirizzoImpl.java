@@ -1,5 +1,6 @@
 package com.betacom.fe.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class IndirizzoImpl implements IIndirizzoServices{
 	@Override
 	@Transactional
 	public void create(IndirizzoReq req) throws Exception {
-		User usr = userR.findById(req.getUserId())
+		User usr = userR.findById(req.getIdUser())
 				.orElseThrow(()->new AcademyException(msgS.get("user.non.esiste")));
 		Indirizzi ind = new Indirizzi();
 		ind.setCap(req.getCap());
@@ -68,6 +69,16 @@ public class IndirizzoImpl implements IIndirizzoServices{
 	public IndirizzoDTO getById(Integer idIndirizzo) throws Exception {
 		return IndMapper.toDTO(indR.findById(idIndirizzo)
 				 .orElseThrow(() -> new AcademyException(msgS.get("indirizzo.non.esiste"))));
+	}
+
+	@Override
+	public List<IndirizzoDTO> getAll() throws Exception {
+		return indR.findAll().stream().map(r -> IndMapper.toDTO(r)).toList();
+	}
+	
+	@Override
+	public List<IndirizzoDTO> getAllByUser(Integer idUser) throws Exception {
+		return indR.findByUserIdUserId(idUser).stream().map(r -> IndMapper.toDTO(r)).toList();
 	}
 
 }
