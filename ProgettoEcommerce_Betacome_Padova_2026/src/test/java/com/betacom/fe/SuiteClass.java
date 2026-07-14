@@ -8,6 +8,7 @@ import com.betacom.fe.tipo.RuoliTest;
 import com.betacom.fe.tipo.SottoCategoriaTest;
 import com.betacom.fe.tipo.StatoOrdineTest;
 import com.betacom.fe.tipo.StatoPagamentoTest;
+import com.betacom.fe.user.DeleteUserTest;
 import com.betacom.fe.user.IndirizzoTest;
 import com.betacom.fe.user.UserTest;
 
@@ -20,7 +21,8 @@ import com.betacom.fe.user.UserTest;
 	StatoPagamentoTest.class,
 	StatoOrdineTest.class,
 	UserTest.class,
-	IndirizzoTest.class
+	IndirizzoTest.class,
+	DeleteUserTest.class
 })
 public class SuiteClass {
 }
