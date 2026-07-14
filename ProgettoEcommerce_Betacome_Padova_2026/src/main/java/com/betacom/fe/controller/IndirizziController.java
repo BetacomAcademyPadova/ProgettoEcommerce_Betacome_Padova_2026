@@ -1,18 +1,24 @@
 package com.betacom.fe.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.IndirizzoReq;
 import com.betacom.fe.dto.input.ValidationGroups;
+import com.betacom.fe.dto.output.IndirizzoDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
+import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.services.interfaces.IIndirizzoServices;
 
 import lombok.RequiredArgsConstructor;
@@ -43,4 +49,17 @@ public class IndirizziController {
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
     
+    @GetMapping("getById/{idIndirizzo}")
+    public ResponseEntity<Object> getById(@RequestParam("idIndirizzo") Integer id) throws Exception {
+        return ResponseEntity.ok(indS.getById(id));
+    }
+
+    @GetMapping("getAll")
+    public ResponseEntity<List<IndirizzoDTO>> getAll() throws Exception {
+        return ResponseEntity.ok(indS.getAll());
+    }
+    @GetMapping("getAllByUser/{idUser}")
+    public ResponseEntity<List<IndirizzoDTO>> getAllByUser(@RequestParam("idUser") Integer id) throws Exception {
+    	return ResponseEntity.ok(indS.getAllByUser(id));
+    }
 }

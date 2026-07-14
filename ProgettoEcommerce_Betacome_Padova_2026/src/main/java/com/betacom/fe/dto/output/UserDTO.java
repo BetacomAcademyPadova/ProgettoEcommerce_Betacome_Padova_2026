@@ -19,4 +19,5 @@ public class UserDTO {
 	private String nome;
 	private String cognome;
 	private String telefono;
+	private String ruolo;
 }

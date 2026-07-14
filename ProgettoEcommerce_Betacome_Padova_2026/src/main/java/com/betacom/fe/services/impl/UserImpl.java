@@ -11,11 +11,14 @@ import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.models.Autenticazione;
+import com.betacom.fe.models.Ruoli;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IAutenticazioneRepository;
+import com.betacom.fe.repositories.IRuoliRepository;
 import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IUserServices;
+import com.betacom.fe.utils.Normalizzazione;
 
 import jakarta.transaction.Transactional;
 
@@ -31,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserImpl implements IUserServices{
 
 	private final IUserRepository repUser;
+	private final IRuoliRepository ruoloR;
 	private final IAutenticazioneRepository repAut;
     private final IMessaggioServices msgS;
     private final PasswordEncoder passwordEncoder;
@@ -43,6 +47,7 @@ public class UserImpl implements IUserServices{
 		ut.setCognome(req.getCognome());
 		ut.setEmail(req.getEmail());
 		ut.setTelefono(req.getTelefono());
+		ut.setRuolo(ruoloR.findByRuolo("User").orElseThrow(() -> new AcademyException(msgS.get("role.no.exists"))));
 		ut = repUser.save(ut);
 		
 		Autenticazione aut = new Autenticazione();
@@ -107,5 +112,17 @@ public class UserImpl implements IUserServices{
 
 	    return UserMapper.toDTO(usr);
 	}
+	
+	@Override
+	@Transactional
+	public void setRuolo(Integer idUser, String ruolo) throws Exception {
+		User usr = repUser.findById(idUser)
+				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+		Ruoli r = ruoloR.findByRuolo(Normalizzazione.norm(ruolo))
+				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
+		usr.setRuolo(r);
+		repUser.save(usr);
+	}
+	
 
 }
