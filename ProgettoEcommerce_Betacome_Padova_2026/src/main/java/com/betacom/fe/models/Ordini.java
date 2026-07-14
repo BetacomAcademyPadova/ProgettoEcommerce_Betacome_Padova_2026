@@ -35,10 +35,6 @@ public class Ordini {
     private User userId;
     
     @OneToOne
-    @JoinColumn(name="indirizzo_spedizione")
-    private Indirizzi indirizzoSpedizione;
-    
-    @OneToOne
     @JoinColumn(name="indirizzo_fatturazione")
     private Indirizzi indirizzoFatturazione;
     
