@@ -1,6 +1,6 @@
 package com.betacom.fe.services.impl;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
@@ -45,11 +45,9 @@ public class PagamentiImpl implements IPagamentiServices {
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(amountInCents)
                 .setCurrency("eur")
-                .setAutomaticPaymentMethods(
-                    PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
-                        .setEnabled(true)
-                        .build()
-                )
+                .addPaymentMethodType("card")
+                .addPaymentMethodType("satispay")
+                .addPaymentMethodType("scalapay")
                 .putMetadata("idOrdine", req.getIdOrdine().toString())
                 .build();
 
@@ -61,7 +59,6 @@ public class PagamentiImpl implements IPagamentiServices {
         Pagamenti pagamento = new Pagamenti();
         pagamento.setOrdine(ordine);
         pagamento.setImporto(ordine.getTotale());
-        pagamento.setDataPagamento(LocalDate.now());
         pagamento.setTransazioneId(intent.getId());
         pagamento.setStatoPagamento(inAttesa);
         pagRep.save(pagamento);
@@ -84,6 +81,7 @@ public class PagamentiImpl implements IPagamentiServices {
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
         pagamento.setStatoPagamento(completato);
+        pagamento.setDataPagamento(LocalDateTime.now());
         pagRep.save(pagamento);
         log.info("Pagamento {} confermato", transazioneId);
     }
