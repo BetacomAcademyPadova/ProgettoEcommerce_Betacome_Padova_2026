@@ -69,9 +69,6 @@ public class UserImpl implements IUserServices{
 	public void delete(Integer idUser) throws Exception {
 		User usr = repUser.findById(idUser)
 				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
-		Autenticazione aut =  repAut.findByUserUserId(idUser)
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
-		repAut.delete(aut);
 		repUser.delete(usr);
 	}
 
