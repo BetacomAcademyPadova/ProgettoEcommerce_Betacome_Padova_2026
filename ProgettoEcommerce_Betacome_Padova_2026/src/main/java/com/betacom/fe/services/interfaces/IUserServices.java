@@ -15,4 +15,5 @@ public interface IUserServices {
 	UserDTO getById(Integer idUSer) throws Exception;
 	List<UserDTO> getAll() throws Exception;
 	UserDTO login(LogInReq req) throws Exception;
+	void setRuolo(Integer idUser, String ruolo) throws Exception;
 }

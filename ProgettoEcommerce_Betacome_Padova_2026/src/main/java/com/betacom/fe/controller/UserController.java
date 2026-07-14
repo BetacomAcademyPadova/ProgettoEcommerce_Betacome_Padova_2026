@@ -66,4 +66,10 @@ public class UserController {
     public ResponseEntity<UserDTO> login(@RequestBody @Validated(ValidationGroups.Login.class) LogInReq req) throws Exception {
         return ResponseEntity.ok(userS.login(req));
     }
+    
+    @PutMapping("setRuolo/{idUser}/{ruolo}")
+    public ResponseEntity<ResponseDTO> update(@PathVariable("idUser") Integer id, @PathVariable("ruolo") String r) throws Exception {
+        userS.setRuolo(id, r);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("role set...").build());
+    }
 }
