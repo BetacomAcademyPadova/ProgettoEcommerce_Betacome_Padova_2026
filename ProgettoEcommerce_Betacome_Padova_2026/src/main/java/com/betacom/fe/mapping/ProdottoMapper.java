@@ -11,6 +11,7 @@ public class ProdottoMapper {
 				.prezzo(p.getPrezzo())
 				.quantitaDisponibile(p.getQuantitaDisponibile())
 				.stockAlert(p.getStockAlert())
+				.divisioni(DivisioneProdottoMapper.buildDivProdDTOList(p.getDivisioni()))
 				.build();
 	}
 
