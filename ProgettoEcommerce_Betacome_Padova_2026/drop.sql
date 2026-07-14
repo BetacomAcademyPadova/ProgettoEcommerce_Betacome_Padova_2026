@@ -20,9 +20,6 @@
        drop constraint if exists FKj77333p7l9ognbsgl5q7sroux;
 
     alter table if exists ordini 
-       drop constraint if exists FKn9pthby85h3scynafely8xjxj;
-
-    alter table if exists ordini 
        drop constraint if exists FKp9v03irbus4f4l5urhtyu8rwe;
 
     alter table if exists ordini 
@@ -48,6 +45,9 @@
 
     alter table if exists prodotti_carrello 
        drop constraint if exists FK7j387fc10rblygr2p6ufv30jb;
+
+    alter table if exists prodotti_ordine 
+       drop constraint if exists FKfljxkmohq78qkbd12c9nr1e2m;
 
     alter table if exists prodotti_ordine 
        drop constraint if exists FKoryut1a41bxv1hvmqxv3few9q;
