@@ -2,7 +2,9 @@ package com.betacom.fe.services.interfaces;
 
 import java.util.List;
 
+import com.betacom.fe.dto.input.DivisioneProdottoReq;
 import com.betacom.fe.dto.input.ProdottoReq;
+import com.betacom.fe.dto.input.SottoCategoriaReq;
 import com.betacom.fe.dto.output.ProdottoDTO;
 
 
@@ -14,4 +16,9 @@ public interface IProdottiServices {
 	ProdottoDTO getById(Integer idProdotto) throws Exception;
 	List<ProdottoDTO> getAll() throws Exception;
 	
+	List<ProdottoDTO> search(
+			ProdottoReq pReq, 
+			DivisioneProdottoReq dReq,
+			SottoCategoriaReq sReq
+			) throws Exception;
 }

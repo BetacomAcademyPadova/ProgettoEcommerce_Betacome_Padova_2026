@@ -1,5 +1,7 @@
 package com.betacom.fe.dto.output;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +21,6 @@ public class ProdottoDTO {
 	private Float prezzo;
 	private Integer quantitaDisponibile;
 	private Integer stockAlert;
-	
+	private SottoCategoriaDTO sottoCategoria;
+	private List<DivisioneProdottoDTO> divisioni;
 }
