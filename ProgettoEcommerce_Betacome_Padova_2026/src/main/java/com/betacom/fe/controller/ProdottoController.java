@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.DivisioneProdottoReq;
 import com.betacom.fe.dto.input.ProdottoReq;
+import com.betacom.fe.dto.input.SottoCategoriaReq;
 import com.betacom.fe.dto.input.ValidationGroups;
 import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
@@ -63,6 +64,7 @@ public class ProdottoController {
 	        @RequestParam(required = false) String descrizione,
 	        @RequestParam(required = false) Float prezzo,
 	        @RequestParam(required = false) String colore,
+	        @RequestParam(required = false) String sottocategoria,
 	        @RequestParam(required = false) String materiale,
 	        @RequestParam(required = false) Integer altezza,
 	        @RequestParam(required = false) Integer lunghezza,
@@ -78,7 +80,10 @@ public class ProdottoController {
 	    dReq.setAltezza(altezza);
 	    dReq.setLunghezza(lunghezza);
 	    dReq.setLarghezza(larghezza);
+	    
+	    SottoCategoriaReq sReq = new SottoCategoriaReq();
+	    sReq.setSottoCategoria(sottocategoria);
 
-	    return ResponseEntity.ok(proS.search(pReq, dReq));
+	    return ResponseEntity.ok(proS.search(pReq, dReq, sReq));
 	}
 }

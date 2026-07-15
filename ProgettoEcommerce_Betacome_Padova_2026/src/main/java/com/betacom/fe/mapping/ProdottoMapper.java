@@ -24,6 +24,9 @@ public class ProdottoMapper {
 				.prezzo(p.getPrezzo())
 				.quantitaDisponibile(p.getQuantitaDisponibile())
 				.stockAlert(p.getStockAlert())
+				.sottoCategoria(p.getSottoCategoria() != null 
+                	? SottoCategoriaMapper.toDTO(p.getSottoCategoria()) 
+                	: null)
 				.divisioni(DivisioneProdottoMapper.buildDivProdDTOList(divFiltrate))
 				.build();
 	}
@@ -36,6 +39,7 @@ public class ProdottoMapper {
 				.prezzo(p.getPrezzo())
 				.quantitaDisponibile(p.getQuantitaDisponibile())
 				.stockAlert(p.getStockAlert())
+				.sottoCategoria(SottoCategoriaMapper.toDTO(p.getSottoCategoria()))
 				.divisioni(DivisioneProdottoMapper.buildDivProdDTOList(p.getDivisioni()))
 				.build();
 	}
