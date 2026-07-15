@@ -1,11 +1,31 @@
 package com.betacom.fe.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.betacom.fe.models.Prodotti;
 
-
-public interface IProdottiRepository extends JpaRepository<Prodotti, Integer>{
-	
-
+public interface IProdottiRepository extends JpaRepository<Prodotti, Integer>
+{	
+	@Query(value = "SELECT DISTINCT p.* FROM prodotti p " +
+            "JOIN divisione_prodotto d ON p.id_prodotto = d.id_prodotto " +
+			"WHERE (:descrizione IS NULL OR p.descrizione = :descrizione) " +
+			"AND (:prezzo IS NULL OR p.prezzo = :prezzo) " +
+            "AND (:colore IS NULL OR d.colore = :colore) " +
+            "AND (:materiale IS NULL OR d.materiale = :materiale) " +
+            "AND (:altezza IS NULL OR d.altezza = :altezza) " +
+            "AND (:lunghezza IS NULL OR d.lunghezza = :lunghezza)" +
+            "AND (:larghezza IS NULL OR d.larghezza = :larghezza)",    
+            nativeQuery = true)
+	List<Prodotti> findByFiltri(
+			@Param("descrizione") String descrizione,
+			@Param("prezzo") Float prezzo,
+			@Param("colore") String colore, 
+            @Param("materiale") String materiale, 
+            @Param("altezza") Integer altezza,
+            @Param("lunghezza") Integer lunghezza,
+            @Param("larghezza") Integer larghezza);
 }
