@@ -1,6 +1,6 @@
 package com.betacom.fe.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,15 +27,21 @@ public class Pagamenti {
     @JoinColumn(name="ordine")
     private Ordini ordine;
 
+    @Column(name = "metodo_pagamento")
+    private String metodoPagamento;
+
+    @Column(nullable = false)
+    private Boolean salvato = false;
+
     @ManyToOne
-    @JoinColumn(name="metodo_pagamento")
-    private MetodoPagamento metodo;
+    @JoinColumn(name = "metodo_salvato")
+    private MetodoPagamento metodoSalvato;
 
     @Column(nullable=false)
     private Float importo;
 
-    @Column(nullable=false)
-    private LocalDate dataPagamento;
+    @Column(nullable=true)
+    private LocalDateTime dataPagamento;
 
     @ManyToOne
     @JoinColumn(name="stato_pagamento")
