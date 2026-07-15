@@ -10,4 +10,5 @@ public interface IOrdineServices {
 	void create(OrdineReq req) throws Exception;
 	OrdineDTO getById(Integer idOrdine) throws Exception;
 	List<OrdineDTO> getAll() throws Exception;
+	List<OrdineDTO> getAllByUserId(Integer UserId) throws Exception;
 }
