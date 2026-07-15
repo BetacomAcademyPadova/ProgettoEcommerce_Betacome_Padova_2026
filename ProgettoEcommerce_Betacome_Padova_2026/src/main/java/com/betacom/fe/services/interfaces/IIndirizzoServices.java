@@ -1,5 +1,8 @@
 package com.betacom.fe.services.interfaces;
 
+import java.util.List;
+
+
 import com.betacom.fe.dto.input.IndirizzoReq;
 import com.betacom.fe.dto.output.IndirizzoDTO;
 
@@ -8,4 +11,6 @@ public interface IIndirizzoServices {
 	void update(IndirizzoReq req) throws Exception;
 	void delete(Integer idIndirizzo) throws Exception;
 	IndirizzoDTO getById(Integer idIndirizzo) throws Exception;
+	List<IndirizzoDTO> getAll() throws Exception;
+	List<IndirizzoDTO> getAllByUser(Integer idUser) throws Exception;
 }

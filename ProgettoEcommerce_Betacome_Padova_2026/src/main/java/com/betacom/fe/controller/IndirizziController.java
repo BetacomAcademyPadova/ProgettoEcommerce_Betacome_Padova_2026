@@ -1,8 +1,11 @@
 package com.betacom.fe.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.IndirizzoReq;
 import com.betacom.fe.dto.input.ValidationGroups;
+import com.betacom.fe.dto.output.IndirizzoDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.services.interfaces.IIndirizzoServices;
 
@@ -43,4 +47,18 @@ public class IndirizziController {
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
     
+    @GetMapping("getAll")
+    public ResponseEntity<List<IndirizzoDTO>> getAll() throws Exception {
+        return ResponseEntity.ok(indS.getAll());
+    }   
+    
+    @GetMapping("getById/{idIndirizzo}")
+    public ResponseEntity<Object> getById(@PathVariable Integer idIndirizzo) throws Exception {
+        return ResponseEntity.ok(indS.getById(idIndirizzo));
+    }
+
+    @GetMapping("getAllByUser/{idUser}")
+    public ResponseEntity<List<IndirizzoDTO>> getAllByUser(@PathVariable Integer idUser) throws Exception {
+        return ResponseEntity.ok(indS.getAllByUser(idUser));
+    }
 }

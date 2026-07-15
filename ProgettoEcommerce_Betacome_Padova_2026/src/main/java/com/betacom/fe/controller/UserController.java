@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.AutentiacazioneReq;
@@ -52,7 +51,7 @@ public class UserController {
     }
     
     @GetMapping("getById/{idUser}")
-    public ResponseEntity<Object> getById(@RequestParam Integer idUser) throws Exception {
+    public ResponseEntity<Object> getById(@PathVariable Integer idUser) throws Exception {
 
         return ResponseEntity.ok(userS.getById(idUser));
     }
@@ -65,5 +64,11 @@ public class UserController {
     @PostMapping("login")
     public ResponseEntity<UserDTO> login(@RequestBody @Validated(ValidationGroups.Login.class) LogInReq req) throws Exception {
         return ResponseEntity.ok(userS.login(req));
+    }
+    
+    @PutMapping("setRuolo/{idUser}/{ruolo}")
+    public ResponseEntity<ResponseDTO> update(@PathVariable("idUser") Integer id, @PathVariable("ruolo") String r) throws Exception {
+        userS.setRuolo(id, r);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("role set...").build());
     }
 }
