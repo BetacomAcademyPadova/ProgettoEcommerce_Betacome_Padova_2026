@@ -38,10 +38,19 @@ public class ProdottoController {
 }
 	
 	@PutMapping("update")
-    public ResponseEntity<ResponseDTO> update(@Validated(ValidationGroups.Update.class) ProdottoReq req) throws Exception {
-		proS.update(req);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
-    }
+	public ResponseEntity<ResponseDTO> update(
+	        @RequestBody
+	        @Validated(ValidationGroups.Update.class)
+	        ProdottoReq req) throws Exception {
+
+	    proS.update(req);
+
+	    return ResponseEntity.ok(
+	            ResponseDTO.builder()
+	                    .msg("updated...")
+	                    .build()
+	    );
+	}
 	
 	@DeleteMapping("delete/{idProdotto}")
 	public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idProdotto) throws Exception {
