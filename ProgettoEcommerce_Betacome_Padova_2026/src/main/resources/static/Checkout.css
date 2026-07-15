@@ -59,6 +59,33 @@ body {
   margin-top: 10px;
 }
 
+.save-method {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.saved-methods { 
+	padding: 16px 28px; 
+	border-bottom: 1px solid #eee; 
+	}
+	
+.saved-methods h2 { 
+	font-size: 13px; 
+	color: #888; margin: 0 0 8px; 
+	text-transform: uppercase; 
+	}
+	
+.saved-method-item { 
+	font-size: 14px; 
+	color: #333; 
+	padding: 6px 0; 
+	}
+
 form { padding: 24px 28px 28px; }
 
 #payment-element { margin-bottom: 20px; }

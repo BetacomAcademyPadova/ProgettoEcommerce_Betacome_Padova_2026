@@ -1,6 +1,7 @@
 package com.betacom.fe.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import com.stripe.model.PaymentMethod;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import com.betacom.fe.dto.input.PaymentIntentReq;
+import com.betacom.fe.dto.output.MetodoPagamentoDTO;
 import com.betacom.fe.dto.output.PaymentIntentDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.models.MetodoPagamento;
@@ -131,4 +133,18 @@ public class PagamentiImpl implements IPagamentiServices {
         pagRep.save(pagamento);
         log.info("Pagamento {} fallito", transazioneId);
     }
+
+	@Override
+	public List<MetodoPagamentoDTO> getMetodiSalvatiByOrdine(Integer idOrdine) throws Exception {
+		Ordini ordine = ordRep.findById(idOrdine)
+	            .orElseThrow(() -> new AcademyException(msgS.get("ordine.no.exists")));
+
+	    return metodoRep.findByUserId(ordine.getUserId()).stream()
+	            .map(m -> MetodoPagamentoDTO.builder()
+	                    .idMetodo(m.getIdMetodo())
+	                    .tipo(m.getTipo())
+	                    .dettagli(m.getDettagli())
+	                    .build())
+	            .toList();
+	}
 }

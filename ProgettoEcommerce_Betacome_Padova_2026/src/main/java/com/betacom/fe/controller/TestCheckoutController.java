@@ -2,6 +2,7 @@ package com.betacom.fe.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,13 @@ public class TestCheckoutController {
 
         return ResponseEntity.ok(new FixedAmountResponse(intent.getClientSecret(), AMOUNT_IN_CENTS, publishableKey));
     }
+    
+    @GetMapping("config")
+    public ResponseEntity<ConfigResponse> getConfig() {
+        return ResponseEntity.ok(new ConfigResponse(publishableKey));
+    }
+
+    record ConfigResponse(String publishableKey) {}
 
     // Small inline response record, just for this test controller
     record FixedAmountResponse(String clientSecret, long amountInCents, String publishableKey) {}
