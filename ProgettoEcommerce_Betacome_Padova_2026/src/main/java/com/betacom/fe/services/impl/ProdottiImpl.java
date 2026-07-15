@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.betacom.fe.dto.input.DivisioneProdottoReq;
 import com.betacom.fe.dto.input.ProdottoReq;
+import com.betacom.fe.dto.input.SottoCategoriaReq;
 import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottoMapper;
@@ -124,12 +125,17 @@ public class ProdottiImpl implements IProdottiServices {
 
 	@Transactional
 	@Override
-	public List<ProdottoDTO> search(ProdottoReq pReq, DivisioneProdottoReq req) throws Exception 
+	public List<ProdottoDTO> search(
+			ProdottoReq pReq, 
+			DivisioneProdottoReq req,
+			SottoCategoriaReq sReq
+			) throws Exception 
 	{
 		List<Prodotti> lista = proR.findByFiltri(
 				pReq.getDescrizione(),
 				pReq.getPrezzo(),
 	            req.getColore(), 
+	            sReq.getSottoCategoria(),
 	            req.getMateriale(), 
 	            req.getAltezza(),
 	            req.getLunghezza(),
