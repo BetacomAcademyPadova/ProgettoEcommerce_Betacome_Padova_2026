@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.betacom.fe.dto.input.DivisioneProdottoReq;
 import com.betacom.fe.dto.input.ProdottoReq;
 import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
@@ -101,16 +102,19 @@ public class ProdottiImpl implements IProdottiServices {
 	}
 	@Transactional
 	@Override
-	public ProdottoDTO getById(Integer idProdotto) throws Exception {
+	public ProdottoDTO getById(Integer idProdotto) throws Exception 
+	{
 
 	    Prodotti prodotto = proR.findById(idProdotto)
 	            .orElseThrow(() -> new AcademyException(msgS.get("prod.non.esiste")));
 
 	    return ProdottoMapper.toDTO(prodotto);
 	}
+	
 	@Transactional
 	@Override
-	public List<ProdottoDTO> getAll() throws Exception {
+	public List<ProdottoDTO> getAll() throws Exception 
+	{
 		return proR.findAll()
 				.stream()
 				.map(p -> ProdottoMapper.toDTO(p))
@@ -118,4 +122,25 @@ public class ProdottiImpl implements IProdottiServices {
 		
 	}
 
+	@Transactional
+	@Override
+	public List<ProdottoDTO> search(ProdottoReq pReq, DivisioneProdottoReq req) throws Exception 
+	{
+		List<Prodotti> lista = proR.findByFiltri(
+				pReq.getDescrizione(),
+				pReq.getPrezzo(),
+	            req.getColore(), 
+	            req.getMateriale(), 
+	            req.getAltezza(),
+	            req.getLunghezza(),
+	            req.getLarghezza()
+	    );
+	    
+		if (lista == null || lista.isEmpty()) 
+	        throw new AcademyException(msgS.get("prodotti.ntfnd"));
+		
+	    return lista.stream()
+	                .map(p -> ProdottoMapper.buildListByParams(p, req))
+	                .toList();
+	}
 }
