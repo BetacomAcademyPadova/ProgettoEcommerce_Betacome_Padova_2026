@@ -19,4 +19,7 @@ public interface IScontoRepository extends JpaRepository<Sconto, Integer>
 			@Param("dataInizio") LocalDate dataInizio, 
 			@Param("dataFine") LocalDate dataFine,
 			@Param("idSconto") Integer idSconto);
+	
+	@Query("SELECT s FROM Sconto s WHERE s.prodotto.idProdotto = :idProdotto")
+	Sconto findByIdProdotto(@Param("idProdotto") Integer idProdotto);
 }
