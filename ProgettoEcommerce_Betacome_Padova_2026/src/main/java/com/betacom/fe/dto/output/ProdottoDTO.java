@@ -21,5 +21,6 @@ public class ProdottoDTO {
 	private Float prezzo;
 	private Integer quantitaDisponibile;
 	private Integer stockAlert;
+	private SottoCategoriaDTO sottoCategoria;
 	private List<DivisioneProdottoDTO> divisioni;
 }
