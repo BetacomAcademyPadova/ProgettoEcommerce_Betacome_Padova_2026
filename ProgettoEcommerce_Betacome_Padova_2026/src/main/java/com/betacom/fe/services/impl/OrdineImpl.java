@@ -73,7 +73,7 @@ public class OrdineImpl implements IOrdineServices {
 	    ordR.save(ord);
 	}
 
-
+	@Transactional
 	@Override
 	public OrdineDTO getById(Integer idOrdine) throws Exception {
 		 Ordini ord = ordR.findById(idOrdine)
@@ -82,7 +82,7 @@ public class OrdineImpl implements IOrdineServices {
 		    return OrdineMapper.toDTO(ord);
 		
 	}
-
+	@Transactional
 	@Override
 	public List<OrdineDTO> getAll() throws Exception {
 		return ordR.findAll()
@@ -92,7 +92,7 @@ public class OrdineImpl implements IOrdineServices {
 		
 	}
 
-
+	@Transactional
 	@Override
 	public List<OrdineDTO> getAllByUserId(Integer userId) throws Exception {
 
