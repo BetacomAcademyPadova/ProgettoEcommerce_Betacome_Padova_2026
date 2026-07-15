@@ -27,9 +27,15 @@ public class Pagamenti {
     @JoinColumn(name="ordine")
     private Ordini ordine;
 
+    @Column(name = "metodo_pagamento")
+    private String metodoPagamento;
+
+    @Column(nullable = false)
+    private Boolean salvato = false;
+
     @ManyToOne
-    @JoinColumn(name="metodo_pagamento")
-    private MetodoPagamento metodo;
+    @JoinColumn(name = "metodo_salvato")
+    private MetodoPagamento metodoSalvato;
 
     @Column(nullable=false)
     private Float importo;

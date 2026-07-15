@@ -29,7 +29,7 @@
        drop constraint if exists FK6odl1p603s8jmass6j0h3bhna;
 
     alter table if exists pagamenti 
-       drop constraint if exists FKaj1gphc6v5nsuetqyf5ykc9d9;
+       drop constraint if exists FKi86l323clbd8r8dfghxfw0tbs;
 
     alter table if exists pagamenti 
        drop constraint if exists FKf2x11hvonh4h2qu4f4oloiv4y;

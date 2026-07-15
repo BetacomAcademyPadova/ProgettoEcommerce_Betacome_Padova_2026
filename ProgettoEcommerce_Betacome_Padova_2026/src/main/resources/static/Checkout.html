@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Checkout</title>
+<script src="https://js.stripe.com/v3/"></script>
+<link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+
+<div class="card">
+  <div class="summary">
+    <h1>Riepilogo ordine</h1>
+    <div class="line"><span>Prodotto di prova</span><span id="amountLine">€49.99</span></div>
+    <div class="line"><span>Spedizione</span><span>Gratuita</span></div>
+    <div class="total"><span>Totale</span><span id="amountTotal">€49.99</span></div>
+    <div class="badge">Importo fisso — modalità test</div>
+  </div>
+
+  <form id="payment-form">
+    <div id="payment-element"></div>
+    <button id="submitBtn" type="submit">
+    <label><input type="checkbox" id="salvaMetodo"> Salva questo metodo per i prossimi acquisti</label>
+      <span id="btnText">Paga ora</span>
+    </button>
+    <div id="message"></div>
+  </form>
+</div>
+
+<script>
+
+  let elements;
+
+  function showMessage(text, type) {
+    const el = document.getElementById('message');
+    el.textContent = text;
+    el.className = type;
+  }
+
+  function setLoading(isLoading) {
+    document.getElementById('submitBtn').disabled = isLoading;
+    document.getElementById('btnText').innerHTML = isLoading
+      ? '<span class="spinner"></span>Elaborazione...'
+      : 'Paga ora';
+  }
+
+  async function initCheckout() {
+    try {
+      const res = await fetch('/rest/test/create-intent-fixed-amount', { method: 'POST' });
+      if (!res.ok) {
+        showMessage('Errore nella creazione del pagamento (status ' + res.status + ')', 'err');
+        return;
+      }
+      const data = await res.json();
+      stripe = Stripe(data.publishableKey);
+		
+      const amount = (data.amountInCents / 100).toFixed(2);
+      document.getElementById('amountLine').textContent = '€' + amount;
+      document.getElementById('amountTotal').textContent = '€' + amount;
+
+      elements = stripe.elements({ clientSecret: data.clientSecret });
+      const paymentElement = elements.create('payment');
+      paymentElement.mount('#payment-element');
+    } catch (e) {
+      showMessage('Errore di rete: ' + e.message, 'err');
+    }
+  }
+
+  document.getElementById('payment-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!elements) return;
+
+    setLoading(true);
+    showMessage('', '');
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: 'if_required'
+    });
+
+    setLoading(false);
+
+    if (error) {
+      showMessage(error.message, 'err');
+      return;
+    }
+
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+      showMessage('✅ Pagamento completato con successo!', 'ok');
+      document.getElementById('submitBtn').style.display = 'none';
+    } else if (paymentIntent) {
+      showMessage('Stato pagamento: ' + paymentIntent.status, 'info');
+    }
+  });
+
+  initCheckout();
+</script>
+
+</body>
+</html>

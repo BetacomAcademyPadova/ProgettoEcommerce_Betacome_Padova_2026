@@ -6,14 +6,17 @@ import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentMethod;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import com.betacom.fe.dto.input.PaymentIntentReq;
 import com.betacom.fe.dto.output.PaymentIntentDTO;
 import com.betacom.fe.exception.AcademyException;
+import com.betacom.fe.models.MetodoPagamento;
 import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Pagamenti;
 import com.betacom.fe.models.StatoPagamento;
+import com.betacom.fe.repositories.IMetodoPagamentoRepository;
 import com.betacom.fe.repositories.IOrdiniRepository;
 import com.betacom.fe.repositories.IPagamentiRepository;
 import com.betacom.fe.repositories.IStatoPagamentoRepository;
@@ -32,6 +35,7 @@ public class PagamentiImpl implements IPagamentiServices {
     private final IPagamentiRepository pagRep;
     private final IOrdiniRepository ordRep;
     private final IStatoPagamentoRepository statoRep;
+    private final IMetodoPagamentoRepository metodoRep;
     private final IMessaggioServices msgS;
 
     @Override
@@ -61,6 +65,7 @@ public class PagamentiImpl implements IPagamentiServices {
         pagamento.setImporto(ordine.getTotale());
         pagamento.setTransazioneId(intent.getId());
         pagamento.setStatoPagamento(inAttesa);
+        pagamento.setSalvato(Boolean.TRUE.equals(req.getSalvaMetodo()));
         pagRep.save(pagamento);
 
         log.info("PaymentIntent creato: {}", intent.getId());
@@ -73,19 +78,46 @@ public class PagamentiImpl implements IPagamentiServices {
 
     @Override
     @Transactional
-    public void markSucceeded(String transazioneId) throws Exception {
+    public void markSucceeded(String transazioneId, String paymentMethodId) throws Exception {
         Pagamenti pagamento = pagRep.findByTransazioneId(transazioneId)
                 .orElseThrow(() -> new AcademyException(msgS.get("pagamento.no.exists")));
 
         StatoPagamento completato = statoRep.findById("Completato")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
+        if (paymentMethodId != null) {
+            PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
+
+            // ALWAYS record what was used
+            pagamento.setMetodoPagamento(pm.getType()); // "card", "satispay", ...
+
+            // Only if the user asked to save it: create the wallet row and link it
+            if (Boolean.TRUE.equals(pagamento.getSalvato())) {
+                MetodoPagamento nuovoMP = new MetodoPagamento();
+                nuovoMP.setTipo(pm.getType());
+                nuovoMP.setDettagli(buildDettagli(pm));
+                nuovoMP.setIsPredefinito(false);
+                nuovoMP.setUserId(pagamento.getOrdine().getUserId()); // user comes from the order
+                metodoRep.save(nuovoMP);
+
+                pagamento.setMetodoSalvato(nuovoMP);
+            }
+        }
+
         pagamento.setStatoPagamento(completato);
         pagamento.setDataPagamento(LocalDateTime.now());
         pagRep.save(pagamento);
-        log.info("Pagamento {} confermato", transazioneId);
+        log.info("Pagamento {} confermato, metodo: {}", transazioneId, pagamento.getMetodoPagamento());
     }
 
+    // Human-readable description of the method
+    private String buildDettagli(PaymentMethod pm) {
+        if ("card".equals(pm.getType()) && pm.getCard() != null) {
+            return pm.getCard().getBrand() + " **** " + pm.getCard().getLast4(); // "visa **** 4242"
+        }
+        return pm.getType();
+    }
+    
     @Override
     @Transactional
     public void markFailed(String transazioneId) throws Exception {

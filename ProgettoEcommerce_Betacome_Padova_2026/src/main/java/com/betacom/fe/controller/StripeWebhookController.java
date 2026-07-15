@@ -45,7 +45,7 @@ public class StripeWebhookController {
         if ("payment_intent.succeeded".equals(event.getType())) {
             PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
                     .getObject().orElseThrow();
-            pagS.markSucceeded(intent.getId());
+            pagS.markSucceeded(intent.getId(), intent.getPaymentMethod());
         } else if ("payment_intent.payment_failed".equals(event.getType())) {
             PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
                     .getObject().orElseThrow();
