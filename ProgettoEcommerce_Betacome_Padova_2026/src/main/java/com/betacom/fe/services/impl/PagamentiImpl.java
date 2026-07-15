@@ -59,7 +59,7 @@ public class PagamentiImpl implements IPagamentiServices {
 
         PaymentIntent intent = PaymentIntent.create(params);
 
-        StatoPagamento inAttesa = statoRep.findById("In attesa")
+        StatoPagamento inAttesa = statoRep.findByStato("In attesa")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
         Pagamenti pagamento = new Pagamenti();
@@ -84,7 +84,7 @@ public class PagamentiImpl implements IPagamentiServices {
         Pagamenti pagamento = pagRep.findByTransazioneId(transazioneId)
                 .orElseThrow(() -> new AcademyException(msgS.get("pagamento.no.exists")));
 
-        StatoPagamento completato = statoRep.findById("Completato")
+        StatoPagamento completato = statoRep.findByStato("Completato")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
         if (paymentMethodId != null) {
@@ -126,7 +126,7 @@ public class PagamentiImpl implements IPagamentiServices {
         Pagamenti pagamento = pagRep.findByTransazioneId(transazioneId)
                 .orElseThrow(() -> new AcademyException(msgS.get("pagamento.no.exists")));
 
-        StatoPagamento fallito = statoRep.findById("Fallito")
+        StatoPagamento fallito = statoRep.findByStato("Fallito")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
         pagamento.setStatoPagamento(fallito);
