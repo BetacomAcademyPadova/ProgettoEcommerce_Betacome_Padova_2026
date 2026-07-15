@@ -22,5 +22,6 @@ public class ProdottoDTO {
 	private Integer quantitaDisponibile;
 	private Integer stockAlert;
 	private SottoCategoriaDTO sottoCategoria;
+	private ScontoDTO sconto;
 	private List<DivisioneProdottoDTO> divisioni;
 }
