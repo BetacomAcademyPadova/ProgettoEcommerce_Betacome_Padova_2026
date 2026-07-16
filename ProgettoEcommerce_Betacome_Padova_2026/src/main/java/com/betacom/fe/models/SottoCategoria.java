@@ -20,7 +20,7 @@ public class SottoCategoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idCategoria;
     
-    @Column(unique = true)
+    @Column(nullable=false)
     private String sottoCategoria;
 
     @ManyToOne
