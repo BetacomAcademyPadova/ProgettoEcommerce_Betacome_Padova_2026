@@ -158,5 +158,4 @@ public class ScontoImpl implements IScontoServices
 		
 		return ScontoMapper.buildScontoDTOList(lS);
 	}
-
 }

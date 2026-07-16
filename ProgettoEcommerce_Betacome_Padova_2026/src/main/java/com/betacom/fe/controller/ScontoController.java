@@ -36,7 +36,7 @@ public class ScontoController
 	}
 	
 	@PutMapping("update")
-    public ResponseEntity<ResponseDTO> update(@Validated(ValidationGroups.Update.class) ScontoReq req) throws Exception 
+    public ResponseEntity<ResponseDTO> update(@RequestBody @Validated(ValidationGroups.Update.class) ScontoReq req) throws Exception 
 	{
 		scontoS.update(req);
         return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
