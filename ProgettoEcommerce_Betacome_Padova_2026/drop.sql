@@ -47,7 +47,7 @@
        drop constraint if exists FKmqvjivhash7j1d31qfwr684cp;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FK5le15e8pdlrqor6phqstha3qn;
+       drop constraint if exists FKl5il6vw4rqgq9a9yvh0dnb9wv;
 
     alter table if exists prodotti_ordine 
        drop constraint if exists FKfljxkmohq78qkbd12c9nr1e2m;
