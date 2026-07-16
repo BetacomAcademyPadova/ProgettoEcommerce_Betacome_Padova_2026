@@ -15,9 +15,7 @@ public class RicevutaReq {
 	private Integer idFattura;
 	@NotNull(groups = ValidationGroups.Create.class, message = "numFat.no.present")
     private Integer ordineId;
-	@NotNull(groups = ValidationGroups.Create.class, message = "numFat.no.present")
     private String numeroFattura;
-	@NotNull(groups = ValidationGroups.Create.class, message = "fat.no.date")
     private LocalDate dataEmissione;
     private Float imponibile;
     private Float iva;

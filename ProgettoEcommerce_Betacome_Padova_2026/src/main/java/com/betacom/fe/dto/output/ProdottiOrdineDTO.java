@@ -19,5 +19,7 @@ public class ProdottiOrdineDTO {
     private Integer quantita;
     private Float prezzo;
     private IndirizzoDTO indirizzoSpedizione;
+    
+    private DivisioneProdottoDTO divisioneOrdine;
 
 }
