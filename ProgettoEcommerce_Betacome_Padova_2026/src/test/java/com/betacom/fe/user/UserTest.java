@@ -50,7 +50,7 @@ public class UserTest {
 		usr.setEmail("user1@mail.it");
 		usr.setTelefono("+391111111111");
 		usr.setUsername("user1");
-		usr.setPassword("user1");
+		usr.setPassword("User_1111");
 
 	    mockMvc.perform(post("/rest/User/create")
 	            .contentType(MediaType.APPLICATION_JSON)
@@ -63,7 +63,7 @@ public class UserTest {
 	    usr.setEmail("user2@mail.it");
 	    usr.setTelefono("+392222222222");
 	    usr.setUsername("user2");
-	    usr.setPassword("user2");
+	    usr.setPassword("User_2222");
 
 	    mockMvc.perform(post("/rest/User/create")
 	            .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +76,7 @@ public class UserTest {
 	    usr.setEmail("user3@mail.it");
 	    usr.setTelefono("+393333333333");
 	    usr.setUsername("user3");
-	    usr.setPassword("user3");
+	    usr.setPassword("User_3333");
 
 	    mockMvc.perform(post("/rest/User/create")
 	            .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +119,7 @@ public class UserTest {
 
 	    LogInReq req = new LogInReq();
 	    req.setUsername("user1");
-	    req.setPassword("user1");
+	    req.setPassword("User_1111");
 
 	    MvcResult result = mockMvc.perform(post("/rest/User/login")
 	            .contentType(MediaType.APPLICATION_JSON)

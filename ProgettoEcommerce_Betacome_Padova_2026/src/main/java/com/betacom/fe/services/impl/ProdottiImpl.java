@@ -1,5 +1,6 @@
 package com.betacom.fe.services.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +13,11 @@ import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottoMapper;
 import com.betacom.fe.models.Prodotti;
+import com.betacom.fe.models.Sconto;
 import com.betacom.fe.models.SottoCategoria;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IProdottiRepository;
+import com.betacom.fe.repositories.IScontoRepository;
 import com.betacom.fe.repositories.ISottoCategoriaRepository;
 import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
@@ -34,12 +37,12 @@ public class ProdottiImpl implements IProdottiServices {
 	private final IMessaggioServices msgS;
 	private final ISottoCategoriaRepository sottoCategoriaR;
 	private final IUserRepository userR;
+	private final IScontoRepository scontoR;
 	
-
 	@Transactional
 	@Override
 	public void create(ProdottoReq req) throws Exception {
-
+		
 	    SottoCategoria sottoCategoria = sottoCategoriaR
 	            .findById(req.getIdSottoCategoria())
 	            .orElseThrow(() ->
@@ -108,8 +111,8 @@ public class ProdottiImpl implements IProdottiServices {
 
 	    Prodotti prodotto = proR.findById(idProdotto)
 	            .orElseThrow(() -> new AcademyException(msgS.get("prod.non.esiste")));
-
-	    return ProdottoMapper.toDTO(prodotto);
+	    
+	    return getProdottoConPrezzoCalcolato(prodotto);
 	}
 	
 	@Transactional
@@ -117,10 +120,9 @@ public class ProdottiImpl implements IProdottiServices {
 	public List<ProdottoDTO> getAll() throws Exception 
 	{
 		return proR.findAll()
-				.stream()
-				.map(p -> ProdottoMapper.toDTO(p))
-				.toList();
-		
+	            .stream()
+	            .map(this::getProdottoConPrezzoCalcolato)
+	            .toList();
 	}
 
 	@Transactional
@@ -128,25 +130,80 @@ public class ProdottiImpl implements IProdottiServices {
 	public List<ProdottoDTO> search(
 			ProdottoReq pReq, 
 			DivisioneProdottoReq req,
-			SottoCategoriaReq sReq
+			SottoCategoriaReq sReq,
+			Boolean sconti
 			) throws Exception 
 	{
-		List<Prodotti> lista = proR.findByFiltri(
-				pReq.getDescrizione(),
-				pReq.getPrezzo(),
-	            req.getColore(), 
-	            sReq.getSottoCategoria(),
-	            req.getMateriale(), 
-	            req.getAltezza(),
-	            req.getLunghezza(),
-	            req.getLarghezza()
-	    );
+		
+		List<Prodotti> lista;
+		if (sconti != null && sconti) 
+		{
+	        lista = proR.findByFiltriESconti(
+	                pReq.getDescrizione(),
+	                pReq.getPrezzo(),
+	                req.getColore(), 
+	                sReq.getSottoCategoria(),
+	                req.getMateriale(), 
+	                req.getAltezza(),
+	                req.getLunghezza(),
+	                req.getLarghezza()
+	        );
+	    } 
+		else 
+		{
+	        lista = proR.findByFiltri(
+	                pReq.getDescrizione(),
+	                pReq.getPrezzo(),
+	                req.getColore(), 
+	                sReq.getSottoCategoria(),
+	                req.getMateriale(), 
+	                req.getAltezza(),
+	                req.getLunghezza(),
+	                req.getLarghezza()
+	        );
+	    }
 	    
 		if (lista == null || lista.isEmpty()) 
 	        throw new AcademyException(msgS.get("prodotti.ntfnd"));
 		
-	    return lista.stream()
-	                .map(p -> ProdottoMapper.buildListByParams(p, req))
-	                .toList();
+		return lista.stream()
+	            .map(p -> {
+	                Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
+	                ProdottoDTO dto = ProdottoMapper.buildListByParams(p, req, s);
+	                
+	                LocalDate oggi = LocalDate.now();
+	                if (s != null && !oggi.isBefore(s.getDataInizio()) && !oggi.isAfter(s.getDataFine())) 
+	                {
+	                    float prezzoScontato = p.getPrezzo() * (1 - (s.getValore() / 100.0f));
+	                    dto.setPrezzo(prezzoScontato);
+	                }
+	                return dto;
+	            })
+	            .toList();
+	}
+
+	@Transactional
+	private ProdottoDTO getProdottoConPrezzoCalcolato(Prodotti p) 
+	{
+		LocalDate oggi = LocalDate.now();
+
+	    Sconto s = scontoR.findAll().stream()
+	            .filter(sc -> sc.getProdotto().getIdProdotto().equals(p.getIdProdotto()))
+	            .filter(sc -> !oggi.isBefore(sc.getDataInizio()) && !oggi.isAfter(sc.getDataFine()))
+	            .findFirst()
+	            .orElse(null);
+
+	    ProdottoDTO dto = ProdottoMapper.toDTO(p, s);
+
+	    if (s != null) 
+	    {
+	        float percentuale = s.getValore() / 100.0f;
+	        float riduzione = p.getPrezzo() * percentuale;
+	        float prezzoScontato = p.getPrezzo() - riduzione;
+	        
+	        dto.setPrezzo(prezzoScontato);
+	    }
+	    
+	    return dto;
 	}
 }

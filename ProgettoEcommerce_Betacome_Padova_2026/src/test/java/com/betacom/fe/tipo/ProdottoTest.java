@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -22,6 +23,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.betacom.fe.dto.input.ProdottoReq;
 import com.betacom.fe.dto.output.ProdottoDTO;
+import com.betacom.fe.models.Sconto;
+import com.betacom.fe.repositories.IProdottiRepository;
+import com.betacom.fe.repositories.IScontoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -38,6 +42,12 @@ public class ProdottoTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    
+    @Autowired
+    private IScontoRepository scontoR; 
+
+    @Autowired
+    private IProdottiRepository proR;
 
     @Test
     @Order(1)
@@ -167,6 +177,67 @@ public class ProdottoTest {
                 .andExpect(status().isOk());
     }
     
+    @Test
+    @Order(8)
+    public void createTestPerDivProd() throws Exception {
+        log.debug("create prodotto");
 
+        ProdottoReq req = new ProdottoReq();
+        req.setDescrizione("Tavolo test");
+        req.setPrezzo(300.0f);
+        req.setQuantitaDisponibile(10);
+        req.setStockAlert(2);
+        req.setIdSottoCategoria(1);
+        req.setIdUser(2);
+
+        mockMvc.perform(post("/rest/Prodotto/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
+    }
+    
+    @Test
+    @Order(9)
+    public void createTestProdottoSconto() throws Exception {
+        log.debug("createTestProdottoSconto");
+
+        ProdottoReq req = new ProdottoReq();
+        req.setDescrizione("Sedia scontata");
+        req.setPrezzo(200f);
+        req.setQuantitaDisponibile(20);
+        req.setStockAlert(5);
+        req.setIdSottoCategoria(1);
+        req.setIdUser(2);
+
+        mockMvc.perform(post("/rest/Prodotto/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
+    }
+    
+    @Test
+    @Order(10) 
+    public void testPrezzoScontato() throws Exception 
+    {
+        log.debug("Test calcolo prezzo prodotto con uno sconto");
+
+        Sconto s = new Sconto();
+        s.setProdotto(proR.findById(3).orElseThrow());
+        s.setValore(20f); 
+        s.setDataInizio(LocalDate.now());
+        s.setDataFine(LocalDate.now().plusDays(5));
+        scontoR.save(s);
+
+        MvcResult result = mockMvc.perform(get("/rest/Prodotto/getById/3"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ProdottoDTO dto = objectMapper.readValue(
+        		result.getResponse().getContentAsString(), 
+        		ProdottoDTO.class);
+        
+        assert(dto.getPrezzo() == 160f);
+        log.info("Prezzo testato con successo: {}", dto.getPrezzo());
+    }
 }
 

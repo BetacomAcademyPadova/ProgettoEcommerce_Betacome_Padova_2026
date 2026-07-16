@@ -77,7 +77,8 @@ public class ProdottoController {
 	        @RequestParam(required = false) String materiale,
 	        @RequestParam(required = false) Integer altezza,
 	        @RequestParam(required = false) Integer lunghezza,
-	        @RequestParam(required = false) Integer larghezza) throws Exception 
+	        @RequestParam(required = false) Integer larghezza,
+	        @RequestParam(required = false, defaultValue = "false") Boolean sconti) throws Exception 
 	{
 	    ProdottoReq pReq = new ProdottoReq();
 	    pReq.setDescrizione(descrizione);
@@ -93,6 +94,6 @@ public class ProdottoController {
 	    SottoCategoriaReq sReq = new SottoCategoriaReq();
 	    sReq.setSottoCategoria(sottocategoria);
 
-	    return ResponseEntity.ok(proS.search(pReq, dReq, sReq));
+	    return ResponseEntity.ok(proS.search(pReq, dReq, sReq, sconti));
 	}
 }

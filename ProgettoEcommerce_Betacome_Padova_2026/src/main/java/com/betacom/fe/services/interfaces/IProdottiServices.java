@@ -19,6 +19,7 @@ public interface IProdottiServices {
 	List<ProdottoDTO> search(
 			ProdottoReq pReq, 
 			DivisioneProdottoReq dReq,
-			SottoCategoriaReq sReq
+			SottoCategoriaReq sReq,
+			Boolean sconti
 			) throws Exception;
 }
