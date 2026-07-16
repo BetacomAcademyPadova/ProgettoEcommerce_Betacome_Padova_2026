@@ -78,17 +78,19 @@ public class UserImpl implements IUserServices{
 	}
 
 	@Override
-	public UserDTO getById(Integer idUser) throws Exception {
-		 User usr = repUser.findById(idUser)
-		            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+	public UserDTO getByUsername(String usr) throws Exception {
+		User utente = repUser.findById(repAut.findByUsername(usr)
+		                .orElseThrow(() -> new AcademyException(msgS.get("login.error")))
+		                .getUser().getUserId()
+					).orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
 
-		    UserDTO dto = new UserDTO();
-		    dto.setNome(usr.getNome());
-		    dto.setCognome(usr.getCognome());
-		    dto.setEmail(usr.getEmail());
-		    dto.setTelefono(usr.getTelefono());
+		 UserDTO dto = new UserDTO();
+		 dto.setNome(utente.getNome());
+		 dto.setCognome(utente.getCognome());
+		 dto.setEmail(utente.getEmail());
+		 dto.setTelefono(utente.getTelefono());
 
-		    return dto;
+		 return dto;
 	}
 
 	@Override
@@ -115,14 +117,16 @@ public class UserImpl implements IUserServices{
 	
 	@Override
 	@Transactional
-	public void setRuolo(Integer idUser, String ruolo) throws Exception {
-		User usr = repUser.findById(idUser)
+	public void setRuolo(String usr, String ruolo) throws Exception {
+		LogInReq req = new LogInReq();
+		req.setUsername(usr);
+		Autenticazione idUser = repAut.findByUsername(req.getUsername())
+	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
+		User utente = repUser.findById(idUser.getUser().getUserId())
 				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
 		Ruoli r = ruoloR.findByRuolo(Normalizzazione.norm(ruolo))
 				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
-		usr.setRuolo(r);
-		repUser.save(usr);
+		utente.setRuolo(r);
+		repUser.save(utente);
 	}
-	
-
 }

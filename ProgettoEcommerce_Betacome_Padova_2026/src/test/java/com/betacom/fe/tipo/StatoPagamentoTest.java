@@ -44,7 +44,7 @@ public class StatoPagamentoTest {
 	@Order(1)
 	public void createTest() throws Exception{
 		log.debug("create");
-		List<String> ruoli = List.of("In attesa", "Negativo", "positivo", "test update", "Test Delete","positivo");
+		List<String> ruoli = List.of("In attesa", "Negativo", "positivo", "test update", "Test Delete");
 		ruoli.forEach(s ->{
 			StatoPagReq req = new StatoPagReq();
 			req.setStatoPag(s);
@@ -57,6 +57,12 @@ public class StatoPagamentoTest {
 				log.error("Error in create {}", e.getMessage());
 			}
 		});
+		StatoPagReq req = new StatoPagReq();
+		req.setStatoPag("positivo");
+		mockMvc.perform(post("/rest/StatoPagamento/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isBadRequest());
 	}
 	
 	@Test

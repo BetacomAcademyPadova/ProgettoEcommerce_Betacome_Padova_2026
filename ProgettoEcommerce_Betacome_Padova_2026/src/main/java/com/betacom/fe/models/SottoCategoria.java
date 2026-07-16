@@ -8,13 +8,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
 @Entity
-@Table (name = "sotto_categoria")
+@Table(name = "sotto_categoria", uniqueConstraints = {@UniqueConstraint(columnNames = {"categoria", "sottoCategoria"})})
 public class SottoCategoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
