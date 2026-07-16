@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.betacom.fe.dto.input.ProdottiCarrelloReq;
 import com.betacom.fe.dto.output.ProdottiCarrelloDTO;
+import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottiCarrelloMapper;
 import com.betacom.fe.models.Carrello;
@@ -19,6 +20,7 @@ import com.betacom.fe.repositories.IProdottiCarrelloRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IProdottiCarrelloServices;
+import com.betacom.fe.services.interfaces.IProdottiServices;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
     private final IDivisioneProdottoRepository repDiv;
     private final IProdottiRepository repProd;
     private final IMessaggioServices msgS;
+    private final IProdottiServices proS;
 
     @Transactional
     @Override
@@ -55,7 +58,9 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
             nuovaRiga.setCarrello(carrello);
             nuovaRiga.setDivisione(divisione);
             nuovaRiga.setQuantita(req.getQuantita());
-            nuovaRiga.setPrezzo(prodotto.getPrezzo());
+            
+            ProdottoDTO pDto = proS.getById(prodotto.getIdProdotto());
+            nuovaRiga.setPrezzo(pDto.getPrezzo());
 
             repProdCarr.save(nuovaRiga);
 
@@ -64,7 +69,8 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
             controllaDisponibilita(divisione, nuovaQuantita);
             
             rigaEsistente.setQuantita(nuovaQuantita);
-            rigaEsistente.setPrezzo(prodotto.getPrezzo());
+            ProdottoDTO pDto = proS.getById(prodotto.getIdProdotto());
+            rigaEsistente.setPrezzo(pDto.getPrezzo());
 
             repProdCarr.save(rigaEsistente);
         }
@@ -88,7 +94,8 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
         controllaDisponibilita(riga.getDivisione(), req.getQuantita());
 
         riga.setQuantita(req.getQuantita());
-        riga.setPrezzo(prodotto.getPrezzo());
+        ProdottoDTO pDto = proS.getById(prodotto.getIdProdotto());
+        riga.setPrezzo(pDto.getPrezzo());
 
         repProdCarr.save(riga);
 
