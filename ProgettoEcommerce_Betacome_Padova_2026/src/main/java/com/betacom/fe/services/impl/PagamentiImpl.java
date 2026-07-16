@@ -19,7 +19,7 @@ import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Pagamenti;
 import com.betacom.fe.models.StatoPagamento;
 import com.betacom.fe.repositories.IMetodoPagamentoRepository;
-import com.betacom.fe.repositories.IOrdiniRepository;
+import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IPagamentiRepository;
 import com.betacom.fe.repositories.IStatoPagamentoRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PagamentiImpl implements IPagamentiServices {
 
     private final IPagamentiRepository pagRep;
-    private final IOrdiniRepository ordRep;
+    private final IOrdineRepository ordRep;
     private final IStatoPagamentoRepository statoRep;
     private final IMetodoPagamentoRepository metodoRep;
     private final IMessaggioServices msgS;
