@@ -13,5 +13,9 @@ public class AutentiacazioneReq extends UserReq{
     private String username;
 
 	@NotBlank(groups = ValidationGroups.Create.class , message ="user.password.req")
+	@Pattern(
+        regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!\\-_])[a-zA-Z0-9@#$%^&+=!\\-_]{8,16}$",
+        groups = ValidationGroups.Create.class, message = "user.password.invalid"
+    )
     private String password;
 }
