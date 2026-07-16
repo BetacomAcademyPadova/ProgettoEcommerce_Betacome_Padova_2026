@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Checkout</title>
+<script src="https://js.stripe.com/v3/"></script>
+<link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+
+<div class="card">
+  <div class="summary">
+    <h1>Riepilogo ordine</h1>
+    <!-- span id=...: empty placeholders; JS fills them after fetching the order -->
+    <div class="line"><span>Ordine n.</span><span id="orderIdLine">—</span></div>
+    <div class="line"><span>Spedizione</span><span>Gratuita</span></div>
+    <div class="total"><span>Totale</span><span id="amountTotal">—</span></div>
+  </div>
+  
+  <div class="saved-methods" id="savedMethods" style="display:none;">
+	  <h2>I tuoi metodi salvati</h2>
+	  <div id="savedMethodsList"></div>
+  </div>
+
+  <form id="payment-form">
+    <div id="payment-element"></div>
+
+    <!-- FIX #1: checkbox is now a SIBLING before the button, not inside it -->
+    <label class="save-method">
+      <input type="checkbox" id="salvaMetodo">
+      Salva questo metodo per i prossimi acquisti
+    </label>
+
+    <button id="submitBtn" type="submit">
+      <span id="btnText">Paga ora</span>
+    </button>
+    <div id="message"></div>
+  </form>
+</div>
+
+<p class="footnote">Ambiente di test Stripe — nessun addebito reale. Carta di prova: 4242 4242 4242 4242.</p>
+
+<script>
+  let stripe;     
+  let elements;   
+
+  // ── Read the order id from the URL ─────────────────────────────
+  // For checkout.html?idOrdine=3  →  params.get('idOrdine') === "3"
+  const params = new URLSearchParams(window.location.search);
+  const idOrdine = params.get('idOrdine');   // null if absent
+
+  function showMessage(text, type) {
+    const el = document.getElementById('message');
+    el.textContent = text;
+    el.className = type;
+  }
+
+  function setLoading(isLoading) {
+    document.getElementById('submitBtn').disabled = isLoading;
+    document.getElementById('btnText').innerHTML = isLoading
+      ? '<span class="spinner"></span>Elaborazione...'
+      : 'Paga ora';
+  }
+
+  async function initCheckout() {
+    if (!idOrdine) {
+      showMessage("Nessun ordine specificato. Apri la pagina come checkout.html?idOrdine=3", 'err');
+      return;
+    }
+    document.getElementById('orderIdLine').textContent = '#' + idOrdine;
+
+    try {
+      const smRes = await fetch('/rest/Pagamenti/metodi-salvati/' + idOrdine);
+      if (smRes.ok) {
+        const metodi = await smRes.json();          // [{idMetodo:4, tipo:"card", dettagli:"visa **** 4242"}, ...]
+        if (metodi.length > 0) {
+          const list = document.getElementById('savedMethodsList');
+          metodi.forEach(m => {
+            const div = document.createElement('div');       
+            div.className = 'saved-method-item';
+            div.textContent = '_ ' + m.dettagli;             
+            list.appendChild(div);                            
+          });
+          document.getElementById('savedMethods').style.display = 'block';
+        }
+      }
+    } catch (e) { /* non-blocking: checkout works even if this fails */ }
+    
+    try {
+      // ── Step 1: get the publishable key from the config endpoint ──
+      const cfgRes = await fetch('/rest/test/config');
+      if (!cfgRes.ok) { showMessage('Errore config (status ' + cfgRes.status + ')', 'err'); return; }
+      const cfg = await cfgRes.json();
+      stripe = Stripe(cfg.publishableKey);
+
+      // ── Step 2: create the PaymentIntent for THIS order ──────────
+      // This is the real team endpoint now, not the test one.
+      const res = await fetch('/rest/Pagamenti/create-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },   // tells Spring "body is JSON"
+        body: JSON.stringify({                              // JS object → JSON text
+          idOrdine: Number(idOrdine),                       // "3" (string) → 3 (number)
+          salvaMetodo: document.getElementById('salvaMetodo').checked
+        })
+      });
+
+      if (!res.ok) {
+        // Your ExceptionManager returns JSON with a message — try to show it
+        const errBody = await res.json().catch(() => ({}));
+        showMessage('Errore: ' + (errBody.message || res.status), 'err');
+        return;
+      }
+
+      const data = await res.json();   // { clientSecret: "...", idPagamento: 12 }
+
+      // ── Step 3: mount Stripe's payment form, tied to this intent ──
+      elements = stripe.elements({ clientSecret: data.clientSecret });
+      const paymentElement = elements.create('payment');
+      paymentElement.mount('#payment-element');   // inject into <div id="payment-element">
+    } catch (e) {
+      showMessage('Errore di rete: ' + e.message, 'err');
+    }
+  }
+
+  // Listen for the form submit (= button click). preventDefault stops the
+  // browser's default full-page reload so JS can handle it instead.
+  document.getElementById('payment-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!elements) return;
+
+    setLoading(true);
+    showMessage('', '');
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: 'if_required'
+    });
+
+    setLoading(false);
+
+    if (error) { showMessage(error.message, 'err'); return; }
+
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+      showMessage('Pagamento completato per l\'ordine #' + idOrdine + '!', 'ok');
+      document.getElementById('submitBtn').style.display = 'none';
+    } else if (paymentIntent) {
+      showMessage('Stato pagamento: ' + paymentIntent.status, 'info');
+    }
+  });
+
+  initCheckout();  
+</script>
+
+</body>
+</html>

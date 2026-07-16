@@ -8,10 +8,8 @@ import com.betacom.fe.dto.input.OrdineReq;
 import com.betacom.fe.dto.output.OrdineDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.OrdineMapper;
-import com.betacom.fe.mapping.ProdottoMapper;
 import com.betacom.fe.models.Indirizzi;
 import com.betacom.fe.models.Ordini;
-import com.betacom.fe.models.Prodotti;
 import com.betacom.fe.models.StatoOrdine;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IIndirizziRepository;
@@ -75,7 +73,7 @@ public class OrdineImpl implements IOrdineServices {
 	    ordR.save(ord);
 	}
 
-
+	@Transactional
 	@Override
 	public OrdineDTO getById(Integer idOrdine) throws Exception {
 		 Ordini ord = ordR.findById(idOrdine)
@@ -84,7 +82,7 @@ public class OrdineImpl implements IOrdineServices {
 		    return OrdineMapper.toDTO(ord);
 		
 	}
-
+	@Transactional
 	@Override
 	public List<OrdineDTO> getAll() throws Exception {
 		return ordR.findAll()
@@ -92,6 +90,16 @@ public class OrdineImpl implements IOrdineServices {
 				.map(o -> OrdineMapper.toDTO(o))
 				.toList();
 		
+	}
+
+	@Transactional
+	@Override
+	public List<OrdineDTO> getAllByUserId(Integer userId) throws Exception {
+
+	    return ordR.findByUserId_UserId(userId)
+	            .stream()
+	            .map(o -> OrdineMapper.toDTO(o))
+	            .toList();
 	}
 
 }

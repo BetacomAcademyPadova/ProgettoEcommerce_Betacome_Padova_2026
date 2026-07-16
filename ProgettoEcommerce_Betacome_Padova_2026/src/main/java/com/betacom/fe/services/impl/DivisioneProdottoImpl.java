@@ -82,6 +82,8 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 	@Override
 	public void delete(Integer idDivProdotto) throws Exception 
 	{
+		log.debug("Delete DivProdotto: {}", idDivProdotto);
+		
 		DivisioneProdotto divProd = repDivP.findById(idDivProdotto)
 				.orElseThrow(() -> new AcademyException(msgS.get("divProd.no.exists")));
 		repDivP.delete(divProd);
@@ -91,6 +93,8 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 	@Override
 	public DivisioneProdottoDTO getById(Integer idDivProdotto) throws Exception 
 	{
+		log.debug("DivProdotto getById: {}", idDivProdotto);
+		
 		DivisioneProdotto divProd = repDivP.findById(idDivProdotto)
 	            .orElseThrow(() -> new AcademyException(msgS.get("divProd.no.exists")));
 

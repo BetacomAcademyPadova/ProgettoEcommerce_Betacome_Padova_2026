@@ -7,13 +7,16 @@ import org.springframework.stereotype.Service;
 
 import com.betacom.fe.dto.input.DivisioneProdottoReq;
 import com.betacom.fe.dto.input.ProdottoReq;
+import com.betacom.fe.dto.input.SottoCategoriaReq;
 import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottoMapper;
 import com.betacom.fe.models.Prodotti;
+import com.betacom.fe.models.Sconto;
 import com.betacom.fe.models.SottoCategoria;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IProdottiRepository;
+import com.betacom.fe.repositories.IScontoRepository;
 import com.betacom.fe.repositories.ISottoCategoriaRepository;
 import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
@@ -33,12 +36,12 @@ public class ProdottiImpl implements IProdottiServices {
 	private final IMessaggioServices msgS;
 	private final ISottoCategoriaRepository sottoCategoriaR;
 	private final IUserRepository userR;
+	private final IScontoRepository scontoR;
 	
-
 	@Transactional
 	@Override
 	public void create(ProdottoReq req) throws Exception {
-
+		
 	    SottoCategoria sottoCategoria = sottoCategoriaR
 	            .findById(req.getIdSottoCategoria())
 	            .orElseThrow(() ->
@@ -108,7 +111,9 @@ public class ProdottiImpl implements IProdottiServices {
 	    Prodotti prodotto = proR.findById(idProdotto)
 	            .orElseThrow(() -> new AcademyException(msgS.get("prod.non.esiste")));
 
-	    return ProdottoMapper.toDTO(prodotto);
+	    Sconto s = scontoR.findByIdProdotto(idProdotto);
+	    
+	    return ProdottoMapper.toDTO(prodotto, s);
 	}
 	
 	@Transactional
@@ -116,31 +121,60 @@ public class ProdottiImpl implements IProdottiServices {
 	public List<ProdottoDTO> getAll() throws Exception 
 	{
 		return proR.findAll()
-				.stream()
-				.map(p -> ProdottoMapper.toDTO(p))
-				.toList();
-		
+	            .stream()
+	            .map(p -> {
+	                Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
+	                return ProdottoMapper.toDTO(p, s);
+	            })
+	            .toList();
 	}
 
 	@Transactional
 	@Override
-	public List<ProdottoDTO> search(ProdottoReq pReq, DivisioneProdottoReq req) throws Exception 
+	public List<ProdottoDTO> search(
+			ProdottoReq pReq, 
+			DivisioneProdottoReq req,
+			SottoCategoriaReq sReq,
+			Boolean sconti
+			) throws Exception 
 	{
-		List<Prodotti> lista = proR.findByFiltri(
-				pReq.getDescrizione(),
-				pReq.getPrezzo(),
-	            req.getColore(), 
-	            req.getMateriale(), 
-	            req.getAltezza(),
-	            req.getLunghezza(),
-	            req.getLarghezza()
-	    );
+		
+		List<Prodotti> lista;
+		if (sconti != null && sconti) 
+		{
+	        lista = proR.findByFiltriESconti(
+	                pReq.getDescrizione(),
+	                pReq.getPrezzo(),
+	                req.getColore(), 
+	                sReq.getSottoCategoria(),
+	                req.getMateriale(), 
+	                req.getAltezza(),
+	                req.getLunghezza(),
+	                req.getLarghezza()
+	        );
+	    } 
+		else 
+		{
+	        lista = proR.findByFiltri(
+	                pReq.getDescrizione(),
+	                pReq.getPrezzo(),
+	                req.getColore(), 
+	                sReq.getSottoCategoria(),
+	                req.getMateriale(), 
+	                req.getAltezza(),
+	                req.getLunghezza(),
+	                req.getLarghezza()
+	        );
+	    }
 	    
 		if (lista == null || lista.isEmpty()) 
 	        throw new AcademyException(msgS.get("prodotti.ntfnd"));
 		
-	    return lista.stream()
-	                .map(p -> ProdottoMapper.buildListByParams(p, req))
-	                .toList();
+		return lista.stream()
+                .map(p -> {
+                    Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
+                    return ProdottoMapper.buildListByParams(p, req, s);
+                })
+                .toList();
 	}
 }

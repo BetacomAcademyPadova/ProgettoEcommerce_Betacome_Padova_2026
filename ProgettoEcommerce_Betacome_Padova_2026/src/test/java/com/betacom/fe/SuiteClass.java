@@ -5,6 +5,9 @@ import org.junit.platform.suite.api.Suite;
 
 import com.betacom.fe.carrello.CarrelloTest;
 import com.betacom.fe.tipo.CategoriaTest;
+import com.betacom.fe.tipo.DivisioneProdottoTest;
+import com.betacom.fe.tipo.OrdineTest;
+import com.betacom.fe.tipo.ProdottoTest;
 import com.betacom.fe.tipo.RuoliTest;
 import com.betacom.fe.tipo.SottoCategoriaTest;
 import com.betacom.fe.tipo.StatoOrdineTest;
@@ -23,8 +26,10 @@ import com.betacom.fe.user.UserTest;
 	StatoOrdineTest.class,
 	UserTest.class,
 	IndirizzoTest.class,
-	DeleteUserTest.class,
-	CarrelloTest.class
+	OrdineTest.class,
+	ProdottoTest.class,
+	//DivisioneProdottoTest.class,
+	DeleteUserTest.class
 })
 public class SuiteClass {
 }

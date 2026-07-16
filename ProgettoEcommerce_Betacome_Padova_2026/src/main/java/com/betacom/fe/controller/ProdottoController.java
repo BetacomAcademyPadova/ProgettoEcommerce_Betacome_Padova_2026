@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.DivisioneProdottoReq;
 import com.betacom.fe.dto.input.ProdottoReq;
+import com.betacom.fe.dto.input.SottoCategoriaReq;
 import com.betacom.fe.dto.input.ValidationGroups;
 import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
@@ -37,10 +38,19 @@ public class ProdottoController {
 }
 	
 	@PutMapping("update")
-    public ResponseEntity<ResponseDTO> update(@Validated(ValidationGroups.Update.class) ProdottoReq req) throws Exception {
-		proS.update(req);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
-    }
+	public ResponseEntity<ResponseDTO> update(
+	        @RequestBody
+	        @Validated(ValidationGroups.Update.class)
+	        ProdottoReq req) throws Exception {
+
+	    proS.update(req);
+
+	    return ResponseEntity.ok(
+	            ResponseDTO.builder()
+	                    .msg("updated...")
+	                    .build()
+	    );
+	}
 	
 	@DeleteMapping("delete/{idProdotto}")
 	public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idProdotto) throws Exception {
@@ -63,10 +73,12 @@ public class ProdottoController {
 	        @RequestParam(required = false) String descrizione,
 	        @RequestParam(required = false) Float prezzo,
 	        @RequestParam(required = false) String colore,
+	        @RequestParam(required = false) String sottocategoria,
 	        @RequestParam(required = false) String materiale,
 	        @RequestParam(required = false) Integer altezza,
 	        @RequestParam(required = false) Integer lunghezza,
-	        @RequestParam(required = false) Integer larghezza) throws Exception 
+	        @RequestParam(required = false) Integer larghezza,
+	        @RequestParam(required = false, defaultValue = "false") Boolean sconti) throws Exception 
 	{
 	    ProdottoReq pReq = new ProdottoReq();
 	    pReq.setDescrizione(descrizione);
@@ -78,7 +90,10 @@ public class ProdottoController {
 	    dReq.setAltezza(altezza);
 	    dReq.setLunghezza(lunghezza);
 	    dReq.setLarghezza(larghezza);
+	    
+	    SottoCategoriaReq sReq = new SottoCategoriaReq();
+	    sReq.setSottoCategoria(sottocategoria);
 
-	    return ResponseEntity.ok(proS.search(pReq, dReq));
+	    return ResponseEntity.ok(proS.search(pReq, dReq, sReq, sconti));
 	}
 }
