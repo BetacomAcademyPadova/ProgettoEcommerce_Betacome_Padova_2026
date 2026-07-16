@@ -10,11 +10,8 @@ public class ProdottiCarrelloMapper {
         return ProdottiCarrelloDTO.builder()
             .idRiga(riga.getIdRiga())
             .idCarrello(riga.getCarrello().getIdCarrello())
-            .idProdotto(riga.getProdotto().getIdProdotto())
-            .descrizione(riga.getProdotto().getDescrizione())
-            .quantita(riga.getQuantita())
-            .prezzo(riga.getPrezzo())
+            .idDivisioneProdotto(riga.getDivisione().getIdDivisione())
             .subtotale(subtotale)
-            .build();
+            .build(); 
     }
 }

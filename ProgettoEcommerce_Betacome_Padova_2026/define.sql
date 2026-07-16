@@ -235,9 +235,9 @@
        references carrello;
 
     alter table if exists prodotti_carrello 
-       add constraint FK7j387fc10rblygr2p6ufv30jb 
+       add constraint FKmqvjivhash7j1d31qfwr684cp 
        foreign key (prodotto) 
-       references prodotti;
+       references divisione_prodotto;
 
     alter table if exists prodotti_ordine 
        add constraint FKfljxkmohq78qkbd12c9nr1e2m 

@@ -17,7 +17,7 @@ public class ProdottiCarrelloReq {
     private Integer idCarrello;
 
     @NotNull(groups = ValidationGroups.Create.class, message = "prodotto.no.id")
-    private Integer idProdotto;
+    private Integer idDivisioneProdotto;
 
     @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "quantita.null")
     @Min(value = 1, groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "quantita.non.valida")

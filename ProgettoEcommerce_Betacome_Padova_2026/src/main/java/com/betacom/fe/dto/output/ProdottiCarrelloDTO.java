@@ -17,8 +17,7 @@ public class ProdottiCarrelloDTO {
 
     private Integer idRiga;
     private Integer idCarrello;
-    private Integer idProdotto;
-    private String descrizione;
+    private Integer idDivisioneProdotto;
     private Integer quantita;
     private Float prezzo;
     private Float subtotale;

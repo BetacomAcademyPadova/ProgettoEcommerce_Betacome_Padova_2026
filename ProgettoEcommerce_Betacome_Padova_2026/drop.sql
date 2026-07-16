@@ -44,7 +44,7 @@
        drop constraint if exists FKculjnbh3efj9cqtjwhrf57vyk;
 
     alter table if exists prodotti_carrello 
-       drop constraint if exists FK7j387fc10rblygr2p6ufv30jb;
+       drop constraint if exists FKmqvjivhash7j1d31qfwr684cp;
 
     alter table if exists prodotti_ordine 
        drop constraint if exists FKfljxkmohq78qkbd12c9nr1e2m;
