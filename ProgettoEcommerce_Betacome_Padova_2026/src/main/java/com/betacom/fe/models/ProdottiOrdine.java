@@ -39,4 +39,13 @@ public class ProdottiOrdine {
     @OneToOne
     @JoinColumn(name="indirizzo_spedizione")
     private Indirizzi indirizzoSpedizione;
+    
+    @ManyToOne
+    @JoinColumn(name="prodotto_carrello")
+    private ProdottiCarrello prodottiCarrello;
+    
+    @ManyToOne
+    @JoinColumn(name="divisione_prodotto")
+    private DivisioneProdotto divisioneProdotto;
+    
 }
