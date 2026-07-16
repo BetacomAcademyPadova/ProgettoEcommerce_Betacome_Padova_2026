@@ -1,5 +1,6 @@
 package com.betacom.fe.services.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,10 +111,8 @@ public class ProdottiImpl implements IProdottiServices {
 
 	    Prodotti prodotto = proR.findById(idProdotto)
 	            .orElseThrow(() -> new AcademyException(msgS.get("prod.non.esiste")));
-
-	    Sconto s = scontoR.findByIdProdotto(idProdotto);
 	    
-	    return ProdottoMapper.toDTO(prodotto, s);
+	    return getProdottoConPrezzoCalcolato(prodotto);
 	}
 	
 	@Transactional
@@ -122,10 +121,7 @@ public class ProdottiImpl implements IProdottiServices {
 	{
 		return proR.findAll()
 	            .stream()
-	            .map(p -> {
-	                Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
-	                return ProdottoMapper.toDTO(p, s);
-	            })
+	            .map(this::getProdottoConPrezzoCalcolato)
 	            .toList();
 	}
 
@@ -171,10 +167,43 @@ public class ProdottiImpl implements IProdottiServices {
 	        throw new AcademyException(msgS.get("prodotti.ntfnd"));
 		
 		return lista.stream()
-                .map(p -> {
-                    Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
-                    return ProdottoMapper.buildListByParams(p, req, s);
-                })
-                .toList();
+	            .map(p -> {
+	                Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
+	                ProdottoDTO dto = ProdottoMapper.buildListByParams(p, req, s);
+	                
+	                LocalDate oggi = LocalDate.now();
+	                if (s != null && !oggi.isBefore(s.getDataInizio()) && !oggi.isAfter(s.getDataFine())) 
+	                {
+	                    float prezzoScontato = p.getPrezzo() * (1 - (s.getValore() / 100.0f));
+	                    dto.setPrezzo(prezzoScontato);
+	                }
+	                return dto;
+	            })
+	            .toList();
+	}
+
+	@Transactional
+	private ProdottoDTO getProdottoConPrezzoCalcolato(Prodotti p) 
+	{
+		LocalDate oggi = LocalDate.now();
+
+	    Sconto s = scontoR.findAll().stream()
+	            .filter(sc -> sc.getProdotto().getIdProdotto().equals(p.getIdProdotto()))
+	            .filter(sc -> !oggi.isBefore(sc.getDataInizio()) && !oggi.isAfter(sc.getDataFine()))
+	            .findFirst()
+	            .orElse(null);
+
+	    ProdottoDTO dto = ProdottoMapper.toDTO(p, s);
+
+	    if (s != null) 
+	    {
+	        float percentuale = s.getValore() / 100.0f;
+	        float riduzione = p.getPrezzo() * percentuale;
+	        float prezzoScontato = p.getPrezzo() - riduzione;
+	        
+	        dto.setPrezzo(prezzoScontato);
+	    }
+	    
+	    return dto;
 	}
 }
