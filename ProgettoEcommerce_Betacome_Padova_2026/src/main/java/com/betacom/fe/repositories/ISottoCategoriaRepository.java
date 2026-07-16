@@ -11,6 +11,6 @@ public interface ISottoCategoriaRepository extends JpaRepository<SottoCategoria,
 
 	Optional<SottoCategoria> findBySottoCategoria(String sotocat);
 
-	Optional<SottoCategoria> findByCategoriaAndSottoCategoria(String cat, String sottoCat);
+	Optional<SottoCategoria> findBySottoCategoriaAndCategoria(String sotocat, Categoria categoria);
 
 }
