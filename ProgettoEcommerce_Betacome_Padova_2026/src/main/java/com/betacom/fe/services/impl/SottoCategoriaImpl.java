@@ -36,8 +36,8 @@ public class SottoCategoriaImpl implements ISottoCategoriaServices{
 	            .orElseThrow(() -> new AcademyException(msgS.get("cat.not.exists")));
 	    
 	    String sotocat = Normalizzazione.norm(req.getSottoCategoria());
-	    sottoCatR.findBySottoCategoria(sotocat)
-	    	.ifPresent(st -> new AcademyException(msgS.get("sotcat.exists")));
+	    sottoCatR.findBySottoCategoriaAndCategoria(sotocat, categoria)
+			.ifPresent(st -> new AcademyException(msgS.get("sotcat.exists")));
 
 	    SottoCategoria sotto = new SottoCategoria();
 	    sotto.setSottoCategoria(sotocat);
