@@ -167,6 +167,23 @@ public class ProdottoTest {
                 .andExpect(status().isOk());
     }
     
+    @Test
+    @Order(8)
+    public void createTestPerDivProd() throws Exception {
+        log.debug("create prodotto");
 
+        ProdottoReq req = new ProdottoReq();
+        req.setDescrizione("Tavolo test");
+        req.setPrezzo(300.0f);
+        req.setQuantitaDisponibile(10);
+        req.setStockAlert(2);
+        req.setIdSottoCategoria(1);
+        req.setIdUser(2);
+
+        mockMvc.perform(post("/rest/Prodotto/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
+    }
 }
 
