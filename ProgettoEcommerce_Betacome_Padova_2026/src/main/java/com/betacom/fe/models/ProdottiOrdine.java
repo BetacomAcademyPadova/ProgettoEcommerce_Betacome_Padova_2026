@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name="prodotti_ordine")
+@Table(name = "prodotti_ordine")
 public class ProdottiOrdine {
 
     @Id
@@ -23,29 +23,29 @@ public class ProdottiOrdine {
     private Integer idItem;
 
     @ManyToOne
-    @JoinColumn(name="ordine")
+    @JoinColumn(name = "ordine", nullable = false)
     private Ordini ordine;
 
     @ManyToOne
-    @JoinColumn(name="prodotto")
+    @JoinColumn(name = "prodotto", nullable = false)
     private Prodotti prodotto;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Integer quantita;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Float prezzo;
-    
+
     @OneToOne
-    @JoinColumn(name="indirizzo_spedizione")
+    @JoinColumn(name = "indirizzo_spedizione", nullable = false)
     private Indirizzi indirizzoSpedizione;
-    
+
     @ManyToOne
-    @JoinColumn(name="prodotto_carrello")
+    @JoinColumn(name = "prodotto_carrello")
     private ProdottiCarrello prodottiCarrello;
-    
+
     @ManyToOne
-    @JoinColumn(name="divisione_prodotto")
-    private DivisioneProdotto divisioneProdotto;
-    
+    @JoinColumn(name = "divisione_ordine", nullable = false)
+    private DivisioneProdotto divisioneOrdine;
+
 }

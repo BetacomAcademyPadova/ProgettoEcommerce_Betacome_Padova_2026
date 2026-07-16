@@ -24,5 +24,7 @@ public class ProdottiOrdineReq {
 	private Integer prodottiCarrelloId;
 	@NotNull(groups = ValidationGroups.Create.class, message = "prodottiord.no.indirizzo")
     private Integer indirizzoSpedizioneId;
+	@NotNull(groups = ValidationGroups.Create.class, message = "prodottiord.no.divord")
+	private Integer divisioneOrdineId;
 
 }

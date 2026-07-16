@@ -8,11 +8,13 @@ import com.betacom.fe.dto.input.ProdottiOrdineReq;
 import com.betacom.fe.dto.output.ProdottiOrdineDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottiOrdineMapper;
+import com.betacom.fe.models.DivisioneProdotto;
 import com.betacom.fe.models.Indirizzi;
 import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Prodotti;
 import com.betacom.fe.models.ProdottiCarrello;
 import com.betacom.fe.models.ProdottiOrdine;
+import com.betacom.fe.repositories.IDivisioneProdottoRepository;
 import com.betacom.fe.repositories.IIndirizziRepository;
 import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IProdottiCarrelloRepository;
@@ -36,49 +38,49 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	private final IOrdineRepository ordR;
 	private final IIndirizziRepository indR;
 	private final IMessaggioServices msgS;
+	private final IDivisioneProdottoRepository divR;
 
 	@Transactional
 	@Override
 	public void create(ProdottiOrdineReq req) throws Exception {
-		Ordini ordine = ordR.findById(req.getOrdineId())
-		        .orElseThrow(() ->
-		            new AcademyException(
-		                msgS.get("ordine.non.esiste")
-		            )
-		        );
-		Prodotti prodotto = proR.findById(req.getProdottoId())
-		        .orElseThrow(() ->
-		            new AcademyException(
-		                msgS.get("prodo.non.esiste")
-		            )
-		        );
-		
-		Indirizzi indirizzo = indR.findById(req.getIndirizzoSpedizioneId())
-	            .orElseThrow(() ->
-	                new AcademyException(
-	                    msgS.get("indirizzo.non.esiste")
-	                )
-	            );
-		
-		ProdottiCarrello prodottiCar = procarR.findById(req.getProdottiCarrelloId())
-	            .orElseThrow(() ->
-	                new AcademyException(
-	                    msgS.get("prodcar.non.esiste")
-	                )
-	            );
-		
-		ProdottiOrdine prodord = new ProdottiOrdine();
-		
-		prodord.setOrdine(ordine);                 
-		prodord.setProdotto(prodotto);             
-		prodord.setIndirizzoSpedizione(indirizzo); 
 
-		prodord.setQuantita(prodottiCar.getQuantita());
-		prodord.setPrezzo(prodotto.getPrezzo());
+	    Ordini ordine = ordR.findById(req.getOrdineId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("ordine.non.esiste"))
+	            );
 
-		prordR.save(prodord);
-		
-		
+	    Prodotti prodotto = proR.findById(req.getProdottoId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("prodo.non.esiste"))
+	            );
+
+	    Indirizzi indirizzo = indR.findById(req.getIndirizzoSpedizioneId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("indirizzo.non.esiste"))
+	            );
+
+	    ProdottiCarrello prodottiCar = procarR.findById(req.getProdottiCarrelloId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("prodcar.non.esiste"))
+	            );
+
+	    DivisioneProdotto divisione = divR.findById(req.getDivisioneOrdineId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("divisione.non.esiste"))
+	            );
+
+	    ProdottiOrdine prodord = new ProdottiOrdine();
+
+	    prodord.setOrdine(ordine);
+	    prodord.setProdotto(prodotto);
+	    prodord.setIndirizzoSpedizione(indirizzo);
+	    prodord.setProdottiCarrello(prodottiCar);
+	    prodord.setDivisioneOrdine(divisione);
+
+	    prodord.setQuantita(prodottiCar.getQuantita());
+	    prodord.setPrezzo(prodotto.getPrezzo());
+
+	    prordR.save(prodord);
 	}
 
 	@Transactional
