@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.betacom.fe.dto.input.ProdottiOrdineReq;
 import com.betacom.fe.dto.output.ProdottiOrdineDTO;
+import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottiOrdineMapper;
 import com.betacom.fe.models.Indirizzi;
@@ -20,6 +21,7 @@ import com.betacom.fe.repositories.IProdottiOrdineRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IProdottiOrdineServices;
+import com.betacom.fe.services.interfaces.IProdottiServices;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	private final IOrdineRepository ordR;
 	private final IIndirizziRepository indR;
 	private final IMessaggioServices msgS;
+	private final IProdottiServices proS;
 
 	@Transactional
 	@Override
@@ -74,11 +77,11 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 		prodord.setIndirizzoSpedizione(indirizzo); 
 
 		prodord.setQuantita(prodottiCar.getQuantita());
-		prodord.setPrezzo(prodotto.getPrezzo());
+		
+		ProdottoDTO pDto = proS.getById(req.getProdottoId());
+		prodord.setPrezzo(pDto.getPrezzo());
 
 		prordR.save(prodord);
-		
-		
 	}
 
 	@Transactional
