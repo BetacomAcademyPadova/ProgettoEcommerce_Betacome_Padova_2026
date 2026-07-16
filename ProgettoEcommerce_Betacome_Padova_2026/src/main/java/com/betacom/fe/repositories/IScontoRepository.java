@@ -22,4 +22,6 @@ public interface IScontoRepository extends JpaRepository<Sconto, Integer>
 	
 	@Query("SELECT s FROM Sconto s WHERE s.prodotto.idProdotto = :idProdotto")
 	Sconto findByIdProdotto(@Param("idProdotto") Integer idProdotto);
+	
+	List<Sconto> findByDataFineBefore(LocalDate data);
 }
