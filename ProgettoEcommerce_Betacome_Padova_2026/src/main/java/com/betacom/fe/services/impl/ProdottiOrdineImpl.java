@@ -9,12 +9,14 @@ import com.betacom.fe.dto.output.ProdottiOrdineDTO;
 import com.betacom.fe.dto.output.ProdottoDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottiOrdineMapper;
+import com.betacom.fe.models.DivisioneProdotto;
 import com.betacom.fe.models.Indirizzi;
 import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Prodotti;
 import com.betacom.fe.models.ProdottiCarrello;
 import com.betacom.fe.models.ProdottiOrdine;
 import com.betacom.fe.repositories.IIndirizziRepository;
+import com.betacom.fe.repositories.IDivisioneProdottoRepository;
 import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IProdottiCarrelloRepository;
 import com.betacom.fe.repositories.IProdottiOrdineRepository;
@@ -39,6 +41,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	private final IIndirizziRepository indR;
 	private final IMessaggioServices msgS;
 	private final IProdottiServices proS;
+	private final IDivisioneProdottoRepository divR;
 
 	@Transactional
 	@Override
@@ -70,11 +73,18 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	                )
 	            );
 		
+		DivisioneProdotto divisione = divR.findById(req.getDivisioneOrdineId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("divisione.non.esiste"))
+	            );
+		
 		ProdottiOrdine prodord = new ProdottiOrdine();
 		
 		prodord.setOrdine(ordine);                 
 		prodord.setProdotto(prodotto);             
 		prodord.setIndirizzoSpedizione(indirizzo); 
+		
+		prodord.setDivisioneOrdine(divisione);
 
 		prodord.setQuantita(prodottiCar.getQuantita());
 		
@@ -88,7 +98,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	@Override
 	public void delete(Integer idItem) throws Exception {
 		ProdottiOrdine po = prordR.findById(idItem)
-	            .orElseThrow(() -> new Exception("Prodotto ordine non trovato"));
+	            .orElseThrow(() -> new AcademyException(msgS.get("Prodotto ordine non trovato")));
 
 		prordR.delete(po);
 		

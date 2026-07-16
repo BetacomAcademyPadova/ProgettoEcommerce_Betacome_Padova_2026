@@ -10,6 +10,11 @@ public class ProdottiOrdineMapper {
 				.prezzo(o.getPrezzo())
 				.indirizzoSpedizione(IndMapper.toDTO(o.getIndirizzoSpedizione()))
 				.prodotto(o.getProdotto().getDescrizione())
+				.divisioneOrdine(
+						DivisioneProdottoMapper.buildDivProdDTO(
+								o.getDivisioneOrdine()
+						)
+				)
 				.build();
 	}
 
