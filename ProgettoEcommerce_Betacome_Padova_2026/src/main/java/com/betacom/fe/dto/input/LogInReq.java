@@ -1,6 +1,7 @@
 package com.betacom.fe.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,7 +15,12 @@ public class LogInReq {
     private String username;
 
 	@NotBlank(groups = ValidationGroups.Login.class , message ="user.password.req")
-    private String password;
+    @Pattern(
+            groups = ValidationGroups.Login.class,
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&._#\\-])[A-Za-z\\d@$!%*?&._#\\-]{8,16}$",
+            message = "user.password.pattern"
+        )
+	private String password;
 
 }
 

@@ -45,10 +45,10 @@ public class CategoriaTest {
 	@Order(1)
 	public void createCategorieTest() throws Exception{
 		log.debug("create");
-		List<String> cats = List.of("Metallurgia","Ceramica","Falegname","Test Delete", "Test Delete");
+		List<String> cats = List.of("Metallurgia","Ceramica","Falegname","Test Delete");
 		cats.forEach(a -> {
 			CategoriaReq req = new CategoriaReq();
-			req.setCategoria(a);			
+			req.setCategoria(a);
 			try {
 				mockMvc.perform(post("/rest/Categoria/create")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +57,14 @@ public class CategoriaTest {
 			} catch (Exception e) {
 				log.error("Error in create {}", e.getMessage());
 			}
-		});			
+		});		
+		
+		CategoriaReq req = new CategoriaReq();
+		req.setCategoria("Ceramica");
+		mockMvc.perform(post("/rest/Categoria/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isBadRequest());
 	}
 	
 	@Test

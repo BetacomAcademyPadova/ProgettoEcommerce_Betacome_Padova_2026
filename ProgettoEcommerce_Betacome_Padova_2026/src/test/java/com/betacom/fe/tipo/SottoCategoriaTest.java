@@ -45,7 +45,7 @@ public class SottoCategoriaTest {
 	@Order(1)
 	public void createTest() throws Exception{
 		log.debug("create");
-		List<String> cats = List.of("Metallurgia","Ceramica","Falegname");
+		List<String> cats = List.of("Metallurgia","Ceramica","ebanista");
 		List<String> sotto = List.of("Sotto1","Sotto2","Sotto3");
 		cats.forEach(a -> {
 			sotto.forEach(b->{
@@ -60,7 +60,15 @@ public class SottoCategoriaTest {
 			} catch (Exception e) {
 				log.error("Error in create {}", e.getMessage());
 			}
-		});});			
+		});});
+		
+		SottoCategoriaReq req = new SottoCategoriaReq();
+		req.setCategoria("Ceramica");
+		req.setSottoCategoria("Sotto2");
+		mockMvc.perform(post("/rest/SottoCategoria/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isBadRequest());
 	}
 	
 	@Test

@@ -50,10 +50,10 @@ public class UserController {
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
     
-    @GetMapping("getById/{idUser}")
-    public ResponseEntity<Object> getById(@PathVariable Integer idUser) throws Exception {
+    @GetMapping("getByUsername/{username}")
+    public ResponseEntity<UserDTO> getByUsername(@PathVariable("username") String username) throws Exception {
 
-        return ResponseEntity.ok(userS.getById(idUser));
+        return ResponseEntity.ok(userS.getByUsername(username));
     }
 
     @GetMapping("getAll")
@@ -66,9 +66,9 @@ public class UserController {
         return ResponseEntity.ok(userS.login(req));
     }
     
-    @PutMapping("setRuolo/{idUser}/{ruolo}")
-    public ResponseEntity<ResponseDTO> update(@PathVariable("idUser") Integer id, @PathVariable("ruolo") String r) throws Exception {
-        userS.setRuolo(id, r);
+    @PutMapping("setRuolo/{username}/{ruolo}")
+    public ResponseEntity<ResponseDTO> update(@PathVariable("username") String usr, @PathVariable("ruolo") String r) throws Exception {
+        userS.setRuolo(usr, r);
         return ResponseEntity.ok(ResponseDTO.builder().msg("role set...").build());
     }
 }

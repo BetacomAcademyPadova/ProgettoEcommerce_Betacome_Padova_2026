@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.betacom.fe.dto.input.StatoOrdineReq;
+import com.betacom.fe.dto.input.StatoPagReq;
 import com.betacom.fe.dto.output.StatoOrdineDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class StatoOrdineTest {
 	@Order(1)
 	public void createTest() throws Exception{
 		log.debug("create");
-		List<String> ruoli = List.of("In attesa di pagamento", "Annullato", "Spedito", "test update", "Test Delete","positivo");
+		List<String> ruoli = List.of("In attesa di pagamento", "Annullato", "Spedito", "test update", "Test Delete");
 		ruoli.forEach(s ->{
 			StatoOrdineReq req = new StatoOrdineReq();
 			req.setStato(s);
@@ -57,6 +58,12 @@ public class StatoOrdineTest {
 				log.error("Error in create {}", e.getMessage());
 			}
 		});
+		StatoOrdineReq req = new StatoOrdineReq();
+		req.setStato("Annullato");
+		mockMvc.perform(post("/rest/StatoOrdine/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isBadRequest());
 	}
 	
 	@Test

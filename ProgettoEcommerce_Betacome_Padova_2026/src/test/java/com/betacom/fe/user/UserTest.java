@@ -86,13 +86,13 @@ public class UserTest {
 	
 	@Test
 	@Order(2)
-	public void getByIdTest() throws Exception{
-		MvcResult result = mockMvc.perform(get("/rest/User/getById/1"))
+	public void getByUsernameTest() throws Exception{
+		MvcResult result = mockMvc.perform(get("/rest/User/getByUsername/user3"))
 	            .andExpect(status().isOk())
 	            .andReturn();
 		  
 		String json = result.getResponse().getContentAsString();
-		User usr = objectMapper.readValue(json, new TypeReference<User>() {});
+		UserDTO usr = objectMapper.readValue(json, new TypeReference<UserDTO>() {});
 		log.debug(usr.toString());
 	}
 	
@@ -104,7 +104,6 @@ public class UserTest {
 	    req.setUserId(1);
 	    req.setNome("Mario");
 	    req.setCognome("Rossi");
-	    req.setEmail("mario.rossi@mail.it");
 	    req.setTelefono("+391234567890");
 
 	    mockMvc.perform(put("/rest/User/update")
@@ -137,9 +136,11 @@ public class UserTest {
 	@Test
 	@Order(5)
 	public void setRuoloTest() throws Exception {
-
-	    mockMvc.perform(put("/rest/User/setRuolo/1/ADMIN"))
+	    mockMvc.perform(put("/rest/User/setRuolo/user1/admin"))
 	            .andExpect(status().isOk());
+	    
+	    mockMvc.perform(put("/rest/User/setRuolo/user2/Venditore"))
+        .andExpect(status().isOk());
 	}
 	
 	@Test

@@ -44,7 +44,7 @@ public class RuoliTest {
 	@Order(1)
 	public void createTest() throws Exception{
 		log.debug("create");
-		List<String> ruoli = List.of("User","Venditore","Admin","test update", "Test Delete", "admin");
+		List<String> ruoli = List.of("User","Venditore","Admin","test update", "Test Delete");
 		ruoli.forEach(r ->{
 			RuoloReq req = new RuoloReq();
 			req.setRuolo(r);
@@ -57,6 +57,12 @@ public class RuoliTest {
 				log.error("Error in create {}", e.getMessage());
 			}
 		});
+		RuoloReq req = new RuoloReq();
+		req.setRuolo("admin");
+		mockMvc.perform(post("/rest/Ruoli/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isBadRequest());
 	}
 	
 	@Test
