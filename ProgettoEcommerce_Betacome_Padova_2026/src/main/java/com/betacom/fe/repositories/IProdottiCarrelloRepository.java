@@ -11,7 +11,7 @@ public interface IProdottiCarrelloRepository extends JpaRepository<ProdottiCarre
 
     List<ProdottiCarrello> findByCarrelloIdCarrello(Integer idCarrello);
 
-    Optional<ProdottiCarrello> findByCarrelloIdCarrelloAndProdottoIdProdotto(Integer idCarrello,Integer idProdotto);
+    Optional<ProdottiCarrello> findByCarrelloIdCarrelloAndDivisioneIdDivisione(Integer idCarrello,Integer idDivisione);
 
     void deleteByCarrelloIdCarrello(Integer idCarrello);
 }

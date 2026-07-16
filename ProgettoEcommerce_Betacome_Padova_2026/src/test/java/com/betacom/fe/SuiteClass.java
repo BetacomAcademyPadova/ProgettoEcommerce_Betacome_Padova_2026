@@ -3,6 +3,7 @@ package com.betacom.fe;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import com.betacom.fe.carrello.CarrelloTest;
 import com.betacom.fe.tipo.CategoriaTest;
 import com.betacom.fe.tipo.DivisioneProdottoTest;
 import com.betacom.fe.tipo.OrdineTest;
