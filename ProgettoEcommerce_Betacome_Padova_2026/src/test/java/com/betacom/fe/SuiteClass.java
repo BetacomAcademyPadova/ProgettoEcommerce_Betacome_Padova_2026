@@ -28,7 +28,7 @@ import com.betacom.fe.user.UserTest;
 	IndirizzoTest.class,
 	OrdineTest.class,
 	ProdottoTest.class,
-	//DivisioneProdottoTest.class,
+	DivisioneProdottoTest.class,
 	DeleteUserTest.class
 })
 public class SuiteClass {
