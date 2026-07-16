@@ -26,7 +26,7 @@
        drop constraint if exists FK6odl1p603s8jmass6j0h3bhna;
 
     alter table if exists pagamenti 
-       drop constraint if exists FKaj1gphc6v5nsuetqyf5ykc9d9;
+       drop constraint if exists FKi86l323clbd8r8dfghxfw0tbs;
 
     alter table if exists pagamenti 
        drop constraint if exists FKf2x11hvonh4h2qu4f4oloiv4y;
@@ -47,25 +47,16 @@
        drop constraint if exists FK7j387fc10rblygr2p6ufv30jb;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FKl5il6vw4rqgq9a9yvh0dnb9wv;
-
-    alter table if exists prodotti_ordine 
        drop constraint if exists FKfljxkmohq78qkbd12c9nr1e2m;
 
     alter table if exists prodotti_ordine 
        drop constraint if exists FKoryut1a41bxv1hvmqxv3few9q;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FK459dtacis5888l6l2qyrsr2ib;
-
-    alter table if exists prodotti_ordine 
        drop constraint if exists FKgb812bitx3s292cna1852ykjg;
 
     alter table if exists ricevuta 
        drop constraint if exists FKnob6wi8vsui2745e42pkabc9c;
-
-    alter table if exists ricevuta 
-       drop constraint if exists FK7wbf0ub0vao2j6ygjlntgwwgk;
 
     alter table if exists sconti 
        drop constraint if exists FKsm4cljgbr05sljbp6l9qw7ray;

@@ -32,7 +32,7 @@ public class CarrelloImpl implements ICarrelloServices {
         User usr = repUser.findById(req.getUserId())
             .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 
-        if (repCarr.existsByUserId(req.getUserId()))
+        if (repCarr.existsByUserId_UserId(req.getUserId()))
             throw new AcademyException(msgS.get("carrello.user.esiste"));
         
         Carrello carr = new Carrello();
@@ -51,7 +51,7 @@ public class CarrelloImpl implements ICarrelloServices {
         User usr = repUser.findById(req.getUserId())
             .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 
-        Carrello altroCarrello = repCarr.findByUserId(req.getUserId()).orElse(null);
+        Carrello altroCarrello = repCarr.findByUserId_UserId(req.getUserId()).orElse(null);
 
         if (altroCarrello != null && !altroCarrello.getIdCarrello().equals(carr.getIdCarrello()))
             throw new AcademyException(msgS.get("carrello.user.esiste"));

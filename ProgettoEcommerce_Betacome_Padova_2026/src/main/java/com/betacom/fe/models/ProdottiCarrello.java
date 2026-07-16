@@ -27,7 +27,7 @@ public class ProdottiCarrello {
 
     @ManyToOne
     @JoinColumn(name="prodotto")
-    private Prodotti prodotto;
+    private DivisioneProdotto divisione;
 
     @Column(nullable=false)
     private Integer quantita;

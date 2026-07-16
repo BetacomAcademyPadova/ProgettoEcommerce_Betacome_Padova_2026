@@ -11,7 +11,7 @@ public class ScontoMapper
 	{
 		return lS.stream()
 				.map(s -> buildScontoDTO(s)
-						).toList();	
+						).toList();
 	}
 	
 	public static ScontoDTO buildScontoDTO(Sconto s) 

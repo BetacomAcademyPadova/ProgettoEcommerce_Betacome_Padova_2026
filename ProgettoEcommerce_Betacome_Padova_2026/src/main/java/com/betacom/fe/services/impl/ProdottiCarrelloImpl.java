@@ -10,9 +10,11 @@ import com.betacom.fe.dto.output.ProdottiCarrelloDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottiCarrelloMapper;
 import com.betacom.fe.models.Carrello;
+import com.betacom.fe.models.DivisioneProdotto;
 import com.betacom.fe.models.Prodotti;
 import com.betacom.fe.models.ProdottiCarrello;
 import com.betacom.fe.repositories.ICarrelloRepository;
+import com.betacom.fe.repositories.IDivisioneProdottoRepository;
 import com.betacom.fe.repositories.IProdottiCarrelloRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
@@ -27,6 +29,7 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
 
     private final IProdottiCarrelloRepository repProdCarr;
     private final ICarrelloRepository repCarr;
+    private final IDivisioneProdottoRepository repDiv;
     private final IProdottiRepository repProd;
     private final IMessaggioServices msgS;
 
@@ -36,18 +39,21 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
         Carrello carrello = repCarr.findById(req.getIdCarrello())
             .orElseThrow(() -> new AcademyException(msgS.get("carrello.non.esiste")));
 
-        Prodotti prodotto = repProd.findById(req.getIdProdotto())
-            .orElseThrow(() -> new AcademyException(msgS.get("prodotto.non.esiste")));
+        DivisioneProdotto divisione = repDiv.findById(req.getIdDivisioneProdotto())
+            .orElseThrow(() -> new AcademyException(msgS.get("divisione.prodotto.non.esiste")));
+        
+        Prodotti prodotto = repProd.findById(divisione.getProdotto().getIdProdotto())
+        		.orElseThrow(() -> new AcademyException(msgS.get("prodotto.non.esiste")));
 
-        ProdottiCarrello rigaEsistente = repProdCarr.findByCarrelloIdCarrelloAndProdottoIdProdotto(req.getIdCarrello(), req.getIdProdotto())
+        ProdottiCarrello rigaEsistente = repProdCarr.findByCarrelloIdCarrelloAndDivisioneIdDivisione(req.getIdCarrello(), req.getIdDivisioneProdotto())
             .orElse(null);
 
         if (rigaEsistente == null) {
-            controllaDisponibilita(prodotto,req.getQuantita());
+            controllaDisponibilita(divisione,req.getQuantita());
 
             ProdottiCarrello nuovaRiga = new ProdottiCarrello();
             nuovaRiga.setCarrello(carrello);
-            nuovaRiga.setProdotto(prodotto);
+            nuovaRiga.setDivisione(divisione);
             nuovaRiga.setQuantita(req.getQuantita());
             nuovaRiga.setPrezzo(prodotto.getPrezzo());
 
@@ -55,7 +61,7 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
 
         } else {
             Integer nuovaQuantita = rigaEsistente.getQuantita() + req.getQuantita();
-            controllaDisponibilita(prodotto, nuovaQuantita);
+            controllaDisponibilita(divisione, nuovaQuantita);
             
             rigaEsistente.setQuantita(nuovaQuantita);
             rigaEsistente.setPrezzo(prodotto.getPrezzo());
@@ -72,11 +78,17 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
     public void update(ProdottiCarrelloReq req) throws Exception {
         ProdottiCarrello riga = repProdCarr.findById(req.getIdRiga())
             .orElseThrow(() -> new AcademyException(msgS.get("prodotti.carrello.non.esiste")));
+        
+        DivisioneProdotto divisione = repDiv.findById(req.getIdDivisioneProdotto())
+                .orElseThrow(() -> new AcademyException(msgS.get("divisione.prodotto.non.esiste")));
+        
+        Prodotti prodotto = repProd.findById(divisione.getProdotto().getIdProdotto())
+        		.orElseThrow(() -> new AcademyException(msgS.get("prodotto.non.esiste")));
 
-        controllaDisponibilita(riga.getProdotto(), req.getQuantita());
+        controllaDisponibilita(riga.getDivisione(), req.getQuantita());
 
         riga.setQuantita(req.getQuantita());
-        riga.setPrezzo(riga.getProdotto().getPrezzo());
+        riga.setPrezzo(prodotto.getPrezzo());
 
         repProdCarr.save(riga);
 
@@ -124,12 +136,12 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
     }
 
 
-    private void controllaDisponibilita(Prodotti prodotto, Integer quantitaRichiesta) throws AcademyException {
+    private void controllaDisponibilita(DivisioneProdotto divisione, Integer quantitaRichiesta) throws AcademyException {
 
         if (quantitaRichiesta == null || quantitaRichiesta <= 0)
             throw new AcademyException(msgS.get("quantita.non.valida"));
 
-        if (quantitaRichiesta > prodotto.getQuantitaDisponibile())
+        if (quantitaRichiesta > divisione.getQuantitaDisponibile())
         	throw new AcademyException(msgS.get("prodotto.quantita.insufficiente"));
     }
 }
