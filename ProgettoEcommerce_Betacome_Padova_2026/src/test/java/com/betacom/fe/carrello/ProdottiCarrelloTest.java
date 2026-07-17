@@ -54,6 +54,22 @@ public class ProdottiCarrelloTest {
                 .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());
     }
+    
+    @Test
+    @Order(7)
+    public void createProdottiCarrelloTest2() throws Exception {
+        log.debug("createProdottiCarrelloTest2");
+
+        ProdottiCarrelloReq req = new ProdottiCarrelloReq();
+        req.setIdCarrello(1);
+        req.setIdDivisioneProdotto(2);
+        req.setQuantita(2);
+
+        mockMvc.perform(post("/rest/ProdottiCarrello/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
+    }
 
     @Test
     @Order(2)

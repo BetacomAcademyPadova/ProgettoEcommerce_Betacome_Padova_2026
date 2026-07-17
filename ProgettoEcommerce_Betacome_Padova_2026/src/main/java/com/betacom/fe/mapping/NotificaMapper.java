@@ -12,6 +12,7 @@ public class NotificaMapper {
                 .messaggio(n.getMessaggio())
                 .letta(n.getLetta())
                 .dataCreazione(n.getDataCreazione())
+                .dataScadenza(n.getDataScadenza())
                 .build();
     }
 }

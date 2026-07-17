@@ -7,6 +7,7 @@ import com.betacom.fe.carrello.CarrelloTest;
 import com.betacom.fe.carrello.ProdottiCarrelloTest;
 import com.betacom.fe.tipo.CategoriaTest;
 import com.betacom.fe.tipo.DivisioneProdottoTest;
+import com.betacom.fe.tipo.NotificaTest;
 import com.betacom.fe.tipo.OrdineTest;
 import com.betacom.fe.tipo.ProdottiOrdineTest;
 import com.betacom.fe.tipo.ProdottoTest;
@@ -34,9 +35,11 @@ import com.betacom.fe.user.UserTest;
 	ProdottoTest.class,
 	DivisioneProdottoTest.class,
 	ScontoTest.class,
-	DeleteUserTest.class,
 	CarrelloTest.class,
-	ProdottiCarrelloTest.class
+	ProdottiCarrelloTest.class,
+	ProdottiOrdineTest.class,
+	RicevutaTest.class,
+	DeleteUserTest.class
 })
 public class SuiteClass {
 }
