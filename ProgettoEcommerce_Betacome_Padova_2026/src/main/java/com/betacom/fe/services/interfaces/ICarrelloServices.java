@@ -5,7 +5,6 @@ import com.betacom.fe.dto.output.CarrelloDTO;
 
 public interface ICarrelloServices {
 	void create(CarrelloReq req) throws Exception;
-	void update(CarrelloReq req) throws Exception;
 	void delete(Integer idCarrello) throws Exception;
 	CarrelloDTO getById(Integer idCarrello) throws Exception;
 }
