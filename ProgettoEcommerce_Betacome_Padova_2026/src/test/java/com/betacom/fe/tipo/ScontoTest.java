@@ -46,8 +46,8 @@ public class ScontoTest
         log.debug("create sconto");
 
         ScontoReq req = new ScontoReq();
-        req.setDataInizio("16/07/2026");
-        req.setDataFine("18/08/2026");
+        req.setDataInizio("20/08/2026");
+        req.setDataFine("27/08/2026");
         req.setValore(20f);
         req.setIdProdotto(2);
         
