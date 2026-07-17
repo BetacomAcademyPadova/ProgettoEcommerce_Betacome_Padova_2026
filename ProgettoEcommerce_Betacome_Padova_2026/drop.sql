@@ -16,6 +16,12 @@
     alter table if exists metodo_pagamento 
        drop constraint if exists FKkimw751gpi5ktca1qj9x33dit;
 
+    alter table if exists notifica 
+       drop constraint if exists FKdmle6dltrunwlm6wtnf80w9xn;
+
+    alter table if exists notifica 
+       drop constraint if exists FKidcvlt3buox1ntjk032grklms;
+
     alter table if exists ordini 
        drop constraint if exists FKj77333p7l9ognbsgl5q7sroux;
 
@@ -89,6 +95,8 @@
     drop table if exists messaggi_sistema cascade;
 
     drop table if exists metodo_pagamento cascade;
+
+    drop table if exists notifica cascade;
 
     drop table if exists ordini cascade;
 
