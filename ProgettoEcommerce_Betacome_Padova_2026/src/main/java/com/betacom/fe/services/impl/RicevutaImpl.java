@@ -119,16 +119,6 @@ public class RicevutaImpl implements IRicevutaServices{
 	    ricR.save(ricevuta);
 	}
 	
-	@Transactional
-	@Override
-	public void delete(Integer idRicevuta) throws Exception {
-		 Ricevuta ric = ricR.findById(idRicevuta)
-		            .orElseThrow(() -> new AcademyException(msgS.get("Elemento non trovato")));
-
-		 ricR.delete(ric);
-		
-	}
-	
 	@Override
 	public RicevutaDTO getById(Integer idRicevuta) throws Exception {
 
@@ -209,6 +199,35 @@ public class RicevutaImpl implements IRicevutaServices{
 	    }
 
 	    return String.format("FT-%04d", progressivo);
+	}
+
+	@Override
+	public List<RicevutaDTO> getByVenditore(Integer venditoreId) throws Exception {
+
+	    List<Ricevuta> ricevute = ricR.findByVenditoreUserId(venditoreId);
+
+	    return ricevute.stream()
+	            .map(ricevuta -> {
+
+	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
+
+	                List<ProdottiOrdineDTO> prodotti = proordR
+	                        .findByOrdine(ricevuta.getOrdine())
+	                        .stream()
+	                        .filter(po -> po.getProdotto()
+	                                .getVenditore()
+	                                .getUserId()
+	                                .equals(venditoreId))
+	                        .map(po -> {
+	                            ProdottiOrdineDTO prodottoDTO = new ProdottiOrdineDTO();
+	                            prodottoDTO.setProdotto(po.getProdotto().getDescrizione());
+	                            prodottoDTO.setQuantita(po.getQuantita());
+	                            prodottoDTO.setPrezzo(po.getPrezzo());
+	                            return prodottoDTO;
+	                        }).toList();
+	                dto.setProdotti(prodotti);
+	                return dto;
+	            }).toList();
 	}
 
 }
