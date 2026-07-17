@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,12 +38,6 @@ public class RicevutaController {
         return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
     }
 
-    @DeleteMapping("delete/{idRicevuta}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idRicevuta) throws Exception {
-    	ricevutaS.delete(idRicevuta);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
-    }
-
     @GetMapping("getById/{idRicevuta}")
     public ResponseEntity<RicevutaDTO> getById(@PathVariable Integer idRicevuta) throws Exception {
     	return ResponseEntity.ok(ricevutaS.getById(idRicevuta));
@@ -53,6 +46,15 @@ public class RicevutaController {
     @GetMapping("getAll")
     public ResponseEntity<List<RicevutaDTO>> getAll() throws Exception {
     return ResponseEntity.ok(ricevutaS.getAll());
+    }
+    
+    @GetMapping("getRicevutaBy/{venditoreId}")
+    public ResponseEntity<List<RicevutaDTO>> getRicevutaBy(
+            @PathVariable Integer venditoreId) throws Exception {
+
+        return ResponseEntity.ok(
+                ricevutaS.getByVenditore(venditoreId)
+        );
     }
 }
 
