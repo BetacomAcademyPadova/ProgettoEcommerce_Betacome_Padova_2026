@@ -22,6 +22,7 @@ import com.betacom.fe.repositories.IProdottiCarrelloRepository;
 import com.betacom.fe.repositories.IProdottiOrdineRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
+import com.betacom.fe.services.interfaces.INotificaServices;
 import com.betacom.fe.services.interfaces.IProdottiOrdineServices;
 import com.betacom.fe.services.interfaces.IProdottiServices;
 
@@ -42,6 +43,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	private final IMessaggioServices msgS;
 	private final IProdottiServices proS;
 	private final IDivisioneProdottoRepository divR;
+	private final INotificaServices notificaS;
 
 	@Transactional
 	@Override
@@ -55,7 +57,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 		Prodotti prodotto = proR.findById(req.getProdottoId())
 		        .orElseThrow(() ->
 		            new AcademyException(
-		                msgS.get("prodo.non.esiste")
+		                msgS.get("prodo.non.esiste") 
 		            )
 		        );
 		
@@ -78,20 +80,56 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	                    new AcademyException(msgS.get("divisione.non.esiste"))
 	            );
 		
+		Integer quantitaOrdinata = prodottiCar.getQuantita();
+
+	    if (quantitaOrdinata == null || quantitaOrdinata <= 0) {
+	        throw new AcademyException(
+	                msgS.get("quantita.non.valida")
+	        );
+	    }
+
+	    if (divisione.getQuantitaDisponibile() < quantitaOrdinata) {
+	        throw new AcademyException(
+	                msgS.get("quantita.non.disponibile")
+	        );
+	    }
+	    
+	    if (!divisione.getProdotto()
+	            .getIdProdotto()
+	            .equals(prodotto.getIdProdotto())) {
+
+	        throw new AcademyException(
+	                msgS.get("divisione.prodotto.non.valida")
+	        );
+	    }
+		
 		ProdottiOrdine prodord = new ProdottiOrdine();
 		
 		prodord.setOrdine(ordine);                 
 		prodord.setProdotto(prodotto);             
 		prodord.setIndirizzoSpedizione(indirizzo); 
-		
 		prodord.setDivisioneOrdine(divisione);
-
+		prodord.setProdottiCarrello(prodottiCar);
 		prodord.setQuantita(prodottiCar.getQuantita());
 		
 		ProdottoDTO pDto = proS.getById(req.getProdottoId());
 		prodord.setPrezzo(pDto.getPrezzo());
 
 		prordR.save(prodord);
+		
+		   int nuovaQuantita =
+		            divisione.getQuantitaDisponibile()
+		            - quantitaOrdinata;
+
+		    divisione.setQuantitaDisponibile(nuovaQuantita);
+
+		    divR.save(divisione);
+
+		    if (divisione.getStockAlert() != null
+		            && nuovaQuantita <= divisione.getStockAlert()) {
+
+		        notificaS.creaStockAlert(divisione);
+		    }
 	}
 
 	@Transactional
