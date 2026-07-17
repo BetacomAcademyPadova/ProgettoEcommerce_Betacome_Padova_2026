@@ -29,7 +29,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ScontoTest 
 {
