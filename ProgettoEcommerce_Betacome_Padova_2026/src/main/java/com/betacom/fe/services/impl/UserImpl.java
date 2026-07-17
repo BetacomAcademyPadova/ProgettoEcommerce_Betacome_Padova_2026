@@ -103,6 +103,7 @@ public class UserImpl implements IUserServices{
 
 	@Override
 	public UserDTO login(LogInReq req) throws Exception {
+
 	    Autenticazione aut = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
 
@@ -110,9 +111,7 @@ public class UserImpl implements IUserServices{
 	        throw new AcademyException(msgS.get("login.error"));
 	    }
 
-	    User usr = aut.getUser();
-
-	    return UserMapper.toDTO(usr);
+	    return UserMapper.toDTO(aut.getUser());
 	}
 	
 	@Override
