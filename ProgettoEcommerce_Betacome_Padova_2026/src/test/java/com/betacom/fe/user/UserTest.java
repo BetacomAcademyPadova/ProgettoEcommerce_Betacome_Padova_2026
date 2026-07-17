@@ -23,7 +23,6 @@ import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.UserDTO;
-import com.betacom.fe.models.User;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -31,7 +30,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTest {
 	@Autowired

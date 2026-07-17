@@ -45,7 +45,6 @@ public class CarrelloImpl implements ICarrelloServices {
     @Transactional
     @Override
     public void delete(Integer idCarrello) throws Exception {
-
         Carrello carr = repCarr.findById(idCarrello)
             .orElseThrow(() -> new AcademyException(msgS.get("carrello.non.esiste")));
 
@@ -54,7 +53,6 @@ public class CarrelloImpl implements ICarrelloServices {
 
     @Override
     public CarrelloDTO getById(Integer idCarrello) throws Exception {
-
         Carrello carr = repCarr.findById(idCarrello)
             .orElseThrow(() -> new AcademyException(msgS.get("carrello.non.esiste")));
 

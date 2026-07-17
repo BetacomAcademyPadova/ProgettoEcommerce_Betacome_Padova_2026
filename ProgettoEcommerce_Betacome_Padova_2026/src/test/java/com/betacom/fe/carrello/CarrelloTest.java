@@ -28,7 +28,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CarrelloTest {
 	
@@ -46,6 +46,18 @@ public class CarrelloTest {
 		CarrelloReq req = new CarrelloReq();
 		req.setDataUltimoAgg(LocalDate.now());
 		req.setUserId(2);
+		try {
+			mockMvc.perform(post("/rest/Carrello/create")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(req))
+					).andExpect(status().isOk());
+		}catch (Exception e) {
+			log.error("Error in create {}", e.getMessage());
+		}
+			
+		req = new CarrelloReq();
+		req.setDataUltimoAgg(LocalDate.now());
+		req.setUserId(3);
 		try {
 			mockMvc.perform(post("/rest/Carrello/create")
 					.contentType(MediaType.APPLICATION_JSON)

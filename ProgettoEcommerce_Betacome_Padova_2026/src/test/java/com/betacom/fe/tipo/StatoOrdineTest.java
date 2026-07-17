@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.betacom.fe.dto.input.StatoOrdineReq;
-import com.betacom.fe.dto.input.StatoPagReq;
 import com.betacom.fe.dto.output.StatoOrdineDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StatoOrdineTest {
 

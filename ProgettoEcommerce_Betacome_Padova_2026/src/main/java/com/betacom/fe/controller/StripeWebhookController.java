@@ -49,7 +49,13 @@ public class StripeWebhookController {
         } else if ("payment_intent.payment_failed".equals(event.getType())) {
             PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
                     .getObject().orElseThrow();
-            pagS.markFailed(intent.getId());
+
+            String pmId = null;
+            if (intent.getLastPaymentError() != null
+                    && intent.getLastPaymentError().getPaymentMethod() != null) {
+                pmId = intent.getLastPaymentError().getPaymentMethod().getId();
+            }
+            pagS.markFailed(intent.getId(), pmId);
         }
 
         return ResponseEntity.ok("received");

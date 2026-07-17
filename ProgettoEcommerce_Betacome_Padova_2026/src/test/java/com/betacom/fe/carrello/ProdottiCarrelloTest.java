@@ -29,7 +29,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProdottiCarrelloTest {
 
@@ -48,6 +48,16 @@ public class ProdottiCarrelloTest {
         req.setIdCarrello(1);
         req.setIdDivisioneProdotto(2);
         req.setQuantita(2);
+
+        mockMvc.perform(post("/rest/ProdottiCarrello/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
+        
+        req = new ProdottiCarrelloReq();
+        req.setIdCarrello(2);
+        req.setIdDivisioneProdotto(2);
+        req.setQuantita(5);
 
         mockMvc.perform(post("/rest/ProdottiCarrello/create")
                 .contentType(MediaType.APPLICATION_JSON)

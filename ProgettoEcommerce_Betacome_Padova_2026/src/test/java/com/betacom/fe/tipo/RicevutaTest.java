@@ -32,7 +32,7 @@ import tools.jackson.core.type.TypeReference;
 
 @Slf4j
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RicevutaTest {
 	
