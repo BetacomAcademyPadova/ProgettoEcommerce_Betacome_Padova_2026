@@ -28,6 +28,8 @@ public class Notifica {
 
 	    private LocalDateTime dataCreazione;
 	    
+	    private LocalDateTime dataScadenza;
+	    
 	    @ManyToOne
 	    @JoinColumn(name = "user_id")
 	    @ToString.Exclude

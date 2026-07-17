@@ -32,6 +32,8 @@ public class NotificaImpl implements INotificaServices {
 
         User venditore = divisione.getProdotto().getVenditore();
 
+        LocalDateTime dataCreazione = LocalDateTime.now();
+
         Notifica notifica = new Notifica();
 
         notifica.setMessaggio(
@@ -44,13 +46,14 @@ public class NotificaImpl implements INotificaServices {
         );
 
         notifica.setLetta(false);
-        notifica.setDataCreazione(LocalDateTime.now());
+        notifica.setDataCreazione(dataCreazione);
+        notifica.setDataScadenza(dataCreazione.plusMonths(3));
         notifica.setUser(venditore);
         notifica.setDivisioneProdotto(divisione);
 
         notificaR.save(notifica);
     }
-
+    @Transactional
     @Override
     public List<NotificaDTO> getNonLette(Integer userId)
             throws Exception {

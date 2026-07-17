@@ -20,4 +20,5 @@ public class NotificaDTO {
     private String messaggio;
     private Boolean letta;
     private LocalDateTime dataCreazione;
+    private LocalDateTime dataScadenza;
 }
