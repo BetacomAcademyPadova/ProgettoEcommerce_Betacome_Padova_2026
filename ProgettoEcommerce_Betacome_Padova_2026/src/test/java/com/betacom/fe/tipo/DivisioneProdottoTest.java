@@ -52,6 +52,7 @@ public class DivisioneProdottoTest
         req.setLunghezza(200);
         req.setQuantitaDisponibile(10);
         req.setIdProdotto(2);
+        req.setStockAlert(5);
         
         mockMvc.perform(post("/rest/DivisioneProdotto/create")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -73,6 +74,7 @@ public class DivisioneProdottoTest
         req.setLunghezza(150);
         req.setQuantitaDisponibile(20);
         req.setIdProdotto(2);
+        req.setStockAlert(10);
         
         mockMvc.perform(post("/rest/DivisioneProdotto/create")
                 .contentType(MediaType.APPLICATION_JSON)
