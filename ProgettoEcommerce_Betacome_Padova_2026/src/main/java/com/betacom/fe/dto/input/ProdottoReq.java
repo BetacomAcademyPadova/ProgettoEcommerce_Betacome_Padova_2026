@@ -29,17 +29,6 @@ public class ProdottoReq {
     )
     private Float prezzo;
 
-    @NotNull(
-        groups = ValidationGroups.Create.class,
-        message = "quantita.no.disp"
-    )
-    private Integer quantitaDisponibile;
-
-    @NotNull(
-        groups = ValidationGroups.Create.class,
-        message = "stockalert.no.disp"
-    )
-    private Integer stockAlert;
 
     @NotNull(
         groups = ValidationGroups.Create.class,

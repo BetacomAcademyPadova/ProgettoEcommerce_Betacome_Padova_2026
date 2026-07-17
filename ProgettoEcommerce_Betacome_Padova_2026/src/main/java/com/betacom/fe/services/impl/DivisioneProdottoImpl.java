@@ -47,6 +47,7 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 		divProd.setLunghezza(req.getLunghezza());
 		divProd.setLarghezza(req.getLarghezza());
 		divProd.setQuantitaDisponibile(req.getQuantitaDisponibile());
+		divProd.setStockAlert(req.getStockAlert());
 		divProd.setProdotto(p);
 		
 		repDivP.save(divProd);
@@ -67,6 +68,7 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 		Optional.ofNullable(req.getLunghezza()).ifPresent(divProd::setLunghezza);
 		Optional.ofNullable(req.getLarghezza()).ifPresent(divProd::setLarghezza);
 		Optional.ofNullable(req.getQuantitaDisponibile()).ifPresent(divProd::setQuantitaDisponibile);
+		Optional.ofNullable(req.getStockAlert()).ifPresent(divProd::setStockAlert);
 
 		if (req.getIdProdotto() != null) 
 		{

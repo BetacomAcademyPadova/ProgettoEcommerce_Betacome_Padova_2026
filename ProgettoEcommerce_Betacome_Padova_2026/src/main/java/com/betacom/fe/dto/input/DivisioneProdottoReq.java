@@ -32,6 +32,9 @@ public class DivisioneProdottoReq
 	@NotNull(groups = ValidationGroups.Create.class, message ="divProd.no.quant")
     private Integer quantitaDisponibile;
 	
+	@NotNull(groups = ValidationGroups.Create.class, message = "stockalert.no.disp")
+	private Integer stockAlert;
+	
 	@NotNull(groups = ValidationGroups.Create.class, message ="prodotto.no.id")
 	private Integer idProdotto;
 }

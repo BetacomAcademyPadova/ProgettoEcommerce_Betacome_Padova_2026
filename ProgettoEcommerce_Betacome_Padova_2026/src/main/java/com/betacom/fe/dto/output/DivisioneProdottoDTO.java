@@ -22,4 +22,5 @@ public class DivisioneProdottoDTO
     private Integer lunghezza;
     private Integer larghezza;
     private Integer quantitaDisponibile;
+    private Integer stockAlert;
 }

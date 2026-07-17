@@ -63,8 +63,6 @@ public class ProdottiImpl implements IProdottiServices {
 
 	    pro.setDescrizione(req.getDescrizione());
 	    pro.setPrezzo(req.getPrezzo());
-	    pro.setQuantitaDisponibile(req.getQuantitaDisponibile());
-	    pro.setStockAlert(req.getStockAlert());
 	    pro.setSottoCategoria(sottoCategoria);
 	    pro.setVenditore(usr);
 
@@ -80,8 +78,6 @@ public class ProdottiImpl implements IProdottiServices {
 
 	    Optional.ofNullable(req.getDescrizione()).ifPresent(pro::setDescrizione);
 	    Optional.ofNullable(req.getPrezzo()).ifPresent(pro::setPrezzo);
-	    Optional.ofNullable(req.getQuantitaDisponibile()).ifPresent(pro::setQuantitaDisponibile);
-	    Optional.ofNullable(req.getStockAlert()).ifPresent(pro::setStockAlert);
 
 	    if (req.getIdSottoCategoria() != null) {
 	    	SottoCategoria sottoCategoria = sottoCategoriaR.findById(req.getIdSottoCategoria())
