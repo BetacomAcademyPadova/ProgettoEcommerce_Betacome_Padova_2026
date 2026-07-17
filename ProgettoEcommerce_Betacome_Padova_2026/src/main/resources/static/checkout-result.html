@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Esito pagamento</title>
+<script src="https://js.stripe.com/v3/"></script>
+<link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+
+<div class="card">
+  <h1>Esito pagamento</h1>
+  <div id="message">Verifica in corso...</div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const idOrdine = params.get('idOrdine');
+  const clientSecret = params.get('payment_intent_client_secret'); // added by Stripe
+
+  function showMessage(text, type) {
+    const el = document.getElementById('message');
+    el.textContent = text;
+    el.className = type;
+  }
+
+  async function checkResult() {
+    if (!clientSecret) {
+      showMessage('Nessun pagamento da verificare.', 'err');
+      return;
+    }
+
+    // Same config endpoint as checkout.html
+    const cfg = await (await fetch('/rest/test/config')).json();
+    const stripe = Stripe(cfg.publishableKey);
+
+    const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
+    switch (paymentIntent.status) {
+      case 'succeeded':
+        showMessage('Pagamento completato per l\'ordine #' + idOrdine + '!', 'ok');
+        break;
+      case 'processing':
+        showMessage('Pagamento in elaborazione. Riceverai conferma a breve.', 'info');
+        break;
+      case 'requires_payment_method':
+        showMessage('Pagamento non riuscito. Riprova.', 'err');
+        break;
+      default:
+        showMessage('Stato: ' + paymentIntent.status, 'info');
+    }
+  }
+
+  checkResult();
+</script>
+
+</body>
+</html>

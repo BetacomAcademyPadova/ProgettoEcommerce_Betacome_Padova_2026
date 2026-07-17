@@ -11,6 +11,6 @@ import com.betacom.fe.dto.output.PaymentIntentDTO;
 public interface IPagamentiServices {
     PaymentIntentDTO createPaymentIntent(PaymentIntentReq req) throws Exception, StripeException;
     void markSucceeded(String transazioneId, String paymentMethodId) throws Exception;
-    void markFailed(String transazioneId) throws Exception;
+    void markFailed(String transazioneId, String paymentMethodId) throws Exception;
     List<MetodoPagamentoDTO> getMetodiSalvatiByOrdine(Integer idOrdine) throws Exception;
 }
