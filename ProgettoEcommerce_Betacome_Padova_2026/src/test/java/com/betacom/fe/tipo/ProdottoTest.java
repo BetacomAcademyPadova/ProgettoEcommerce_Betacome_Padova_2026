@@ -231,5 +231,6 @@ public class ProdottoTest {
         assert(dto.getPrezzo() == 160f);
         log.info("Prezzo testato con successo: {}", dto.getPrezzo());
     }
+    
 }
 

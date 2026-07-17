@@ -36,7 +36,9 @@ import com.betacom.fe.user.UserTest;
 	ScontoTest.class,
 	DeleteUserTest.class,
 	CarrelloTest.class,
-	ProdottiCarrelloTest.class
+	ProdottiCarrelloTest.class,
+	ProdottiOrdineTest.class,
+	RicevutaTest.class
 })
 public class SuiteClass {
 }
