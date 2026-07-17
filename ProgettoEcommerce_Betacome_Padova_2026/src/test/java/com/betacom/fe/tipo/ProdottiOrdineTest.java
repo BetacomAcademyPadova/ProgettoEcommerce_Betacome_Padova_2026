@@ -37,23 +37,18 @@ public class ProdottiOrdineTest {
     @Test
     @Order(1)
     public void createProdottiOrdineTest() throws Exception {
-
-        Integer idCarrello = procarR.findAll()
-                .get(0)
-                .getIdRiga();
+        log.debug("createProdottiOrdineTest");
 
         ProdottiOrdineReq req = new ProdottiOrdineReq();
-
         req.setOrdineId(1);
         req.setProdottoId(2);
         req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(idCarrello);
-        req.setDivisioneOrdineId(2);
-
+        req.setProdottiCarrelloId(1);
+        req.setDivisioneOrdineId(1);
 
         mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());
     }
 

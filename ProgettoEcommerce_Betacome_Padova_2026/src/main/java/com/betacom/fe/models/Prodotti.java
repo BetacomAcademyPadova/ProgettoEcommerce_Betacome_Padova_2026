@@ -29,14 +29,7 @@ public class Prodotti {
 
     @Column(nullable=false)
     private Float prezzo;
-
-    @Column(nullable=false, columnDefinition = "int default 0")
-    private Integer quantitaDisponibile;
     
-
-    @Column(nullable=false, columnDefinition = "int default 0")
-    private Integer stockAlert;
-
     @ManyToOne
     @JoinColumn(name="sottocategoria")
     private SottoCategoria sottoCategoria;

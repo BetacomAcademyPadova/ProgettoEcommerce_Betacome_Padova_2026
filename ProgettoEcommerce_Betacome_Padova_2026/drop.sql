@@ -16,6 +16,12 @@
     alter table if exists metodo_pagamento 
        drop constraint if exists FKkimw751gpi5ktca1qj9x33dit;
 
+    alter table if exists notifica 
+       drop constraint if exists FKdmle6dltrunwlm6wtnf80w9xn;
+
+    alter table if exists notifica 
+       drop constraint if exists FKidcvlt3buox1ntjk032grklms;
+
     alter table if exists ordini 
        drop constraint if exists FKj77333p7l9ognbsgl5q7sroux;
 
@@ -47,7 +53,7 @@
        drop constraint if exists FKmqvjivhash7j1d31qfwr684cp;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FKl5il6vw4rqgq9a9yvh0dnb9wv;
+       drop constraint if exists FK5le15e8pdlrqor6phqstha3qn;
 
     alter table if exists prodotti_ordine 
        drop constraint if exists FKfljxkmohq78qkbd12c9nr1e2m;
@@ -89,6 +95,8 @@
     drop table if exists messaggi_sistema cascade;
 
     drop table if exists metodo_pagamento cascade;
+
+    drop table if exists notifica cascade;
 
     drop table if exists ordini cascade;
 
