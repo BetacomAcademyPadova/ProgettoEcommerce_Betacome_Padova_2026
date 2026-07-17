@@ -53,6 +53,18 @@ public class CarrelloTest {
 					).andExpect(status().isOk());
 		}catch (Exception e) {
 			log.error("Error in create {}", e.getMessage());
+		}
+			
+		req = new CarrelloReq();
+		req.setDataUltimoAgg(LocalDate.now());
+		req.setUserId(3);
+		try {
+			mockMvc.perform(post("/rest/Carrello/create")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(req))
+					).andExpect(status().isOk());
+		}catch (Exception e) {
+			log.error("Error in create {}", e.getMessage());
 		}	
 	}
 	
