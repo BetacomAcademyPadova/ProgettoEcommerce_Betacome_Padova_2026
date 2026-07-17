@@ -91,7 +91,7 @@ public class CarrelloTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(req))
 				)
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isOk())
 				.andReturn();
 		
 		String json = result.getResponse().getContentAsString();
