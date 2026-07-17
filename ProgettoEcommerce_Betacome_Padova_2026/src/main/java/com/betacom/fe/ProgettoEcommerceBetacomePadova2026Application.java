@@ -11,5 +11,5 @@ public class ProgettoEcommerceBetacomePadova2026Application {
 	public static void main(String[] args) {
 		SpringApplication.run(ProgettoEcommerceBetacomePadova2026Application.class, args);
 	}
-
+	//Test
 }
