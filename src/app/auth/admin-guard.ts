@@ -6,7 +6,5 @@ export const adminGuard: CanActivateFn = (route, state) => {
     const authServices = inject(AuthServices);
 
   return authServices.isRoleAdmin();
-};
-
-
 //PROVA VADIM
+};
