@@ -46,6 +46,14 @@ public class PagamentiImpl implements IPagamentiServices {
         Ordini ordine = ordRep.findById(req.getIdOrdine())
                 .orElseThrow(() -> new AcademyException(msgS.get("ordine.no.exists")));
 
+        Pagamenti pagamento = pagRep.findByOrdineIdOrdine(req.getIdOrdine())
+                .orElseGet(Pagamenti::new);
+        
+        if (pagamento.getStatoPagamento() != null
+                && "Completato".equals(pagamento.getStatoPagamento().getStato())) {
+            throw new AcademyException(msgS.get("pagamento.gia.completato"));
+        }
+        
         long amountInCents = Math.round(ordine.getTotale() * 100);
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
@@ -62,15 +70,16 @@ public class PagamentiImpl implements IPagamentiServices {
         StatoPagamento inAttesa = statoRep.findByStato("In attesa")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
-        Pagamenti pagamento = new Pagamenti();
         pagamento.setOrdine(ordine);
         pagamento.setImporto(ordine.getTotale());
         pagamento.setTransazioneId(intent.getId());
         pagamento.setStatoPagamento(inAttesa);
+        pagamento.setDataPagamento(null);
+        pagamento.setMetodoPagamento(null);
         pagamento.setSalvato(Boolean.TRUE.equals(req.getSalvaMetodo()));
         pagRep.save(pagamento);
 
-        log.info("PaymentIntent creato: {}", intent.getId());
+        log.info("PaymentIntent creato: {} per ordine {}", intent.getId(), req.getIdOrdine());
 
         return PaymentIntentDTO.builder()
                 .clientSecret(intent.getClientSecret())
@@ -96,7 +105,7 @@ public class PagamentiImpl implements IPagamentiServices {
             pagamento.setMetodoPagamento(pm.getType()); // "card", "satispay", ...
 
             // Only if the user asked to save it: create the wallet row and link it
-            if (Boolean.TRUE.equals(pagamento.getSalvato() && "card".equals(pm.getType()))) {
+            if (Boolean.TRUE.equals(pagamento.getSalvato()) && "card".equals(pm.getType())) {
                 MetodoPagamento nuovoMP = new MetodoPagamento();
                 nuovoMP.setTipo(pm.getType());
                 nuovoMP.setDettagli(buildDettagli(pm));

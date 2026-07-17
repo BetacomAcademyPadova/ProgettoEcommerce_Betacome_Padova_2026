@@ -8,4 +8,5 @@ import com.betacom.fe.models.Pagamenti;
 
 public interface IPagamentiRepository extends JpaRepository<Pagamenti, Integer> {
     Optional<Pagamenti> findByTransazioneId(String transazioneId);
+    Optional<Pagamenti> findByOrdineIdOrdine(Integer idOrdine);
 }
