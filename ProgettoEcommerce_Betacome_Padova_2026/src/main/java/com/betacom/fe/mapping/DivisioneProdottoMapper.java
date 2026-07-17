@@ -24,6 +24,7 @@ public class DivisioneProdottoMapper
 				.lunghezza(divProd.getLunghezza())
 				.larghezza(divProd.getLarghezza())
 				.quantitaDisponibile(divProd.getQuantitaDisponibile())
+				.stockAlert(divProd.getStockAlert())
 				.build();
 	}
 }

@@ -23,8 +23,6 @@ public class ProdottoMapper {
 				.idProdotto(p.getIdProdotto())
 				.descrizione(p.getDescrizione())
 				.prezzo(p.getPrezzo())
-				.quantitaDisponibile(p.getQuantitaDisponibile())
-				.stockAlert(p.getStockAlert())
 				.sottoCategoria(p.getSottoCategoria() != null 
                 	? SottoCategoriaMapper.toDTO(p.getSottoCategoria()) 
                 	: null)
@@ -39,8 +37,6 @@ public class ProdottoMapper {
 				.idProdotto(p.getIdProdotto())
 				.descrizione(p.getDescrizione())
 				.prezzo(p.getPrezzo())
-				.quantitaDisponibile(p.getQuantitaDisponibile())
-				.stockAlert(p.getStockAlert())
 				.sottoCategoria(SottoCategoriaMapper.toDTO(p.getSottoCategoria()))
 				.sconto(s != null ? ScontoMapper.buildScontoDTO(s) : null)
 				.divisioni(DivisioneProdottoMapper.buildDivProdDTOList(p.getDivisioni()))

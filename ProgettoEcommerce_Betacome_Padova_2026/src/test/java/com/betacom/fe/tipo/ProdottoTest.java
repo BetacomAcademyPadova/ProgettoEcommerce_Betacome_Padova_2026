@@ -57,8 +57,6 @@ public class ProdottoTest {
         ProdottoReq req = new ProdottoReq();
         req.setDescrizione("Tavolo test");
         req.setPrezzo(300.0f);
-        req.setQuantitaDisponibile(10);
-        req.setStockAlert(2);
         req.setIdSottoCategoria(1);
         req.setIdUser(2);
 
@@ -144,8 +142,6 @@ public class ProdottoTest {
         req.setIdProdotto(1);
         req.setDescrizione("Tavolo aggiornato");
         req.setPrezzo(350.0f);
-        req.setQuantitaDisponibile(15);
-        req.setStockAlert(3);
 
         mockMvc.perform(put("/rest/Prodotto/update")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -185,8 +181,6 @@ public class ProdottoTest {
         ProdottoReq req = new ProdottoReq();
         req.setDescrizione("Tavolo test");
         req.setPrezzo(300.0f);
-        req.setQuantitaDisponibile(10);
-        req.setStockAlert(2);
         req.setIdSottoCategoria(1);
         req.setIdUser(2);
 
@@ -204,8 +198,6 @@ public class ProdottoTest {
         ProdottoReq req = new ProdottoReq();
         req.setDescrizione("Sedia scontata");
         req.setPrezzo(200f);
-        req.setQuantitaDisponibile(20);
-        req.setStockAlert(5);
         req.setIdSottoCategoria(1);
         req.setIdUser(2);
 
