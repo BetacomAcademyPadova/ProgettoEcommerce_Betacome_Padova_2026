@@ -52,8 +52,8 @@ public class PagamentiImpl implements IPagamentiServices {
                 .setAmount(amountInCents)
                 .setCurrency("eur")
                 .addPaymentMethodType("card")
-                .addPaymentMethodType("satispay")
-                .addPaymentMethodType("scalapay")
+                .addPaymentMethodType("klarna")
+                .addPaymentMethodType("paypal")
                 .putMetadata("idOrdine", req.getIdOrdine().toString())
                 .build();
 
@@ -87,6 +87,8 @@ public class PagamentiImpl implements IPagamentiServices {
         StatoPagamento completato = statoRep.findByStato("Completato")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
+        pagamento.setDataPagamento(LocalDateTime.now());
+        
         if (paymentMethodId != null) {
             PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
 
@@ -94,7 +96,7 @@ public class PagamentiImpl implements IPagamentiServices {
             pagamento.setMetodoPagamento(pm.getType()); // "card", "satispay", ...
 
             // Only if the user asked to save it: create the wallet row and link it
-            if (Boolean.TRUE.equals(pagamento.getSalvato())) {
+            if (Boolean.TRUE.equals(pagamento.getSalvato() && "card".equals(pm.getType()))) {
                 MetodoPagamento nuovoMP = new MetodoPagamento();
                 nuovoMP.setTipo(pm.getType());
                 nuovoMP.setDettagli(buildDettagli(pm));
@@ -107,7 +109,6 @@ public class PagamentiImpl implements IPagamentiServices {
         }
 
         pagamento.setStatoPagamento(completato);
-        pagamento.setDataPagamento(LocalDateTime.now());
         pagRep.save(pagamento);
         log.info("Pagamento {} confermato, metodo: {}", transazioneId, pagamento.getMetodoPagamento());
     }

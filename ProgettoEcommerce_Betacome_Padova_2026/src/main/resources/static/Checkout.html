@@ -132,9 +132,12 @@
     showMessage('', '');
 
     const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      redirect: 'if_required'
-    });
+    	  elements,
+    	  confirmParams: {
+    	    return_url: window.location.origin
+    	      + '/checkout-result.html?idOrdine=' + idOrdine
+    	  },
+    	});
 
     setLoading(false);
 
