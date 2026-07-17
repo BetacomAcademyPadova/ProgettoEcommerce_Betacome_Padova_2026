@@ -53,6 +53,16 @@ public class ProdottiCarrelloTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());
+        
+        req = new ProdottiCarrelloReq();
+        req.setIdCarrello(2);
+        req.setIdDivisioneProdotto(2);
+        req.setQuantita(5);
+
+        mockMvc.perform(post("/rest/ProdottiCarrello/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
     }
     
     @Test
