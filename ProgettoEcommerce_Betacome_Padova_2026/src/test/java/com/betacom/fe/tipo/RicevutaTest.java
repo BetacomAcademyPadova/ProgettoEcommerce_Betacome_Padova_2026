@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -20,9 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.betacom.fe.dto.input.ProdottoReq;
 import com.betacom.fe.dto.input.RicevutaReq;
-import com.betacom.fe.dto.output.ProdottiOrdineDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.dto.output.RicevutaDTO;
 import com.betacom.fe.repositories.IProdottiRepository;
@@ -32,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
@@ -143,6 +139,28 @@ public class RicevutaTest {
 
         MvcResult result = mockMvc.perform(
                         get("/rest/Ricevuta/getAll"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        List<RicevutaDTO> lista = objectMapper.readValue(
+                json,
+                new TypeReference<List<RicevutaDTO>>() {}
+        );
+
+        assertFalse(lista.isEmpty());
+
+        log.debug(lista.toString());
+    }
+    
+    @Test
+    @Order(7)
+    public void getAllByVenditore() throws Exception {
+        log.debug("getAllbyVenditore");
+
+        MvcResult result = mockMvc.perform(
+                        get("/rest/Ricevuta/getRicevutaBy/"+2))
                 .andExpect(status().isOk())
                 .andReturn();
 
