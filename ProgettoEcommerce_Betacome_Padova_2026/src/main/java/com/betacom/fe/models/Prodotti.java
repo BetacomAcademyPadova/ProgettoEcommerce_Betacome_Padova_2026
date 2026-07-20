@@ -1,5 +1,6 @@
 package com.betacom.fe.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -40,5 +41,8 @@ public class Prodotti {
     @ManyToOne
     @JoinColumn(name="userId")
     private User venditore;
+    
+    @OneToMany(mappedBy = "prodotto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Immagini> immagini = new ArrayList<Immagini>();
 
 }
