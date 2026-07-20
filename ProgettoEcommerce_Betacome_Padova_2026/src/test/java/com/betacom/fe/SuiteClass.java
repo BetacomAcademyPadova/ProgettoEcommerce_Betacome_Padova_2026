@@ -5,6 +5,7 @@ import org.junit.platform.suite.api.Suite;
 
 import com.betacom.fe.carrello.CarrelloTest;
 import com.betacom.fe.carrello.ProdottiCarrelloTest;
+import com.betacom.fe.pagamento.PagamentiControllerTest;
 import com.betacom.fe.tipo.CategoriaTest;
 import com.betacom.fe.tipo.DivisioneProdottoTest;
 import com.betacom.fe.tipo.NotificaTest;
@@ -40,7 +41,8 @@ import com.betacom.fe.user.UserTest;
 	ProdottiOrdineTest.class,
 	RicevutaTest.class,
 	NotificaTest.class,
-	DeleteUserTest.class
+	DeleteUserTest.class,
+	PagamentiControllerTest.class
 })
 public class SuiteClass {
 }
