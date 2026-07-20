@@ -131,6 +131,79 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 		        notificaS.creaStockAlert(divisione);
 		    }
 	}
+	
+	@Transactional
+	@Override
+	public void update(ProdottiOrdineReq req) throws Exception {
+
+	    ProdottiOrdine prodOrd = prordR.findById(req.getIdItem())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("prodotto.ordine.non.esiste")));
+
+	    Ordini ordine = ordR.findById(req.getOrdineId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("ordine.non.esiste")));
+
+	    Prodotti prodotto = proR.findById(req.getProdottoId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("prodo.non.esiste")));
+
+	    Indirizzi indirizzo = indR.findById(req.getIndirizzoSpedizioneId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("indirizzo.non.esiste")));
+
+	    ProdottiCarrello prodottiCar = procarR.findById(req.getProdottiCarrelloId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("prodcar.non.esiste")));
+
+	    DivisioneProdotto divisione = divR.findById(req.getDivisioneOrdineId())
+	            .orElseThrow(() ->
+	                    new AcademyException(msgS.get("divisione.non.esiste")));
+
+	    Integer nuovaQuantita = prodottiCar.getQuantita();
+
+	    if (nuovaQuantita == null || nuovaQuantita <= 0) {
+	        throw new AcademyException(msgS.get("quantita.non.valida"));
+	    }
+
+	    if (!divisione.getProdotto().getIdProdotto()
+	            .equals(prodotto.getIdProdotto())) {
+	        throw new AcademyException(
+	                msgS.get("divisione.prodotto.non.valida"));
+	    }
+
+	    Integer vecchiaQuantita = prodOrd.getQuantita();
+	    int differenza = nuovaQuantita - vecchiaQuantita;
+
+	    if (differenza > 0) {
+	        if (divisione.getQuantitaDisponibile() < differenza) {
+	            throw new AcademyException(
+	                    msgS.get("quantita.non.disponibile"));
+	        }
+
+	        divisione.setQuantitaDisponibile(
+	                divisione.getQuantitaDisponibile() - differenza);
+
+	    } else if (differenza < 0) {
+	        divisione.setQuantitaDisponibile(
+	                divisione.getQuantitaDisponibile() + Math.abs(differenza));
+	    }
+
+	    prodOrd.setOrdine(ordine);
+	    prodOrd.setProdotto(prodotto);
+	    prodOrd.setIndirizzoSpedizione(indirizzo);
+	    prodOrd.setDivisioneOrdine(divisione);
+	    prodOrd.setProdottiCarrello(prodottiCar);
+	    prodOrd.setQuantita(nuovaQuantita);
+
+	    prordR.save(prodOrd);
+	    divR.save(divisione);
+
+	    if (divisione.getStockAlert() != null
+	            && divisione.getQuantitaDisponibile() <= divisione.getStockAlert()) {
+	        notificaS.creaStockAlert(divisione);
+	    }
+	}
 
 	@Transactional
 	@Override
@@ -157,5 +230,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 				.map(o -> ProdottiOrdineMapper.toDTO(o))
 				.toList();
 	}
+
+	
 
 }

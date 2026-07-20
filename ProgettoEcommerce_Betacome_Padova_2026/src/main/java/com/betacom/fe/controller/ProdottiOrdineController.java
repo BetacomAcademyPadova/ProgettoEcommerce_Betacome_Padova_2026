@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.ProdottiOrdineReq;
 import com.betacom.fe.dto.input.ValidationGroups;
-import com.betacom.fe.dto.output.OrdineDTO;
 import com.betacom.fe.dto.output.ProdottiOrdineDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.services.interfaces.IProdottiOrdineServices;
@@ -32,6 +31,12 @@ public class ProdottiOrdineController {
     public ResponseEntity<ResponseDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) ProdottiOrdineReq req) throws Exception {
 		prodottiOrdineS.create(req);
     	return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
+    }
+	
+	@PutMapping("update")
+    public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) ProdottiOrdineReq req) throws Exception {
+		prodottiOrdineS.update(req);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
     }
 	
     @DeleteMapping("delete/{idItem}")
