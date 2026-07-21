@@ -3,12 +3,15 @@ package com.betacom.fe.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.betacom.fe.config.JwtService;
 import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
+import com.betacom.fe.dto.output.LoginDTO;
 import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.models.Autenticazione;
 import com.betacom.fe.models.Ruoli;
@@ -33,6 +36,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserImpl implements IUserServices{
 
+    @Autowired
+    private JwtService jwtService;
+    
 	private final IUserRepository repUser;
 	private final IRuoliRepository ruoloR;
 	private final IAutenticazioneRepository repAut;
@@ -78,18 +84,19 @@ public class UserImpl implements IUserServices{
 	}
 
 	@Override
-	public UserDTO getByUsername(String usr) throws Exception {
-		User utente = repUser.findById(repAut.findByUsername(usr)
+	public UserDTO getById(Integer idUser) throws Exception {
+		User utente = repUser.findById(repAut.findById(idUser)
 		                .orElseThrow(() -> new AcademyException(msgS.get("login.error")))
 		                .getUser().getUserId()
 					).orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
 
 		 UserDTO dto = new UserDTO();
+		 dto.setUserId(utente.getUserId());
 		 dto.setNome(utente.getNome());
 		 dto.setCognome(utente.getCognome());
 		 dto.setEmail(utente.getEmail());
 		 dto.setTelefono(utente.getTelefono());
-
+		 dto.setRuolo(utente.getRuolo().getRuolo());
 		 return dto;
 	}
 
@@ -102,7 +109,7 @@ public class UserImpl implements IUserServices{
 	}
 
 	@Override
-	public UserDTO login(LogInReq req) throws Exception {
+	public LoginDTO login(LogInReq req) throws Exception {
 
 	    Autenticazione aut = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
@@ -111,7 +118,8 @@ public class UserImpl implements IUserServices{
 	        throw new AcademyException(msgS.get("login.error"));
 	    }
 
-	    return UserMapper.toDTO(aut.getUser());
+	    String token = jwtService.generateToken(aut.getUsername());
+	    return new LoginDTO(token, UserMapper.toDTO(aut.getUser()));
 	}
 	
 	@Override

@@ -17,16 +17,24 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-	    http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults())
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/rest/User/login").permitAll()
-	            .requestMatchers("/rest/User/create").permitAll()
-	            .anyRequest().authenticated()
-	        );
-
+		http
+	    .csrf(csrf -> csrf.disable())
+	    .cors(Customizer.withDefaults())
+	    .authorizeHttpRequests(auth -> auth
+	        .requestMatchers(
+	            "/v3/api-docs/**",
+	            "/swagger-ui/**",
+	            "/swagger-ui.html",
+	            "/swagger-ui/index.html",
+	            "/rest/User/login",
+	            "/rest/User/create",
+	            "/rest/**"
+	        ).permitAll()
+	        .anyRequest().authenticated()
+	    ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 	    return http.build();
 	}
 

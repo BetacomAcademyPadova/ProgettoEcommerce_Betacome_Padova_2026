@@ -17,6 +17,7 @@ import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.input.ValidationGroups;
+import com.betacom.fe.dto.output.LoginDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.services.interfaces.IUserServices;
@@ -50,10 +51,10 @@ public class UserController {
         return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
     }
     
-    @GetMapping("getByUsername/{username}")
-    public ResponseEntity<UserDTO> getByUsername(@PathVariable("username") String username) throws Exception {
+    @GetMapping("getById/{idUser}")
+    public ResponseEntity<UserDTO> getByUsername(@PathVariable("idUser") Integer idUser) throws Exception {
 
-        return ResponseEntity.ok(userS.getByUsername(username));
+        return ResponseEntity.ok(userS.getById(idUser));
     }
 
     @GetMapping("getAll")
@@ -62,7 +63,7 @@ public class UserController {
     }
     
     @PostMapping("login")
-    public ResponseEntity<UserDTO> login(@RequestBody @Validated(ValidationGroups.Login.class) LogInReq req) throws Exception {
+    public ResponseEntity<LoginDTO> login(@RequestBody @Validated(ValidationGroups.Login.class) LogInReq req) throws Exception {
         return ResponseEntity.ok(userS.login(req));
     }
     
