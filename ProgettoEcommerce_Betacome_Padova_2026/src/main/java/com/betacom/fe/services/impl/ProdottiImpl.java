@@ -63,7 +63,6 @@ public class ProdottiImpl implements IProdottiServices {
 
 	    pro.setDescrizione(req.getDescrizione());
 	    pro.setPrezzo(req.getPrezzo());
-	    pro.setImmagine(req.getImmagine());
 	    pro.setSottoCategoria(sottoCategoria);
 	    pro.setVenditore(usr);
 
