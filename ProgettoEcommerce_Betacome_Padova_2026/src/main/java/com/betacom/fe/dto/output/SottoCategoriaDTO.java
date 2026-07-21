@@ -14,5 +14,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @ToString
 public class SottoCategoriaDTO extends CategoriaDTO{
+	private Integer idSottoCategoria;
 	private String sottoCategoria;
 }
