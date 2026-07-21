@@ -19,14 +19,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-	    http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults())
+	
+	    http
+	        .csrf(csrf -> csrf.disable())
+	        .cors(Customizer.withDefaults())
 	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/rest/User/login").permitAll()
-	            .requestMatchers("/rest/User/create").permitAll()
-	            .anyRequest().authenticated()
+	            .anyRequest().permitAll()
 	        );
-
+	
 	    return http.build();
 	}
 
