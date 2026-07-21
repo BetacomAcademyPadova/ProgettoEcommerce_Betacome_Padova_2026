@@ -68,7 +68,7 @@ public class PagamentiImpl implements IPagamentiServices {
 
         PaymentIntent intent = PaymentIntent.create(params);
 
-        StatoPagamento inAttesa = statoRep.findByStato("In attesa")
+        StatoPagamento inAttesa = statoRep.findByStato("In Attesa")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
         pagamento.setOrdine(ordine);
