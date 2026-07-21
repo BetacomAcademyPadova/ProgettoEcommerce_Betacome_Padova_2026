@@ -10,6 +10,9 @@
     alter table if exists divisione_prodotto 
        drop constraint if exists FKiqmfnoidit0issivaghj4xd8f;
 
+    alter table if exists immagini 
+       drop constraint if exists FK8sbvuq1cghuuje5myr2qq22sp;
+
     alter table if exists indirizzi 
        drop constraint if exists FKplpq215m028r1n3bo6n2hkb2s;
 
@@ -89,6 +92,8 @@
     drop table if exists categorie cascade;
 
     drop table if exists divisione_prodotto cascade;
+
+    drop table if exists immagini cascade;
 
     drop table if exists indirizzi cascade;
 
