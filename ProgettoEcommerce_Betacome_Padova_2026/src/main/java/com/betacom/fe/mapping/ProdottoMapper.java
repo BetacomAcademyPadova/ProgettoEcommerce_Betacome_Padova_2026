@@ -23,6 +23,7 @@ public class ProdottoMapper {
 				.idProdotto(p.getIdProdotto())
 				.descrizione(p.getDescrizione())
 				.prezzo(p.getPrezzo())
+				.immagine(p.getImmagine())
 				.sottoCategoria(p.getSottoCategoria() != null 
                 	? SottoCategoriaMapper.toDTO(p.getSottoCategoria()) 
                 	: null)
