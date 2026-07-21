@@ -19,7 +19,7 @@ import lombok.Setter;
 public class SottoCategoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idCategoria;
+    private Integer idSottoCategoria;
     
     @Column(nullable=false)
     private String sottoCategoria;
