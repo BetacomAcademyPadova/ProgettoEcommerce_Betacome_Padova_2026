@@ -18,11 +18,8 @@ import com.betacom.fe.dto.output.ImmagineDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.models.Immagini;
 import com.betacom.fe.models.Prodotti;
-import com.betacom.fe.repositories.ICarrelloRepository;
 import com.betacom.fe.repositories.IImmaginiRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
-import com.betacom.fe.repositories.IUserRepository;
-import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IUploadServices;
 
 import jakarta.annotation.PostConstruct;
