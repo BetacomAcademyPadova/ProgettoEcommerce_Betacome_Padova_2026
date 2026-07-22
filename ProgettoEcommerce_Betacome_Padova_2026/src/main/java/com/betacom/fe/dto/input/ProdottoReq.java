@@ -29,13 +29,6 @@ public class ProdottoReq {
     )
     private Float prezzo;
     
-    @NotBlank(
-            groups = ValidationGroups.Create.class,
-            message = "prod.img.req"
-        )
-    private String immagine;
-    
-
 
     @NotNull(
         groups = ValidationGroups.Create.class,
