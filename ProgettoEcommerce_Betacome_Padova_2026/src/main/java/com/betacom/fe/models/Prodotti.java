@@ -31,6 +31,9 @@ public class Prodotti {
     @Column(nullable=false)
     private Float prezzo;
     
+    @Column(nullable = false)
+    private String immagine;
+    
     @ManyToOne
     @JoinColumn(name="sottocategoria")
     private SottoCategoria sottoCategoria;
