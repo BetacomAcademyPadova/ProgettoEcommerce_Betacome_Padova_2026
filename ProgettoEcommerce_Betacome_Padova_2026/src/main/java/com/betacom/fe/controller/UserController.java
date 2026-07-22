@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.input.AutentiacazioneReq;
+import com.betacom.fe.dto.input.ChangePwdReq;
 import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.input.ValidationGroups;
@@ -71,5 +72,11 @@ public class UserController {
     public ResponseEntity<ResponseDTO> update(@PathVariable("username") String usr, @PathVariable("ruolo") String r) throws Exception {
         userS.setRuolo(usr, r);
         return ResponseEntity.ok(ResponseDTO.builder().msg("role set...").build());
+    }
+    
+    @PutMapping("changePwd")
+    public ResponseEntity<ResponseDTO> changePwd(@RequestBody @Validated ChangePwdReq req) throws Exception {
+        userS.changePwd(req);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("password changed...").build());
     }
 }

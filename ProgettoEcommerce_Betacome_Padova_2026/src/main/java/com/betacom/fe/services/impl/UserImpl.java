@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.betacom.fe.config.JwtService;
 import com.betacom.fe.dto.input.AutentiacazioneReq;
+import com.betacom.fe.dto.input.ChangePwdReq;
 import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.LoginDTO;
@@ -110,9 +111,11 @@ public class UserImpl implements IUserServices{
 
 	@Override
 	public LoginDTO login(LogInReq req) throws Exception {
-
+		log.debug("Password inserita: {}", req.getPassword());
 	    Autenticazione aut = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
+		log.debug("Password DB: {}", aut.getPassword());
+		log.debug("Matches: {}", passwordEncoder.matches(req.getPassword(), aut.getPassword()));
 
 	    if (!passwordEncoder.matches(req.getPassword(), aut.getPassword())) {
 	        throw new AcademyException(msgS.get("login.error"));
@@ -135,5 +138,21 @@ public class UserImpl implements IUserServices{
 				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
 		utente.setRuolo(r);
 		repUser.save(utente);
+	}
+
+	
+	@Override
+	@Transactional
+	public void changePwd(ChangePwdReq req) throws Exception {
+	    Autenticazione user = repAut.findByUsername(req.getUsername())
+	            .orElseThrow(() -> new AcademyException("Utente non trovato"));
+
+	    if (!passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
+	        throw new AcademyException("Password attuale errata");
+	    }
+
+	    user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+
+	    repAut.save(user);
 	}
 }

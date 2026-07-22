@@ -20,8 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.betacom.fe.dto.input.AutentiacazioneReq;
+import com.betacom.fe.dto.input.ChangePwdReq;
 import com.betacom.fe.dto.input.LogInReq;
 import com.betacom.fe.dto.input.UserReq;
+import com.betacom.fe.dto.output.LoginDTO;
 import com.betacom.fe.dto.output.UserDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -85,8 +87,8 @@ public class UserTest {
 	
 	@Test
 	@Order(2)
-	public void getByUsernameTest() throws Exception{
-		MvcResult result = mockMvc.perform(get("/rest/User/getByUsername/user3"))
+	public void getById() throws Exception{
+		MvcResult result = mockMvc.perform(get("/rest/User/getById/"+3))
 	            .andExpect(status().isOk())
 	            .andReturn();
 		  
@@ -127,7 +129,7 @@ public class UserTest {
 
 	    String json = result.getResponse().getContentAsString();
 
-	    UserDTO dto = objectMapper.readValue(json, new TypeReference<UserDTO>() {});
+	    LoginDTO dto = objectMapper.readValue(json, LoginDTO.class);
 
 	    log.debug(dto.toString());
 	}
@@ -157,5 +159,29 @@ public class UserTest {
 
 	    assertFalse(users.isEmpty());
 	    log.debug(users.toString());
+	}
+	
+	@Test
+	@Order(7)
+	public void changePwdTest() throws Exception {
+
+	    ChangePwdReq req = new ChangePwdReq();
+	    req.setUsername("user3");
+	    req.setOldPassword("User_3333");
+	    req.setNewPassword("User_1234");
+
+	    mockMvc.perform(put("/rest/User/changePwd")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .content(objectMapper.writeValueAsString(req)))
+	            .andExpect(status().isOk());
+
+	    LogInReq login = new LogInReq();
+	    login.setUsername("user3");
+	    login.setPassword("User_1234");
+
+	    mockMvc.perform(post("/rest/User/login")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .content(objectMapper.writeValueAsString(login)))
+	            .andExpect(status().isOk());
 	}
 }
