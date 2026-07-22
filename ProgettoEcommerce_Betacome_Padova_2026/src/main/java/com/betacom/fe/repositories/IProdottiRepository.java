@@ -13,7 +13,7 @@ public interface IProdottiRepository extends JpaRepository<Prodotti, Integer>
 	@Query(value = "SELECT DISTINCT p.* FROM prodotti p " +
             "LEFT JOIN divisione_prodotto d ON p.id_prodotto = d.id_prodotto " +
 			"LEFT JOIN sconti sc ON p.id_prodotto = sc.prodotto " +
-			"JOIN sotto_categoria s ON p.sottocategoria = s.id_categoria " +
+			"JOIN sotto_categoria s ON p.sottocategoria = s.id_sotto_categoria " +
 			"WHERE (:descrizione IS NULL OR p.descrizione = :descrizione) " +
 			"AND (:prezzo IS NULL OR p.prezzo = :prezzo) " +
 			"AND (:sotto_categoria IS NULL OR s.sotto_categoria = :sotto_categoria) " +
@@ -36,7 +36,7 @@ public interface IProdottiRepository extends JpaRepository<Prodotti, Integer>
 	@Query(value = "SELECT DISTINCT p.* FROM prodotti p " +
             "LEFT JOIN divisione_prodotto d ON p.id_prodotto = d.id_prodotto " +
 			"JOIN sconti sc ON p.id_prodotto = sc.prodotto " +
-			"JOIN sotto_categoria s ON p.sottocategoria = s.id_categoria " +
+			"JOIN sotto_categoria s ON p.sottocategoria = s.id_sotto_categoria " +
 			"WHERE (:descrizione IS NULL OR p.descrizione = :descrizione) " +
 			"AND (:prezzo IS NULL OR p.prezzo = :prezzo) " +
 			"AND (:sotto_categoria IS NULL OR s.sotto_categoria = :sotto_categoria) " +
