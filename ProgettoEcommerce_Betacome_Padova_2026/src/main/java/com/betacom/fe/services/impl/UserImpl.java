@@ -85,6 +85,10 @@ public class UserImpl implements IUserServices{
 
 	@Override
 	public UserDTO getById(Integer idUser) throws Exception {
+		
+		Autenticazione aut = repAut.findById(idUser)
+                .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
+		
 		User utente = repUser.findById(repAut.findById(idUser)
 		                .orElseThrow(() -> new AcademyException(msgS.get("login.error")))
 		                .getUser().getUserId()
@@ -97,6 +101,7 @@ public class UserImpl implements IUserServices{
 		 dto.setEmail(utente.getEmail());
 		 dto.setTelefono(utente.getTelefono());
 		 dto.setRuolo(utente.getRuolo().getRuolo());
+		 dto.setUsername(aut.getUsername());
 		 return dto;
 	}
 
