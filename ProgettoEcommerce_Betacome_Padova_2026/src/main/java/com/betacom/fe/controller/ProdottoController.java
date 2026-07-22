@@ -32,10 +32,15 @@ public class ProdottoController {
 	private final IProdottiServices proS;
 	
 	@PostMapping("create")
-    public ResponseEntity<ResponseDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) ProdottoReq req) throws Exception {
-		proS.create(req);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
-}
+	public ResponseEntity<Integer> create(
+	        @RequestBody(required = true)
+	        @Validated(ValidationGroups.Create.class)
+	        ProdottoReq req) throws Exception {
+
+	    Integer idProdotto = proS.create(req);
+
+	    return ResponseEntity.ok(idProdotto);
+	}
 	
 	@PutMapping("update")
 	public ResponseEntity<ResponseDTO> update(
