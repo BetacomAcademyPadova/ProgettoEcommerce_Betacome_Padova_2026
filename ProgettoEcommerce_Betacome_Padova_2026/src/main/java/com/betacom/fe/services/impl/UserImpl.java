@@ -182,9 +182,7 @@ public class UserImpl implements IUserServices{
 	public void changeUsername(ChangePwdReq req) throws Exception {
 		Autenticazione user = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
-		log.debug("old: {}", req.getOldPassword());
-		log.debug("db : {}", user.getPassword());
-		log.debug("match {}", passwordEncoder.matches(req.getOldPassword(), user.getPassword()));
+
 	    Optional.ofNullable(req.getNewUsername().trim())
 	            .filter(newUsername -> !newUsername.equals(user.getUsername()))
 	            .ifPresent(newUsername -> {
