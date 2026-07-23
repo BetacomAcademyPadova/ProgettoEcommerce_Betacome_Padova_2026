@@ -53,12 +53,20 @@ public class UserImpl implements IUserServices{
 		ut.setNome(req.getNome());
 		ut.setCognome(req.getCognome());
 		ut.setEmail(req.getEmail());
+		repUser.findByEmail(req.getEmail())
+	       .ifPresent(u -> {
+	           throw new AcademyException(msgS.get("email.present"));
+	       });
 		ut.setTelefono(req.getTelefono());
 		ut.setRuolo(ruoloR.findByRuolo("User").orElseThrow(() -> new AcademyException(msgS.get("role.no.exists"))));
 		ut = repUser.save(ut);
 		
 		Autenticazione aut = new Autenticazione();
 		aut.setUsername(req.getUsername());
+		repAut.findByUsername(req.getUsername())
+	      .ifPresent(u -> {
+	          throw new AcademyException(msgS.get("username.present"));
+	      });
 		aut.setPassword(passwordEncoder.encode(req.getPassword()));
 		aut.setUser(ut);
 		repAut.save(aut);
@@ -69,9 +77,17 @@ public class UserImpl implements IUserServices{
 	public void update(UserReq req) throws Exception {
 		User usr = repUser.findById(req.getUserId())
 				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+	    Optional.ofNullable(req.getEmail())
+        .filter(email -> !email.equals(usr.getEmail()))
+        .ifPresent(email -> {
+            repUser.findByEmail(email)
+                    .ifPresent(u -> {
+                        throw new AcademyException(msgS.get("email.present"));
+                    });
+            usr.setEmail(email);
+        });
 		Optional.ofNullable(req.getNome()).ifPresent(t -> usr.setNome(t));
 		Optional.ofNullable(req.getCognome()).ifPresent(t -> usr.setCognome(t));
-		Optional.ofNullable(req.getEmail()).ifPresent(t -> usr.setEmail(t));
 		Optional.ofNullable(req.getTelefono()).ifPresent(t -> usr.setTelefono(t));
 		repUser.save(usr);		
 	}
@@ -116,16 +132,11 @@ public class UserImpl implements IUserServices{
 
 	@Override
 	public LoginDTO login(LogInReq req) throws Exception {
-		log.debug("Password inserita: {}", req.getPassword());
 	    Autenticazione aut = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
-		log.debug("Password DB: {}", aut.getPassword());
-		log.debug("Matches: {}", passwordEncoder.matches(req.getPassword(), aut.getPassword()));
-
 	    if (!passwordEncoder.matches(req.getPassword(), aut.getPassword())) {
 	        throw new AcademyException(msgS.get("login.error"));
 	    }
-
 	    String token = jwtService.generateToken(aut.getUsername());
 	    return new LoginDTO(token, UserMapper.toDTO(aut.getUser()));
 	}
@@ -150,14 +161,36 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void changePwd(ChangePwdReq req) throws Exception {
 	    Autenticazione user = repAut.findByUsername(req.getUsername())
-	            .orElseThrow(() -> new AcademyException("Utente non trovato"));
+	            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
 
 	    if (!passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
-	        throw new AcademyException("Password attuale errata");
+	        throw new AcademyException(msgS.get("user.wrong.password"));
 	    }
 
 	    user.setPassword(passwordEncoder.encode(req.getNewPassword()));
 
 	    repAut.save(user);
+	}
+	
+
+	@Override
+	@Transactional
+	public void changeUsername(ChangePwdReq req) throws Exception {
+		Autenticazione user = repAut.findByUsername(req.getUsername())
+	            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+		log.debug("old: {}", req.getOldPassword());
+		log.debug("db : {}", user.getPassword());
+		log.debug("match {}", passwordEncoder.matches(req.getOldPassword(), user.getPassword()));
+	    Optional.ofNullable(req.getNewUsername().trim())
+	            .filter(newUsername -> !newUsername.equals(user.getUsername()))
+	            .ifPresent(newUsername -> {
+	                repAut.findByUsername(newUsername)
+	                        .ifPresent(u -> {
+	                            throw new AcademyException(msgS.get("username.present"));
+	                        });
+	                user.setUsername(newUsername);
+	                repAut.save(user);
+	            });
+		
 	}
 }

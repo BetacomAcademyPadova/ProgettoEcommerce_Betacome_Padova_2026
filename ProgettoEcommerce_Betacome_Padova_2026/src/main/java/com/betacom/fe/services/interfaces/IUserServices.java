@@ -18,4 +18,5 @@ public interface IUserServices {
 	void setRuolo(String usr, String ruolo) throws Exception;
 	UserDTO getById(Integer usr) throws Exception;
 	void changePwd(ChangePwdReq req) throws Exception;
+	void changeUsername(ChangePwdReq req) throws Exception;
 }

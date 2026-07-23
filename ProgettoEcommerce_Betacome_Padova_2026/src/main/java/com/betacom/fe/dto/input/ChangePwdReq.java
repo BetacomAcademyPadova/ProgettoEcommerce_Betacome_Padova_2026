@@ -9,15 +9,18 @@ import lombok.Setter;
 @Setter
 public class ChangePwdReq {
 
-    @NotBlank
+    @NotBlank(groups = {ValidationGroups.ChgUsername.class, ValidationGroups.ChgPwd.class} , message ="user.username.req")
     private String username;
 
-    @NotBlank
+    @NotBlank(groups = ValidationGroups.ChgUsername.class, message ="user.username.req")
+    private String newUsername;
+    
+    @NotBlank(groups = ValidationGroups.ChgPwd.class , message ="user.password.req")
     private String oldPassword;
 
-	@NotBlank(groups = ValidationGroups.Login.class , message ="user.password.req")
+	@NotBlank(groups = ValidationGroups.ChgPwd.class , message ="user.password.req")
     @Pattern(
-            groups = ValidationGroups.Login.class,
+            groups = ValidationGroups.ChgPwd.class,
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&._#\\-])[A-Za-z\\d@$!%*?&._#\\-]{8,16}$",
             message = "user.password.pattern"
         )
