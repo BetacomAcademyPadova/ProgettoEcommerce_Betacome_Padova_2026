@@ -75,8 +75,14 @@ public class UserController {
     }
     
     @PutMapping("changePwd")
-    public ResponseEntity<ResponseDTO> changePwd(@RequestBody @Validated ChangePwdReq req) throws Exception {
+    public ResponseEntity<ResponseDTO> changePwd(@RequestBody @Validated(ValidationGroups.ChgPwd.class) ChangePwdReq req) throws Exception {
         userS.changePwd(req);
         return ResponseEntity.ok(ResponseDTO.builder().msg("password changed...").build());
+    }
+    
+    @PutMapping("changeUsername")
+    public ResponseEntity<ResponseDTO> changeUsername(@RequestBody @Validated(ValidationGroups.ChgUsername.class) ChangePwdReq req) throws Exception {
+        userS.changeUsername(req);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("username changed...").build());
     }
 }
