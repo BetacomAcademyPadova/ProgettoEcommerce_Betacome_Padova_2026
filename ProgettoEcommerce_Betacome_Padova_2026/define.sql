@@ -108,7 +108,6 @@
         sottocategoria integer,
         user_id integer,
         descrizione varchar(255) not null,
-        immagine varchar(255) not null,
         primary key (id_prodotto)
     );
 
