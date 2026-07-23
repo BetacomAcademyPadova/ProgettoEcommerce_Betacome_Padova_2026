@@ -138,7 +138,11 @@ public class UserImpl implements IUserServices{
 	        throw new AcademyException(msgS.get("login.error"));
 	    }
 	    String token = jwtService.generateToken(aut.getUsername());
-	    return new LoginDTO(token, UserMapper.toDTO(aut.getUser()));
+	    
+	    UserDTO userDto = UserMapper.toDTO(aut.getUser());
+	    userDto.setUsername(aut.getUsername());
+
+	    return new LoginDTO(token, userDto);
 	}
 	
 	@Override
