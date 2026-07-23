@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacom.fe.dto.output.NotificaDTO;
@@ -31,6 +34,13 @@ public class NotificaController {
                 notificaS.getNonLette(userId)
         );
     }
+    
+    @GetMapping("/tutteNonLette")
+    public ResponseEntity<List<NotificaDTO>> getTutteNonLette() throws Exception {
+        return ResponseEntity.ok(
+                notificaS.getTutteNonLette()
+        );
+    }
 
     @PutMapping("/segnaLetta/{idNotifica}")
     public ResponseEntity<ResponseDTO> segnaLetta(
@@ -42,6 +52,21 @@ public class NotificaController {
         return ResponseEntity.ok(
                 ResponseDTO.builder()
                         .msg("Notifica segnata come letta")
+                        .build()
+        );
+    }
+    
+    @PostMapping("/invia/{userId}")
+    public ResponseEntity<ResponseDTO> inviaRichiesta(
+            @PathVariable Integer userId,
+            @RequestParam String messaggio
+    ) throws Exception {
+        
+        notificaS.inviaRichiesta(userId, messaggio);
+
+        return ResponseEntity.ok(
+                ResponseDTO.builder()
+                        .msg("Richiesta inviata con successo")
                         .build()
         );
     }
