@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class ProdottiOrdineDTO {
 	
+	private Integer idItem;
 	private String prodotto;
     private Integer quantita;
     private Float prezzo;

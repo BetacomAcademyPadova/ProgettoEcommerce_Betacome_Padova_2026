@@ -5,6 +5,7 @@ import org.junit.platform.suite.api.Suite;
 
 import com.betacom.fe.carrello.CarrelloTest;
 import com.betacom.fe.carrello.ProdottiCarrelloTest;
+import com.betacom.fe.immagini.UploadTest;
 import com.betacom.fe.pagamento.PagamentiControllerTest;
 import com.betacom.fe.tipo.CategoriaTest;
 import com.betacom.fe.tipo.DivisioneProdottoTest;
@@ -39,6 +40,7 @@ import com.betacom.fe.user.UserTest;
 	CarrelloTest.class,
 	ProdottiCarrelloTest.class,
 	ProdottiOrdineTest.class,
+	UploadTest.class,
 	RicevutaTest.class,
 	NotificaTest.class,
 	PagamentiControllerTest.class,

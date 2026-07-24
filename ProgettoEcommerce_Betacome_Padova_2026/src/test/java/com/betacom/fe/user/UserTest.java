@@ -163,10 +163,11 @@ public class UserTest {
 	
 	@Test
 	@Order(7)
-	public void changePwdTest() throws Exception {
+	public void changePwdAndUsernameTest() throws Exception {
 
 	    ChangePwdReq req = new ChangePwdReq();
 	    req.setUsername("user3");
+	    req.setNewUsername("user33");
 	    req.setOldPassword("User_3333");
 	    req.setNewPassword("User_1234");
 
@@ -175,8 +176,13 @@ public class UserTest {
 	            .content(objectMapper.writeValueAsString(req)))
 	            .andExpect(status().isOk());
 
+	    mockMvc.perform(put("/rest/User/changeUsername")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .content(objectMapper.writeValueAsString(req)))
+	            .andExpect(status().isOk());
+	    
 	    LogInReq login = new LogInReq();
-	    login.setUsername("user3");
+	    login.setUsername("user33");
 	    login.setPassword("User_1234");
 
 	    mockMvc.perform(post("/rest/User/login")
@@ -184,4 +190,6 @@ public class UserTest {
 	            .content(objectMapper.writeValueAsString(login)))
 	            .andExpect(status().isOk());
 	}
+	
+	
 }

@@ -10,4 +10,6 @@ public interface INotificaRepository
         extends JpaRepository<Notifica, Integer> {
 
 	List<Notifica> findByUser_UserIdAndLettaFalse(Integer userId);
+	
+	List<Notifica> findByLettaFalse();
 }
