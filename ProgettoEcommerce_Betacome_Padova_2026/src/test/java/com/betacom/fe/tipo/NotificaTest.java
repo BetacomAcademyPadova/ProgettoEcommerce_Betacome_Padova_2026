@@ -324,7 +324,8 @@ public class NotificaTest {
 
     @Test
     @Order(9)
-    public void accettaRichiestaTest() throws Exception {
+    public void accettaRichiestaTest() throws Exception 
+    {
         log.debug("accettaRichiestaTest");
 
         statoNotificaR.findByStato("ACCETTATA")
@@ -347,7 +348,8 @@ public class NotificaTest {
 
     @Test
     @Order(10)
-    public void rifiutaRichiestaTest() throws Exception {
+    public void rifiutaRichiestaTest() throws Exception 
+    {
         log.debug("rifiutaRichiestaTest");
 
         statoNotificaR.findByStato("RIFIUTATA")
