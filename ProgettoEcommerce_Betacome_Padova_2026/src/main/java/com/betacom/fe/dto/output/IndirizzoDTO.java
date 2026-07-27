@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @ToString
 public class IndirizzoDTO {
+	private Integer idIndirizzo;
     private String via;
     private String citta;
     private String cap;

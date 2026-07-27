@@ -6,6 +6,7 @@ import com.betacom.fe.models.StatoOrdine;
 public class StatoOrdineMapper {
 	public static StatoOrdineDTO toDTO(StatoOrdine r) {
 		return StatoOrdineDTO.builder()
+				.idStatoOrdine(r.getIdStato())
 				.statoOrdine(r.getStato())
 				.build();
 	}

@@ -27,9 +27,9 @@ public class OrdineController {
 	private final IOrdineServices ordS;
 	
 	@PostMapping("create")
-    public ResponseEntity<ResponseDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) OrdineReq req) throws Exception {
-		ordS.create(req);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
+    public ResponseEntity<OrdineDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) OrdineReq req) throws Exception {
+		Integer idOrdine = ordS.create(req);
+		return ResponseEntity.ok(OrdineDTO.builder().idOrdine(idOrdine).build());
 }
 	@GetMapping("getById/{idOrdine}")
     public ResponseEntity<OrdineDTO> getById(@PathVariable Integer idOrdine) throws Exception {

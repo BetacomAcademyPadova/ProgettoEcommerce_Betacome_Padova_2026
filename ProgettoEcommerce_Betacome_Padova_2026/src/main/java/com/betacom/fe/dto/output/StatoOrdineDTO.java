@@ -14,5 +14,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @ToString
 public class StatoOrdineDTO{
+	private Integer idStatoOrdine;
 	private String statoOrdine;
 }
