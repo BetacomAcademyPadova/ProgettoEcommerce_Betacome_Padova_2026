@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,9 +25,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.betacom.fe.dto.output.NotificaDTO;
 import com.betacom.fe.models.DivisioneProdotto;
 import com.betacom.fe.models.Notifica;
+import com.betacom.fe.models.StatoNotifica;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IDivisioneProdottoRepository;
 import com.betacom.fe.repositories.INotificaRepository;
+import com.betacom.fe.repositories.IStatoNotificaRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -49,6 +52,9 @@ public class NotificaTest {
 
     @Autowired
     private IDivisioneProdottoRepository divisioneR;
+    
+    @Autowired
+    private IStatoNotificaRepository statoNotificaR;
 
     private static Integer idNotifica;
     private static Integer userId;
@@ -66,6 +72,13 @@ public class NotificaTest {
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "Nessuna divisione prodotto presente nel database"));
+        
+        StatoNotifica statoIniziale = statoNotificaR.findByStato("IN ATTESA")
+                .orElseGet(() -> {
+                    StatoNotifica nuovoStato = new StatoNotifica();
+                    nuovoStato.setStato("IN ATTESA");
+                    return statoNotificaR.save(nuovoStato);
+                });
 
 
         User venditore = divisione
@@ -95,6 +108,7 @@ public class NotificaTest {
         notifica.setDataScadenza(dataCreazione.plusMonths(3));
         notifica.setUser(venditore);
         notifica.setDivisioneProdotto(divisione);
+        notifica.setStatoNotifica(statoIniziale);
 
         Notifica notificaSalvata = notificaR.save(notifica);
 
