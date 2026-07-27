@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,9 +25,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.betacom.fe.dto.output.NotificaDTO;
 import com.betacom.fe.models.DivisioneProdotto;
 import com.betacom.fe.models.Notifica;
+import com.betacom.fe.models.StatoNotifica;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IDivisioneProdottoRepository;
 import com.betacom.fe.repositories.INotificaRepository;
+import com.betacom.fe.repositories.IStatoNotificaRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -49,6 +52,9 @@ public class NotificaTest {
 
     @Autowired
     private IDivisioneProdottoRepository divisioneR;
+    
+    @Autowired
+    private IStatoNotificaRepository statoNotificaR;
 
     private static Integer idNotifica;
     private static Integer userId;
@@ -66,6 +72,13 @@ public class NotificaTest {
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "Nessuna divisione prodotto presente nel database"));
+        
+        StatoNotifica statoIniziale = statoNotificaR.findByStato("IN ATTESA")
+                .orElseGet(() -> {
+                    StatoNotifica nuovoStato = new StatoNotifica();
+                    nuovoStato.setStato("IN ATTESA");
+                    return statoNotificaR.save(nuovoStato);
+                });
 
 
         User venditore = divisione
@@ -95,6 +108,7 @@ public class NotificaTest {
         notifica.setDataScadenza(dataCreazione.plusMonths(3));
         notifica.setUser(venditore);
         notifica.setDivisioneProdotto(divisione);
+        notifica.setStatoNotifica(statoIniziale);
 
         Notifica notificaSalvata = notificaR.save(notifica);
 
@@ -263,5 +277,96 @@ public class NotificaTest {
                         put("/rest/Notifica/segnaLetta/99999")
                 )
                 .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    @Order(7)
+    public void inviaRichiestaTest() throws Exception 
+    {
+        log.debug("inviaRichiestaTest");
+
+        assertNotNull(userId, "userId non valorizzato dai test precedenti");
+
+        MvcResult result = mockMvc.perform(
+                        post("/rest/Notifica/invia/" + userId)
+                                .param("messaggio", "[Supporto] Test di invio richiesta da test")
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertNotNull(result);
+        log.debug("Richiesta inviata con successo");
+    }
+
+    @Test
+    @Order(8)
+    public void getRichiesteUtenteTest() throws Exception {
+        log.debug("getRichiesteUtenteTest");
+
+        assertNotNull(userId, "userId non valorizzato dai test precedenti");
+
+        MvcResult result = mockMvc.perform(
+                        get("/rest/Notifica/utente/" + userId))
+                .andExpect(status().isOk()) 
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+        List<NotificaDTO> notifiche = objectMapper.readValue(
+                json,
+                new TypeReference<List<NotificaDTO>>() {}
+        );
+
+        assertNotNull(notifiche);
+        assertFalse(notifiche.isEmpty());
+
+        log.debug("Storico richieste utente recuperato correttamente: {}", notifiche.size());
+    }
+
+    @Test
+    @Order(9)
+    public void accettaRichiestaTest() throws Exception 
+    {
+        log.debug("accettaRichiestaTest");
+
+        statoNotificaR.findByStato("ACCETTATA")
+                .orElseGet(() -> {
+                    StatoNotifica s = new StatoNotifica();
+                    s.setStato("ACCETTATA");
+                    return statoNotificaR.save(s);
+                });
+
+        List<Notifica> lista = notificaR.findAll();
+        assertFalse(lista.isEmpty());
+        Integer idRichiesta = lista.get(lista.size() - 1).getIdNotifica();
+
+        mockMvc.perform(
+                        put("/rest/Notifica/accetta/" + idRichiesta))
+                .andExpect(status().isOk());
+
+        log.debug("Richiesta {} accettata con successo", idRichiesta);
+    }
+
+    @Test
+    @Order(10)
+    public void rifiutaRichiestaTest() throws Exception 
+    {
+        log.debug("rifiutaRichiestaTest");
+
+        statoNotificaR.findByStato("RIFIUTATA")
+                .orElseGet(() -> {
+                    StatoNotifica s = new StatoNotifica();
+                    s.setStato("RIFIUTATA");
+                    return statoNotificaR.save(s);
+                });
+
+        List<Notifica> lista = notificaR.findAll();
+        assertFalse(lista.isEmpty());
+        Integer idRichiesta = lista.get(lista.size() - 1).getIdNotifica();
+
+        mockMvc.perform(
+                        put("/rest/Notifica/rifiuta/" + idRichiesta))
+                .andExpect(status().isOk());
+
+        log.debug("Richiesta {} rifiutata con successo", idRichiesta);
     }
 }
