@@ -26,6 +26,7 @@ bin/
 node_modules/
 dist/
 coverage/
+uploads/
 
 npm-debug.log*
 yarn-debug.log*

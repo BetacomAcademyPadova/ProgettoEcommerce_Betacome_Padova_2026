@@ -21,4 +21,5 @@ public class NotificaDTO {
     private Boolean letta;
     private LocalDateTime dataCreazione;
     private LocalDateTime dataScadenza;
+    private StatoNotificaDTO statoNotifica;
 }

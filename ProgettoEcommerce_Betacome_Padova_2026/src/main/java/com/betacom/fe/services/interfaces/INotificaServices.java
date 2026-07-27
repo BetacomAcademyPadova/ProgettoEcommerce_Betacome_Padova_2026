@@ -13,6 +13,11 @@ public interface INotificaServices {
 
     List<NotificaDTO> getNonLette(Integer userId) throws Exception;
     List<NotificaDTO> getTutteNonLette() throws Exception;
+    
+    List<NotificaDTO> getRichiesteUtente(Integer userId) throws Exception;
 
     void segnaComeLetta(Integer idNotifica) throws Exception;
+    
+    void accettaRichiesta(Integer idNotifica) throws Exception;
+    void rifiutaRichiesta(Integer idNotifica) throws Exception;
 }
