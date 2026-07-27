@@ -15,4 +15,7 @@ public interface INotificaServices {
     List<NotificaDTO> getTutteNonLette() throws Exception;
 
     void segnaComeLetta(Integer idNotifica) throws Exception;
+    
+    void accettaRichiesta(Integer idNotifica) throws Exception;
+    void rifiutaRichiesta(Integer idNotifica) throws Exception;
 }

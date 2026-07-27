@@ -31,6 +31,10 @@ public class Notifica {
 	    private LocalDateTime dataScadenza;
 	    
 	    @ManyToOne
+	    @JoinColumn(name="stato_notifica")
+	    private StatoNotifica statoNotifica;
+	    
+	    @ManyToOne
 	    @JoinColumn(name = "user_id")
 	    @ToString.Exclude
 	    private User user;

@@ -23,6 +23,9 @@
        drop constraint if exists FKdmle6dltrunwlm6wtnf80w9xn;
 
     alter table if exists notifica 
+       drop constraint if exists FKej4h0igm3b26tabitwyhrn61h;
+
+    alter table if exists notifica 
        drop constraint if exists FKidcvlt3buox1ntjk032grklms;
 
     alter table if exists ordini 
@@ -120,6 +123,8 @@
     drop table if exists sconti cascade;
 
     drop table if exists sotto_categoria cascade;
+
+    drop table if exists stato_notifica cascade;
 
     drop table if exists stato_ordine cascade;
 
