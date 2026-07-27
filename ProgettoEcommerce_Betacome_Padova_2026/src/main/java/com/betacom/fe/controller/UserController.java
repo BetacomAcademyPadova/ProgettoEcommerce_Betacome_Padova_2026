@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.ChangePwdReq;
 import com.betacom.fe.dto.input.LogInReq;
+import com.betacom.fe.dto.input.PwdResetterReq;
+import com.betacom.fe.dto.input.PwdTokenReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.input.ValidationGroups;
 import com.betacom.fe.dto.output.LoginDTO;
@@ -84,5 +86,16 @@ public class UserController {
     public ResponseEntity<ResponseDTO> changeUsername(@RequestBody @Validated(ValidationGroups.ChgUsername.class) ChangePwdReq req) throws Exception {
         userS.changeUsername(req);
         return ResponseEntity.ok(ResponseDTO.builder().msg("username changed...").build());
+    }
+    
+    @PostMapping("forgotPassword")
+    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody PwdTokenReq req) throws Exception {
+        userS.forgotPassword(req);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("email inviata...").build());
+    }
+    @PostMapping("resetPassword")
+    public ResponseEntity<ResponseDTO> resetPassword(@Validated @RequestBody PwdResetterReq req) throws Exception {
+        userS.resetPassword(req);
+        return ResponseEntity.ok(ResponseDTO.builder().msg("password changed...").build());
     }
 }

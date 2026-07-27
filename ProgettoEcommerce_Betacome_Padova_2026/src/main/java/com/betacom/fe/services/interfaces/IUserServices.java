@@ -5,6 +5,8 @@ import java.util.List;
 import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.ChangePwdReq;
 import com.betacom.fe.dto.input.LogInReq;
+import com.betacom.fe.dto.input.PwdResetterReq;
+import com.betacom.fe.dto.input.PwdTokenReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.LoginDTO;
 import com.betacom.fe.dto.output.UserDTO;
@@ -19,4 +21,6 @@ public interface IUserServices {
 	UserDTO getById(Integer usr) throws Exception;
 	void changePwd(ChangePwdReq req) throws Exception;
 	void changeUsername(ChangePwdReq req) throws Exception;
+	void forgotPassword(PwdTokenReq req) throws Exception;
+	void resetPassword(PwdResetterReq req) throws Exception;
 }
