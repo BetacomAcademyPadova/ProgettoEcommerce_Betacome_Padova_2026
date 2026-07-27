@@ -41,8 +41,8 @@ public class ProdottiImpl implements IProdottiServices {
 	
 	@Transactional
 	@Override
-	public void create(ProdottoReq req) throws Exception {
-		
+	public Integer create(ProdottoReq req) throws Exception {
+
 	    SottoCategoria sottoCategoria = sottoCategoriaR
 	            .findById(req.getIdSottoCategoria())
 	            .orElseThrow(() ->
@@ -66,7 +66,9 @@ public class ProdottiImpl implements IProdottiServices {
 	    pro.setSottoCategoria(sottoCategoria);
 	    pro.setVenditore(usr);
 
-	    proR.save(pro);
+	    Prodotti prodottoSalvato = proR.save(pro);
+
+	    return prodottoSalvato.getIdProdotto();
 	}
 
 	@Transactional
