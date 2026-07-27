@@ -278,4 +278,95 @@ public class NotificaTest {
                 )
                 .andExpect(status().isBadRequest());
     }
+    
+    @Test
+    @Order(7)
+    public void inviaRichiestaTest() throws Exception 
+    {
+        log.debug("inviaRichiestaTest");
+
+        assertNotNull(userId, "userId non valorizzato dai test precedenti");
+
+        MvcResult result = mockMvc.perform(
+                        post("/rest/Notifica/invia/" + userId)
+                                .param("messaggio", "[Supporto] Test di invio richiesta da test")
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertNotNull(result);
+        log.debug("Richiesta inviata con successo");
+    }
+
+    @Test
+    @Order(8)
+    public void getRichiesteUtenteTest() throws Exception {
+        log.debug("getRichiesteUtenteTest");
+
+        assertNotNull(userId, "userId non valorizzato dai test precedenti");
+
+        MvcResult result = mockMvc.perform(
+                        get("/rest/Notifica/utente/" + userId))
+                .andExpect(status().isOk()) 
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+        List<NotificaDTO> notifiche = objectMapper.readValue(
+                json,
+                new TypeReference<List<NotificaDTO>>() {}
+        );
+
+        assertNotNull(notifiche);
+        assertFalse(notifiche.isEmpty());
+
+        log.debug("Storico richieste utente recuperato correttamente: {}", notifiche.size());
+    }
+
+    @Test
+    @Order(9)
+    public void accettaRichiestaTest() throws Exception 
+    {
+        log.debug("accettaRichiestaTest");
+
+        statoNotificaR.findByStato("ACCETTATA")
+                .orElseGet(() -> {
+                    StatoNotifica s = new StatoNotifica();
+                    s.setStato("ACCETTATA");
+                    return statoNotificaR.save(s);
+                });
+
+        List<Notifica> lista = notificaR.findAll();
+        assertFalse(lista.isEmpty());
+        Integer idRichiesta = lista.get(lista.size() - 1).getIdNotifica();
+
+        mockMvc.perform(
+                        put("/rest/Notifica/accetta/" + idRichiesta))
+                .andExpect(status().isOk());
+
+        log.debug("Richiesta {} accettata con successo", idRichiesta);
+    }
+
+    @Test
+    @Order(10)
+    public void rifiutaRichiestaTest() throws Exception 
+    {
+        log.debug("rifiutaRichiestaTest");
+
+        statoNotificaR.findByStato("RIFIUTATA")
+                .orElseGet(() -> {
+                    StatoNotifica s = new StatoNotifica();
+                    s.setStato("RIFIUTATA");
+                    return statoNotificaR.save(s);
+                });
+
+        List<Notifica> lista = notificaR.findAll();
+        assertFalse(lista.isEmpty());
+        Integer idRichiesta = lista.get(lista.size() - 1).getIdNotifica();
+
+        mockMvc.perform(
+                        put("/rest/Notifica/rifiuta/" + idRichiesta))
+                .andExpect(status().isOk());
+
+        log.debug("Richiesta {} rifiutata con successo", idRichiesta);
+    }
 }
