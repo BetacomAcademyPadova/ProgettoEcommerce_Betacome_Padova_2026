@@ -73,6 +73,9 @@
     alter table if exists prodotti_ordine 
        drop constraint if exists FKgb812bitx3s292cna1852ykjg;
 
+    alter table if exists pwd_reset 
+       drop constraint if exists FKfq1txlu3kkasgcguhs4wrmyb5;
+
     alter table if exists ricevuta 
        drop constraint if exists FKnob6wi8vsui2745e42pkabc9c;
 
@@ -115,6 +118,8 @@
     drop table if exists prodotti_carrello cascade;
 
     drop table if exists prodotti_ordine cascade;
+
+    drop table if exists pwd_reset cascade;
 
     drop table if exists ricevuta cascade;
 

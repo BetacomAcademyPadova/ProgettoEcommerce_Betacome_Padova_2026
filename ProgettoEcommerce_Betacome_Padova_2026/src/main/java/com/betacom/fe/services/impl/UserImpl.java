@@ -1,7 +1,9 @@
 package com.betacom.fe.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,18 +13,23 @@ import com.betacom.fe.config.JwtService;
 import com.betacom.fe.dto.input.AutentiacazioneReq;
 import com.betacom.fe.dto.input.ChangePwdReq;
 import com.betacom.fe.dto.input.LogInReq;
+import com.betacom.fe.dto.input.PwdResetterReq;
+import com.betacom.fe.dto.input.PwdTokenReq;
 import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.LoginDTO;
 import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.models.Autenticazione;
+import com.betacom.fe.models.ResetToken;
 import com.betacom.fe.models.Ruoli;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IAutenticazioneRepository;
+import com.betacom.fe.repositories.IPwdResetRepository;
 import com.betacom.fe.repositories.IRuoliRepository;
 import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IUserServices;
 import com.betacom.fe.utils.Normalizzazione;
+import com.betacom.fe.utils.ResetEmail;
 
 import jakarta.transaction.Transactional;
 
@@ -39,7 +46,11 @@ public class UserImpl implements IUserServices{
 
     @Autowired
     private JwtService jwtService;
-    
+	
+	@Autowired
+	private IPwdResetRepository pwdResetR;
+	@Autowired
+	private ResetEmail resetEmail;
 	private final IUserRepository repUser;
 	private final IRuoliRepository ruoloR;
 	private final IAutenticazioneRepository repAut;
@@ -194,5 +205,52 @@ public class UserImpl implements IUserServices{
 	                repAut.save(user);
 	            });
 		
+	}
+
+	@Override
+	@Transactional
+	public void forgotPassword(PwdTokenReq req) throws Exception {
+	    User user = repUser.findByEmail(req.getEmail())
+	            .orElseThrow(() -> new AcademyException("user.notfound"));
+
+	    ResetToken resetToken = pwdResetR.findByUser(user)
+	            .map(token -> {
+	                token.setTimer(LocalDateTime.now().plusMinutes(15));
+	                return token;
+	            })
+	            .orElseGet(() -> {
+	                ResetToken token = new ResetToken();
+	                token.setUser(user);
+	                token.setTimer(LocalDateTime.now().plusMinutes(15));
+	                return token;
+	            });
+
+	    resetToken = pwdResetR.save(resetToken);
+
+	    resetEmail.sendResetPasswordMail(
+	            user.getEmail(),
+	            user.getNome(),
+	            resetToken.getId().toString()
+	    );
+	}
+	
+	@Override
+	@Transactional
+	public void resetPassword(PwdResetterReq req) throws Exception {
+
+	    ResetToken resetToken = pwdResetR.findById(UUID.fromString(req.getToken()))
+	    		.orElseThrow(() -> new AcademyException("token.invalid"));
+
+	    if(resetToken.getTimer().isBefore(LocalDateTime.now())) {
+	        throw new AcademyException("token.expired");
+	    }
+
+	    User user = resetToken.getUser();
+	    user.getAutenticazione().setPassword(
+	        passwordEncoder.encode(req.getPassword())
+	    );
+
+	    repUser.save(user);
+	    pwdResetR.delete(resetToken);
 	}
 }
