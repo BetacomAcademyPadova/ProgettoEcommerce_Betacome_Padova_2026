@@ -58,4 +58,12 @@ public class CarrelloImpl implements ICarrelloServices {
 
         return CarrelloMapper.toDTO(carr);
     }
+    
+    @Override
+    public CarrelloDTO getByUser(Integer idUser) throws Exception {
+        Carrello carr = repCarr.findByUserId_UserId(idUser)
+                .orElseThrow(() -> new Exception("carrello.non.trovato"));
+
+        return CarrelloMapper.toDTO(carr);
+    }
 }

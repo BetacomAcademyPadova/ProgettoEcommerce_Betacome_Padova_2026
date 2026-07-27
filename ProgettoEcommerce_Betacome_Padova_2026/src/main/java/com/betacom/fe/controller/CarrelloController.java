@@ -40,4 +40,9 @@ public class CarrelloController {
     public ResponseEntity<CarrelloDTO> getById(@PathVariable Integer idCarrello) throws Exception {
     	return ResponseEntity.ok(carrelloS.getById(idCarrello));
     }
+    
+    @GetMapping("getByUser/{idUser}")
+    public ResponseEntity<CarrelloDTO> getByUser(@PathVariable Integer idUser) throws Exception {
+        return ResponseEntity.ok(carrelloS.getByUser(idUser));
+    }
 }

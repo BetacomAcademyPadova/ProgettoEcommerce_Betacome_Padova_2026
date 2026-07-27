@@ -132,5 +132,21 @@ public class CarrelloTest {
 		
 		log.debug(c.toString());
 	} 
+	
+	@Test
+	@Order(4)
+	public void getByIdUser() throws Exception{
+		log.debug("getByIdUser");
+		
+		MvcResult result = mockMvc.perform(get("/rest/Carrello/getByUser/2"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		CarrelloDTO c = objectMapper.readValue(json,CarrelloDTO.class);
+		
+		log.debug(c.toString());
+	} 
 
 }
