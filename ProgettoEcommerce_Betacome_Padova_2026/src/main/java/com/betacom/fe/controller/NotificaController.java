@@ -93,4 +93,12 @@ public class NotificaController {
                         .build()
         );
     }
+    
+    @GetMapping("/utente/{userId}")
+    public ResponseEntity<List<NotificaDTO>> getRichiesteUtente(@PathVariable Integer userId) throws Exception 
+    {
+        List<NotificaDTO> lista = notificaS.getRichiesteUtente(userId);
+        
+        return ResponseEntity.ok(lista);
+    }
 }

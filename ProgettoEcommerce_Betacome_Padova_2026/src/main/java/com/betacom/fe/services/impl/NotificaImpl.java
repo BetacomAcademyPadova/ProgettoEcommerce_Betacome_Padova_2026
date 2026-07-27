@@ -156,4 +156,15 @@ public class NotificaImpl implements INotificaServices {
         notifica.setLetta(true);
         notificaR.save(notifica);
 	}
+
+    @Transactional
+	@Override
+	public List<NotificaDTO> getRichiesteUtente(Integer userId) throws Exception 
+    {
+    	List<Notifica> notifiche = notificaR.findByUser_UserId(userId);
+    	
+        return notifiche.stream()
+        		.map(NotificaMapper::toDTO)
+                .toList();
+	}
 }
