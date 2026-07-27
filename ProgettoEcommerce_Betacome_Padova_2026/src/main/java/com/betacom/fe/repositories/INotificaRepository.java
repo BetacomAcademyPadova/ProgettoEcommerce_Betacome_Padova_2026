@@ -12,4 +12,6 @@ public interface INotificaRepository
 	List<Notifica> findByUser_UserIdAndLettaFalse(Integer userId);
 	
 	List<Notifica> findByLettaFalse();
+	
+	List<Notifica> findByUser_UserId(Integer userId);
 }
