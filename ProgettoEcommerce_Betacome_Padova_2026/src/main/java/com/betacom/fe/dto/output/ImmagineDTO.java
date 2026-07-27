@@ -14,13 +14,8 @@ import lombok.ToString;
 @Builder
 @ToString
 public class ImmagineDTO {
-
     private Integer id;
-
     private String nomeFile;
-
     private String url;
-
     private Boolean principale;
-
 }
