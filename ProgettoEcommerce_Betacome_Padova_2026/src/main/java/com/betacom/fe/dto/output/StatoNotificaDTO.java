@@ -1,21 +1,20 @@
 package com.betacom.fe.dto.output;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Getter
 @Setter
-@AllArgsConstructor
+@Getter
+@SuperBuilder
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @ToString
-public class ImmagineDTO {
-    private Integer id;
-    private String nomeFile;
-    private String url;
-    private Boolean principale;
+public class StatoNotificaDTO 
+{
+	private Integer idStato;
+	private String statoNotifica;
 }

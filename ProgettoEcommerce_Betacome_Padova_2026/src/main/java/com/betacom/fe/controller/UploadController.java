@@ -2,14 +2,17 @@ package com.betacom.fe.controller;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.betacom.fe.dto.input.ImmaginiReq;
 import com.betacom.fe.dto.output.ImmagineDTO;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.exception.AcademyException;
@@ -24,15 +27,16 @@ public class UploadController {
 	
 	private final IUploadServices uplS;
 	
-	@PostMapping(value = "/image", consumes = "multipart/form-data")
-	public ResponseEntity<ResponseDTO> uploadImage(@RequestParam("files") MultipartFile[] files,@RequestParam Integer id) throws Exception {
+	@PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<ResponseDTO> uploadImage(@ModelAttribute ImmaginiReq req) throws Exception {
+
 	    ResponseDTO r = new ResponseDTO();
-	    
-	    for (MultipartFile file : files) {
+
+	    for (MultipartFile file : req.getFiles()) {
 	        if (file.getContentType() == null || !file.getContentType().startsWith("image/")) {
 	            throw new AcademyException("upload_invalid");
 	        }
-	        uplS.saveImage(file, id);
+	        uplS.saveImage(file, req.getId());
 	    }
 
 	    r.setMsg("Upload completato");
@@ -44,8 +48,7 @@ public class UploadController {
 	    return uplS.getImages(id);
 	}
 	@GetMapping("/getUrl")
-	public ResponseEntity<ResponseDTO> getUrl(@RequestParam (required = true) String filename) 
-			throws  Exception{
+	public ResponseEntity<ResponseDTO> getUrl(@RequestParam (required = true) String filename) throws  Exception{
 		ResponseDTO r = new ResponseDTO();
 		r.setMsg(uplS.buildUrl(filename));
 		return ResponseEntity.ok(r);
