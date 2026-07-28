@@ -33,11 +33,11 @@ public class ProdottiOrdineController {
     	return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
     }
 	
-	@PutMapping("update")
-    public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) ProdottiOrdineReq req) throws Exception {
-		prodottiOrdineS.update(req);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
-    }
+//	@PutMapping("update")
+//    public ResponseEntity<ResponseDTO> update(@RequestBody(required = true) @Validated(ValidationGroups.Update.class) ProdottiOrdineReq req) throws Exception {
+//		prodottiOrdineS.update(req);
+//        return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
+//    }
 	
     @DeleteMapping("delete/{idItem}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idItem) throws Exception {

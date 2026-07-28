@@ -208,58 +208,43 @@ public class UserTest {
 	@Test
 	@Order(8)
 	public void forgotPasswordTest() throws Exception {
-
 	    PwdTokenReq req = new PwdTokenReq();
-
 	    req.setEmail("user1@mail.it");
-
 
 	    mockMvc.perform(post("/rest/User/forgotPassword")
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .content(objectMapper.writeValueAsString(req)))
 	            .andExpect(status().isOk());
 
-
 	    User user = userR.findByEmail("user1@mail.it")
 	            .orElseThrow();
-
 
 	    ResetToken token = pwdResetR.findByUser(user)
 	            .orElseThrow();
 
-
 	    assertNotNull(token);
-
 	    log.debug("Token Reset Test: {}", token.getId());
-
 	}
 	
 	@Test
 	@Order(9)
 	public void resetPasswordTest() throws Exception {
 
-
 	    User user = userR.findByEmail("user1@mail.it")
 	            .orElseThrow();
-
 
 	    ResetToken token = pwdResetR.findByUser(user)
 	            .orElseThrow();
 
-
-
 	    PwdResetterReq req = new PwdResetterReq();
 
 	    req.setToken(token.getId().toString());
-	    req.setPassword("New_User_1234");
-
-
+	    req.setPassword("New_Pwd_1234");
 
 	    mockMvc.perform(post("/rest/User/resetPassword")
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .content(objectMapper.writeValueAsString(req)))
 	            .andExpect(status().isOk());
-
 	}
 
 
@@ -267,20 +252,14 @@ public class UserTest {
 	@Test
 	@Order(10)
 	public void loginAfterResetPasswordTest() throws Exception {
-
-
 	    LogInReq req = new LogInReq();
 
 	    req.setUsername("user1");
-	    req.setPassword("New_User_1234");
-
-
+	    req.setPassword("New_Pwd_1234");
 
 	    mockMvc.perform(post("/rest/User/login")
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .content(objectMapper.writeValueAsString(req)))
 	            .andExpect(status().isOk());
-
 	}
-	
 }

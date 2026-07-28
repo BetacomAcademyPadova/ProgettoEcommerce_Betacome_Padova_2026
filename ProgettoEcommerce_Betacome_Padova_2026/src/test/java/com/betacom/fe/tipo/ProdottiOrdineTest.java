@@ -258,133 +258,133 @@ public class ProdottiOrdineTest {
         );
     }
     
-    @Test
-    @Order(11)
-    public void updateProdottiOrdineTest() throws Exception {
-        log.debug("updateProdottiOrdineTest");
-
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setIdItem(2);
-        req.setOrdineId(1);
-        req.setProdottoId(2);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
-
-        mockMvc.perform(put("/rest/ProdottiOrdine/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk());
-    }
-    
-    @Test
-    @Order(12)
-    public void updateProdottiOrdineNonTrovatoTest() throws Exception {
-        log.debug("updateProdottiOrdineNonTrovatoTest");
-
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setIdItem(999);
-        req.setOrdineId(1);
-        req.setProdottoId(2);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
-
-        MvcResult result = mockMvc.perform(put("/rest/ProdottiOrdine/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        ResponseDTO dto = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ResponseDTO.class);
-
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(13)
-    public void updateProdottiOrdineNonTrovatoTest2() throws Exception {
-        log.debug("updateProdottiOrdineNonTrovatoTest2");
-
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-
-        req.setIdItem(999);
-        req.setOrdineId(1);
-        req.setProdottoId(2);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
-
-        MvcResult result = mockMvc.perform(
-                put("/rest/ProdottiOrdine/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        ResponseDTO dto = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ResponseDTO.class);
-
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(14)
-    public void updateProdottiOrdineErroreTest() throws Exception {
-        log.debug("updateProdottiOrdineErroreTest");
-
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-
-        req.setIdItem(2);
-        req.setOrdineId(999);
-        req.setProdottoId(2);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
-
-        MvcResult result = mockMvc.perform(
-                put("/rest/ProdottiOrdine/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        ResponseDTO dto = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ResponseDTO.class);
-
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(15)
-    public void updateProdottiOrdineErroreTest2() throws Exception {
-        log.debug("updateProdottiOrdineErroreTest2");
-
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-
-        req.setIdItem(2);
-        req.setOrdineId(1);
-        req.setProdottoId(1);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
-
-        MvcResult result = mockMvc.perform(
-                put("/rest/ProdottiOrdine/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        ResponseDTO dto = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ResponseDTO.class);
-
-        log.debug(dto.getMsg());
-    }
+//    @Test
+//    @Order(11)
+//    public void updateProdottiOrdineTest() throws Exception {
+//        log.debug("updateProdottiOrdineTest");
+//
+//        ProdottiOrdineReq req = new ProdottiOrdineReq();
+//        req.setIdItem(2);
+//        req.setOrdineId(1);
+//        req.setProdottoId(2);
+//        req.setIndirizzoSpedizioneId(3);
+//        req.setProdottiCarrelloId(2);
+//        req.setDivisioneOrdineId(2);
+//
+//        mockMvc.perform(put("/rest/ProdottiOrdine/update")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isOk());
+//    }
+//    
+//    @Test
+//    @Order(12)
+//    public void updateProdottiOrdineNonTrovatoTest() throws Exception {
+//        log.debug("updateProdottiOrdineNonTrovatoTest");
+//
+//        ProdottiOrdineReq req = new ProdottiOrdineReq();
+//        req.setIdItem(999);
+//        req.setOrdineId(1);
+//        req.setProdottoId(2);
+//        req.setIndirizzoSpedizioneId(3);
+//        req.setProdottiCarrelloId(2);
+//        req.setDivisioneOrdineId(2);
+//
+//        MvcResult result = mockMvc.perform(put("/rest/ProdottiOrdine/update")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn();
+//
+//        ResponseDTO dto = objectMapper.readValue(
+//                result.getResponse().getContentAsString(),
+//                ResponseDTO.class);
+//
+//        log.debug(dto.getMsg());
+//    }
+//    
+//    @Test
+//    @Order(13)
+//    public void updateProdottiOrdineNonTrovatoTest2() throws Exception {
+//        log.debug("updateProdottiOrdineNonTrovatoTest2");
+//
+//        ProdottiOrdineReq req = new ProdottiOrdineReq();
+//
+//        req.setIdItem(999);
+//        req.setOrdineId(1);
+//        req.setProdottoId(2);
+//        req.setIndirizzoSpedizioneId(3);
+//        req.setProdottiCarrelloId(2);
+//        req.setDivisioneOrdineId(2);
+//
+//        MvcResult result = mockMvc.perform(
+//                put("/rest/ProdottiOrdine/update")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn();
+//
+//        ResponseDTO dto = objectMapper.readValue(
+//                result.getResponse().getContentAsString(),
+//                ResponseDTO.class);
+//
+//        log.debug(dto.getMsg());
+//    }
+//    
+//    @Test
+//    @Order(14)
+//    public void updateProdottiOrdineErroreTest() throws Exception {
+//        log.debug("updateProdottiOrdineErroreTest");
+//
+//        ProdottiOrdineReq req = new ProdottiOrdineReq();
+//
+//        req.setIdItem(2);
+//        req.setOrdineId(999);
+//        req.setProdottoId(2);
+//        req.setIndirizzoSpedizioneId(3);
+//        req.setProdottiCarrelloId(2);
+//        req.setDivisioneOrdineId(2);
+//
+//        MvcResult result = mockMvc.perform(
+//                put("/rest/ProdottiOrdine/update")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn();
+//
+//        ResponseDTO dto = objectMapper.readValue(
+//                result.getResponse().getContentAsString(),
+//                ResponseDTO.class);
+//
+//        log.debug(dto.getMsg());
+//    }
+//    
+//    @Test
+//    @Order(15)
+//    public void updateProdottiOrdineErroreTest2() throws Exception {
+//        log.debug("updateProdottiOrdineErroreTest2");
+//
+//        ProdottiOrdineReq req = new ProdottiOrdineReq();
+//
+//        req.setIdItem(2);
+//        req.setOrdineId(1);
+//        req.setProdottoId(1);
+//        req.setIndirizzoSpedizioneId(3);
+//        req.setProdottiCarrelloId(2);
+//        req.setDivisioneOrdineId(2);
+//
+//        MvcResult result = mockMvc.perform(
+//                put("/rest/ProdottiOrdine/update")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn();
+//
+//        ResponseDTO dto = objectMapper.readValue(
+//                result.getResponse().getContentAsString(),
+//                ResponseDTO.class);
+//
+//        log.debug(dto.getMsg());
+//    }
 
 }
