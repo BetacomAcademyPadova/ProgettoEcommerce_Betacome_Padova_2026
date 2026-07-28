@@ -37,7 +37,7 @@ public class OrdineImpl implements IOrdineServices {
 	
 	@Transactional
 	@Override
-	public void create(OrdineReq req) throws Exception {
+	public Integer create(OrdineReq req) throws Exception {
 
 	    User user = usR.findById(req.getUserId())
 	        .orElseThrow(() ->
@@ -70,7 +70,8 @@ public class OrdineImpl implements IOrdineServices {
 	    ord.setIndirizzoFatturazione(indF);
 	    ord.setStato(stato);
 
-	    ordR.save(ord);
+	    Ordini salvato = ordR.save(ord);
+	    return salvato.getIdOrdine();
 	}
 
 	@Transactional

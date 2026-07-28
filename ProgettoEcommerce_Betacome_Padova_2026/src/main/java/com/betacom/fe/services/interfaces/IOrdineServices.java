@@ -7,7 +7,7 @@ import com.betacom.fe.dto.output.OrdineDTO;
 
 public interface IOrdineServices {
 
-	void create(OrdineReq req) throws Exception;
+	Integer create(OrdineReq req) throws Exception;
 	OrdineDTO getById(Integer idOrdine) throws Exception;
 	List<OrdineDTO> getAll() throws Exception;
 	List<OrdineDTO> getAllByUserId(Integer UserId) throws Exception;
