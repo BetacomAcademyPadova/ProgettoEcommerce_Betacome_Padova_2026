@@ -45,8 +45,7 @@ import com.betacom.fe.user.UserTest;
 	RicevutaTest.class,
 	NotificaTest.class,
 	PagamentiControllerTest.class,
-	DeleteUserTest.class,
-	RicevutaJwtTest.class
+	DeleteUserTest.class
 })
 public class SuiteClass {
 }

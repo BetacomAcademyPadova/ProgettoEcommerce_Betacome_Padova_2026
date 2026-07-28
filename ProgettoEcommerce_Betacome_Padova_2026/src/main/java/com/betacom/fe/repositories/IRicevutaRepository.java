@@ -14,13 +14,23 @@ public interface IRicevutaRepository extends JpaRepository<Ricevuta, Integer>{
 
     Optional<Ricevuta> findTopByOrderByIdFatturaDesc();
 
-    //List<Ricevuta> findByVenditoreUserId(Integer venditoreId);
-
     List<Ricevuta> findByOrdineUserIdUserIdOrderByDataEmissioneDesc(Integer userId);
+
+
+    List<Ricevuta> findByOrdineUserIdUserIdAndDataEmissioneBetween(
+            Integer userId,
+            LocalDate dataInizio,
+            LocalDate dataFine
+    );
+
+    List<Ricevuta> findByVenditoreUserIdOrderByDataEmissioneDesc(
+            Integer userId
+    );
     
-    List<Ricevuta> findByOrdineUserIdUserIdAndDataEmissioneBetween(Integer userId, LocalDate dataInizio, LocalDate dataFine);
-    
-    List<Ricevuta> findByVenditoreUserIdOrderByDataEmissioneDesc(Integer userId);
-    
-    List<Ricevuta> findByVenditoreUserIdAndDataEmissioneBetween(Integer userId, LocalDate dataInizio, LocalDate dataFine);
+    List<Ricevuta> findByVenditoreUserIdAndDataEmissioneBetween(
+            Integer userId,
+            LocalDate dataInizio,
+            LocalDate dataFine
+    );
+
 }

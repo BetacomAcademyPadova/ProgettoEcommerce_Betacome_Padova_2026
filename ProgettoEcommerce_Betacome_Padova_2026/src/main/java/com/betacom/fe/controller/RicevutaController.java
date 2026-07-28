@@ -96,42 +96,56 @@ public class RicevutaController {
 //    }
 
 
-    @GetMapping("user")
-    public ResponseEntity<List<RicevutaDTO>> getRicevute(@AuthenticationPrincipal Jwt jwt) throws Exception {
-        String username = jwt.getSubject();
-        return ResponseEntity.ok(ricevutaS.getByUser(username));
-    }
-
-    @GetMapping("user/date")
-    public ResponseEntity<List<RicevutaDTO>> getRicevuteUserByDate(
-            @AuthenticationPrincipal Jwt jwt,
-            @RequestParam LocalDate dataInizio,
-            @RequestParam LocalDate dataFine
+    @GetMapping("user/{userId}")
+    public ResponseEntity<List<RicevutaDTO>> getRicevuteUser(
+            @PathVariable Integer userId
     ) throws Exception {
-        String username = jwt.getSubject();
+
         return ResponseEntity.ok(
-                ricevutaS.getByUserAndDateRange(username, dataInizio, dataFine)
+                ricevutaS.getByUserId(userId)
         );
     }
 
-    @GetMapping("venditore")
-    public ResponseEntity<List<RicevutaDTO>> getRicevuteVenditore(
-            @AuthenticationPrincipal Jwt jwt
-    ) throws Exception {
-
-        String username = jwt.getSubject();
-
-        return ResponseEntity.ok(ricevutaS.getRicevuteVenditore(username));
-    }
-
-
-    @GetMapping("venditore/date")
-    public ResponseEntity<List<RicevutaDTO>> getRicevuteVenditoreByDate(
-            @AuthenticationPrincipal Jwt jwt,
+    @GetMapping("user/{userId}/date")
+    public ResponseEntity<List<RicevutaDTO>> getRicevuteUserByDate(
+            @PathVariable Integer userId,
             @RequestParam LocalDate dataInizio,
             @RequestParam LocalDate dataFine
     ) throws Exception {
-        String username = jwt.getSubject();
-        return ResponseEntity.ok(ricevutaS.getRicevuteVenditoreByDateRange(username, dataInizio, dataFine));
+
+        return ResponseEntity.ok(
+                ricevutaS.getByUserIdAndDateRange(
+                        userId,
+                        dataInizio,
+                        dataFine
+                )
+        );
+    }
+
+    @GetMapping("venditore/{venditoreId}")
+    public ResponseEntity<List<RicevutaDTO>> getRicevuteVenditore(
+            @PathVariable Integer venditoreId
+    ) throws Exception {
+
+        return ResponseEntity.ok(
+                ricevutaS.getRicevuteVenditore(venditoreId)
+        );
+    }
+
+
+    @GetMapping("venditore/{venditoreId}/date")
+    public ResponseEntity<List<RicevutaDTO>> getRicevuteVenditoreByDate(
+            @PathVariable Integer venditoreId,
+            @RequestParam LocalDate dataInizio,
+            @RequestParam LocalDate dataFine
+    ) throws Exception {
+
+        return ResponseEntity.ok(
+                ricevutaS.getRicevuteVenditoreByDateRange(
+                        venditoreId,
+                        dataInizio,
+                        dataFine
+                )
+        );
     }
 }

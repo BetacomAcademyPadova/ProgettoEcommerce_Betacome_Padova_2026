@@ -204,6 +204,128 @@ public class RicevutaImpl implements IRicevutaServices{
 	    return String.format("FT-%04d", progressivo);
 	}
 
+	@Override
+	public List<RicevutaDTO> getByUserId(Integer userId) throws Exception {
+
+	    List<Ricevuta> ricevute = ricR.findByOrdineUserIdUserIdOrderByDataEmissioneDesc(userId);
+
+	    return ricevute.stream()
+	            .map(ricevuta -> {
+
+	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
+
+	                List<ProdottiOrdineDTO> prodotti =
+	                        proordR.findByOrdine(ricevuta.getOrdine())
+	                        .stream()
+	                        .map(ProdottiOrdineMapper::toDTO)
+	                        .toList();
+
+	                dto.setProdotti(prodotti);
+	                return dto;
+
+	            }).toList();
+	}
+
+	@Override
+	public List<RicevutaDTO> getByUserIdAndDateRange(
+	        Integer userId,
+	        LocalDate dataInizio,
+	        LocalDate dataFine
+	) throws Exception {
+
+	    List<Ricevuta> ricevute =
+	            ricR.findByOrdineUserIdUserIdAndDataEmissioneBetween(
+	                    userId,
+	                    dataInizio,
+	                    dataFine
+	            );
+
+
+	    return ricevute.stream()
+	            .map(ricevuta -> {
+
+	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
+
+	                List<ProdottiOrdineDTO> prodotti =
+	                        proordR.findByOrdine(ricevuta.getOrdine())
+	                        .stream()
+	                        .map(ProdottiOrdineMapper::toDTO)
+	                        .toList();
+
+	                dto.setProdotti(prodotti);
+	                return dto;
+
+	            }).toList();
+	}
+
+	@Override
+	public List<RicevutaDTO> getRicevuteVenditore(
+	        Integer venditoreId
+	) throws Exception {
+
+	    List<Ricevuta> ricevute = ricR.findByVenditoreUserIdOrderByDataEmissioneDesc(venditoreId);
+
+	    return ricevute.stream()
+	            .map(ricevuta -> {
+
+	                RicevutaDTO dto =
+	                        RicevutaMapper.toDTO(ricevuta);
+
+	                List<ProdottiOrdineDTO> prodotti =
+	                        proordR.findByOrdine(ricevuta.getOrdine())
+	                        .stream()
+	                        .filter(po ->
+	                                po.getProdotto()
+	                                .getVenditore()
+	                                .getUserId()
+	                                .equals(venditoreId)
+	                        )
+	                        .map(ProdottiOrdineMapper::toDTO)
+	                        .toList();
+
+	                dto.setProdotti(prodotti);
+	                return dto;
+	            }).toList();
+	}
+
+	@Override
+	public List<RicevutaDTO> getRicevuteVenditoreByDateRange(
+	        Integer venditoreId,
+	        LocalDate dataInizio,
+	        LocalDate dataFine
+	) throws Exception {
+
+	    List<Ricevuta> ricevute =
+	            ricR.findByVenditoreUserIdAndDataEmissioneBetween(
+	                    venditoreId,
+	                    dataInizio,
+	                    dataFine
+	            );
+
+	    return ricevute.stream()
+	            .map(ricevuta -> {
+
+	                RicevutaDTO dto =
+	                        RicevutaMapper.toDTO(ricevuta);
+
+	                List<ProdottiOrdineDTO> prodotti =
+	                        proordR
+	                        .findByOrdine(ricevuta.getOrdine())
+	                        .stream()
+	                        .filter(po ->
+	                                po.getProdotto()
+	                                .getVenditore()
+	                                .getUserId()
+	                                .equals(venditoreId)
+	                        )
+	                        .map(ProdottiOrdineMapper::toDTO)
+	                        .toList();
+
+	                dto.setProdotti(prodotti);
+	                return dto;
+	            }).toList();
+	}
+
 //	@Override
 //	public List<RicevutaDTO> getByVenditore(Integer venditoreId) throws Exception {
 //
@@ -233,160 +355,7 @@ public class RicevutaImpl implements IRicevutaServices{
 //	            }).toList();
 //	}
 
-	@Override
-	public List<RicevutaDTO> getByUser(String username) throws Exception {
 
-	    Autenticazione auth = authR.findByUsername(username)
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("Utente non trovato")));
-
-	    Integer userId = auth.getUser().getUserId();
-
-	    List<Ricevuta> ricevute =
-	            ricR.findByOrdineUserIdUserIdOrderByDataEmissioneDesc(userId);
-
-	    return ricevute.stream()
-	            .map(ricevuta -> {
-
-	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
-
-	                List<ProdottiOrdineDTO> prodotti = proordR
-	                        .findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .filter(po -> po.getProdotto()
-	                                .getVenditore()
-	                                .equals(ricevuta.getVenditore()))
-	                        .map(ProdottiOrdineMapper::toDTO)
-	                        .toList();
-
-	                dto.setProdotti(prodotti);
-
-	                return dto;
-	            })
-	            .toList();
-	}
-
-	@Override
-	public List<RicevutaDTO> getByUserAndDateRange(String username, LocalDate dataInizio, LocalDate dataFine) throws Exception {
-
-	    Autenticazione auth = authR.findByUsername(username)
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("Utente non trovato")));
-
-	    Integer userId = auth.getUser().getUserId();
-
-	    List<Ricevuta> ricevute =
-	            ricR.findByOrdineUserIdUserIdAndDataEmissioneBetween(
-	                    userId,
-	                    dataInizio,
-	                    dataFine
-	            );
-
-	    return ricevute.stream()
-	            .map(ricevuta -> {
-
-	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
-
-	                List<ProdottiOrdineDTO> prodotti = proordR
-	                        .findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .map(ProdottiOrdineMapper::toDTO)
-	                        .toList();
-
-	                dto.setProdotti(prodotti);
-
-	                return dto;
-	            })
-	            .toList();
-	}
-
-	@Override
-	public List<RicevutaDTO> getRicevuteVenditore(String username) throws Exception {
-
-	    Autenticazione auth = authR.findByUsername(username)
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("Utente non trovato")));
-
-	    Integer userId = auth.getUser().getUserId();
-
-	    List<Ricevuta> ricevute =
-	            ricR.findByVenditoreUserIdOrderByDataEmissioneDesc(userId);
-
-	    return ricevute.stream()
-	            .map(ricevuta -> {
-
-	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
-
-	                List<ProdottiOrdineDTO> prodotti = proordR
-	                        .findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .filter(po -> po.getProdotto()
-	                                .getVenditore()
-	                                .getUserId()
-	                                .equals(userId))
-	                        .map(po -> {
-	                            ProdottiOrdineDTO prodottoDTO = new ProdottiOrdineDTO();
-	                            prodottoDTO.setIdItem(po.getIdItem());
-	                            prodottoDTO.setProdotto(po.getProdotto().getDescrizione());
-	                            prodottoDTO.setQuantita(po.getQuantita());
-	                            prodottoDTO.setPrezzo(po.getPrezzo());
-
-	                            return prodottoDTO;
-	                        })
-	                        .toList();
-
-	                dto.setProdotti(prodotti);
-
-	                return dto;
-	            })
-	            .toList();
-	}
-
-	@Override
-	public List<RicevutaDTO> getRicevuteVenditoreByDateRange(String username, LocalDate dataInizio, LocalDate dataFine) throws Exception {
-
-	    Autenticazione auth = authR.findByUsername(username)
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("Utente non trovato")));
-
-	    Integer userId = auth.getUser().getUserId();
-
-	    List<Ricevuta> ricevute =
-	            ricR.findByVenditoreUserIdAndDataEmissioneBetween(
-	                    userId,
-	                    dataInizio,
-	                    dataFine
-	            );
-
-	    return ricevute.stream()
-	            .map(ricevuta -> {
-
-	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
-
-	                List<ProdottiOrdineDTO> prodotti = proordR
-	                        .findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .filter(po -> po.getProdotto()
-	                                .getVenditore()
-	                                .getUserId()
-	                                .equals(userId))
-	                        .map(po -> {
-	                            ProdottiOrdineDTO prodottoDTO = new ProdottiOrdineDTO();
-	                            prodottoDTO.setIdItem(po.getIdItem());
-	                            prodottoDTO.setProdotto(po.getProdotto().getDescrizione());
-	                            prodottoDTO.setQuantita(po.getQuantita());
-	                            prodottoDTO.setPrezzo(po.getPrezzo());
-
-	                            return prodottoDTO;
-	                        })
-	                        .toList();
-
-	                dto.setProdotti(prodotti);
-
-	                return dto;
-	            })
-	            .toList();
-	}
 
 	
 
