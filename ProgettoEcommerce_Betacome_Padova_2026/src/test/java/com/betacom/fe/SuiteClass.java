@@ -13,7 +13,6 @@ import com.betacom.fe.tipo.NotificaTest;
 import com.betacom.fe.tipo.OrdineTest;
 import com.betacom.fe.tipo.ProdottiOrdineTest;
 import com.betacom.fe.tipo.ProdottoTest;
-import com.betacom.fe.tipo.RicevutaJwtTest;
 import com.betacom.fe.tipo.RicevutaTest;
 import com.betacom.fe.tipo.RuoliTest;
 import com.betacom.fe.tipo.ScontoTest;
