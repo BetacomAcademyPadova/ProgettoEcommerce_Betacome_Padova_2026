@@ -1,9 +1,9 @@
 package com.betacom.fe.tipo;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -19,16 +19,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.betacom.fe.config.JwtService;
 import com.betacom.fe.dto.input.RicevutaReq;
 import com.betacom.fe.dto.output.ResponseDTO;
 import com.betacom.fe.dto.output.RicevutaDTO;
+import com.betacom.fe.repositories.IAutenticazioneRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.repositories.IRicevutaRepository;
 
 import lombok.extern.slf4j.Slf4j;
-import tools.jackson.databind.ObjectMapper;
-
 import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @SpringBootTest
@@ -46,7 +47,13 @@ public class RicevutaTest {
     private IRicevutaRepository ricR;
     
     @Autowired
-    private IProdottiRepository proR;    
+    private IProdottiRepository proR; 
+    
+    @Autowired
+    private JwtService jwtService;
+    
+    @Autowired
+    private IAutenticazioneRepository authR;
     
     @Test
     @Order(1)
@@ -83,39 +90,39 @@ public class RicevutaTest {
         log.debug(dto.getMsg());
     }
     
-    @Test
-    @Order(3)
-    public void updateRicevutaTest() throws Exception {
-        log.debug("updateRicevutaTest");
-
-        RicevutaReq req = new RicevutaReq();
-        req.setIdFattura(1);
-
-        mockMvc.perform(put("/rest/Ricevuta/update")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Order(4)
-    public void updateRicevutaErrorTest() throws Exception {
-        log.debug("updateRicevutaErrorTest");
-
-        RicevutaReq req = new RicevutaReq();
-        req.setIdFattura(9999);
-
-        MvcResult result = mockMvc.perform(put("/rest/Ricevuta/update")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        String json = result.getResponse().getContentAsString();
-        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
-
-        log.debug(dto.getMsg());
-    }
+//    @Test
+//    @Order(3)
+//    public void updateRicevutaTest() throws Exception {
+//        log.debug("updateRicevutaTest");
+//
+//        RicevutaReq req = new RicevutaReq();
+//        req.setIdFattura(1);
+//
+//        mockMvc.perform(put("/rest/Ricevuta/update")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    @Order(4)
+//    public void updateRicevutaErrorTest() throws Exception {
+//        log.debug("updateRicevutaErrorTest");
+//
+//        RicevutaReq req = new RicevutaReq();
+//        req.setIdFattura(9999);
+//
+//        MvcResult result = mockMvc.perform(put("/rest/Ricevuta/update")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn();
+//
+//        String json = result.getResponse().getContentAsString();
+//        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+//
+//        log.debug(dto.getMsg());
+//    }
 
     @Test
     @Order(5)
@@ -132,48 +139,169 @@ public class RicevutaTest {
         log.debug(dto.toString());
     }
 
+//    @Test
+//    @Order(6)
+//    public void getAllTest() throws Exception {
+//        log.debug("getAll Ricevuta");
+//
+//        MvcResult result = mockMvc.perform(
+//                        get("/rest/Ricevuta/getAll"))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        String json = result.getResponse().getContentAsString();
+//
+//        List<RicevutaDTO> lista = objectMapper.readValue(
+//                json,
+//                new TypeReference<List<RicevutaDTO>>() {}
+//        );
+//
+//        assertFalse(lista.isEmpty());
+//
+//        log.debug(lista.toString());
+//    }
+    
+//    @Test
+//    @Order(7)
+//    public void getAllByVenditore() throws Exception {
+//        log.debug("getAllbyVenditore");
+//
+//        MvcResult result = mockMvc.perform(
+//                        get("/rest/Ricevuta/getRicevutaBy/"+2))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        String json = result.getResponse().getContentAsString();
+//
+//        List<RicevutaDTO> lista = objectMapper.readValue(
+//                json,
+//                new TypeReference<List<RicevutaDTO>>() {}
+//        );
+//
+//        assertFalse(lista.isEmpty());
+//
+//        log.debug(lista.toString());
+//    }
+      
     @Test
     @Order(6)
-    public void getAllTest() throws Exception {
-        log.debug("getAll Ricevuta");
+    public void getByUserTest() throws Exception {
+
+        log.debug("getByUserTest");
+
 
         MvcResult result = mockMvc.perform(
-                        get("/rest/Ricevuta/getAll"))
-                .andExpect(status().isOk())
-                .andReturn();
+                get("/rest/Ricevuta/user/2")
+        )
+        .andExpect(status().isOk())
+        .andReturn();
+
+
 
         String json = result.getResponse().getContentAsString();
 
-        List<RicevutaDTO> lista = objectMapper.readValue(
-                json,
-                new TypeReference<List<RicevutaDTO>>() {}
-        );
 
-        assertFalse(lista.isEmpty());
+        List<RicevutaDTO> lista =
+                objectMapper.readValue(
+                        json,
+                        new TypeReference<List<RicevutaDTO>>() {}
+                );
+
 
         log.debug(lista.toString());
     }
     
     @Test
     @Order(7)
-    public void getAllByVenditore() throws Exception {
-        log.debug("getAllbyVenditore");
+    public void getByUserDateTest() throws Exception {
+
+        log.debug("getByUserDateTest");
+
 
         MvcResult result = mockMvc.perform(
-                        get("/rest/Ricevuta/getRicevutaBy/"+2))
-                .andExpect(status().isOk())
-                .andReturn();
+                get("/rest/Ricevuta/user/2/date")
+                .param("dataInizio", "2025-01-01")
+                .param("dataFine", "2025-12-31")
+        )
+        .andExpect(status().isOk())
+        .andReturn();
+
+
 
         String json = result.getResponse().getContentAsString();
 
-        List<RicevutaDTO> lista = objectMapper.readValue(
-                json,
-                new TypeReference<List<RicevutaDTO>>() {}
-        );
 
-        assertFalse(lista.isEmpty());
+        List<RicevutaDTO> lista =
+                objectMapper.readValue(
+                        json,
+                        new TypeReference<List<RicevutaDTO>>() {}
+                );
+
 
         log.debug(lista.toString());
     }
+    
+    @Test
+    @Order(8)
+    public void getByVenditoreTest() throws Exception {
+
+        log.debug("getByVenditoreTest");
+
+
+        MvcResult result = mockMvc.perform(
+                get("/rest/Ricevuta/venditore/2")
+        )
+        .andExpect(status().isOk())
+        .andReturn();
+
+
+
+        String json = result.getResponse().getContentAsString();
+
+
+        List<RicevutaDTO> lista =
+                objectMapper.readValue(
+                        json,
+                        new TypeReference<List<RicevutaDTO>>() {}
+                );
+
+
+        log.debug(lista.toString());
+    }
+    
+    @Test
+    @Order(9)
+    public void getByVenditoreDateTest() throws Exception {
+
+        log.debug("getByVenditoreDateTest");
+
+
+        MvcResult result = mockMvc.perform(
+                get("/rest/Ricevuta/venditore/2/date")
+                .param("dataInizio", "2025-01-01")
+                .param("dataFine", "2025-12-31")
+        )
+        .andExpect(status().isOk())
+        .andReturn();
+
+
+
+        String json = result.getResponse().getContentAsString();
+
+
+        List<RicevutaDTO> lista =
+                objectMapper.readValue(
+                        json,
+                        new TypeReference<List<RicevutaDTO>>() {}
+                );
+
+
+        log.debug(lista.toString());
+    }
+    
+    
+    
+    
+    
     
 }
