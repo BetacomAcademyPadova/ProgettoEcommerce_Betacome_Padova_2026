@@ -15,6 +15,7 @@ import com.betacom.fe.repositories.IDivisioneProdottoRepository;
 import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.services.interfaces.IDivisioneProdottoServices;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
+import com.betacom.fe.services.interfaces.INotificaServices;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 	private final IDivisioneProdottoRepository repDivP;
 	private final IProdottiRepository repP;
 	private final IMessaggioServices msgS;
+	private final INotificaServices notificaS;
 	
 	@Transactional
 	@Override
@@ -50,7 +52,11 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 		divProd.setStockAlert(req.getStockAlert());
 		divProd.setProdotto(p);
 		
-		repDivP.save(divProd);
+		DivisioneProdotto salvata = repDivP.save(divProd); 
+
+		if (salvata.getQuantitaDisponibile() <= salvata.getStockAlert()) {
+			notificaS.creaStockAlert(salvata);
+		}
 	}
 
 	@Transactional
@@ -77,7 +83,13 @@ public class DivisioneProdottoImpl implements IDivisioneProdottoServices
 	        divProd.setProdotto(p);
 	    }
 		
-		repDivP.save(divProd);
+		DivisioneProdotto aggiornata = repDivP.save(divProd);
+
+		if (aggiornata.getQuantitaDisponibile() != null && aggiornata.getStockAlert() != null 
+		    && aggiornata.getQuantitaDisponibile() <= aggiornata.getStockAlert()) 
+		{
+		    notificaS.creaStockAlert(aggiornata);
+		}
 	}
 
 	@Transactional

@@ -47,13 +47,15 @@ public class NotificaImpl implements INotificaServices {
         Notifica notifica = new Notifica();
 
         notifica.setMessaggio(
-                "Stock basso per il prodotto "
+                "[Stock basso] - Prodotto: "
                 + divisione.getProdotto().getDescrizione()
-                + ", colore "
+                + " | Colore: "
                 + divisione.getColore()
-                + ". Quantità rimasta: "
+                + " | Quantità rimasta: "
                 + divisione.getQuantitaDisponibile()
-        );
+                + " | Stock alert: "
+                + divisione.getStockAlert()
+                );
 
         notifica.setLetta(false);
         notifica.setDataCreazione(dataCreazione);
