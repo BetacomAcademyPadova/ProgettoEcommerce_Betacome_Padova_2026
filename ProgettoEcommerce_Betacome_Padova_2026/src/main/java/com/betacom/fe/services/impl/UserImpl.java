@@ -1,5 +1,6 @@
 package com.betacom.fe.services.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +20,12 @@ import com.betacom.fe.dto.input.UserReq;
 import com.betacom.fe.dto.output.LoginDTO;
 import com.betacom.fe.dto.output.UserDTO;
 import com.betacom.fe.models.Autenticazione;
+import com.betacom.fe.models.Carrello;
 import com.betacom.fe.models.ResetToken;
 import com.betacom.fe.models.Ruoli;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IAutenticazioneRepository;
+import com.betacom.fe.repositories.ICarrelloRepository;
 import com.betacom.fe.repositories.IPwdResetRepository;
 import com.betacom.fe.repositories.IRuoliRepository;
 import com.betacom.fe.repositories.IUserRepository;
@@ -56,6 +59,7 @@ public class UserImpl implements IUserServices{
 	private final IAutenticazioneRepository repAut;
     private final IMessaggioServices msgS;
     private final PasswordEncoder passwordEncoder;
+    private final ICarrelloRepository repCarr;
 	
 	@Override
 	@Transactional
@@ -81,6 +85,12 @@ public class UserImpl implements IUserServices{
 		aut.setPassword(passwordEncoder.encode(req.getPassword()));
 		aut.setUser(ut);
 		repAut.save(aut);
+		
+		Carrello carr = new Carrello();
+	    carr.setUserId(ut);
+	    carr.setDataUltimoAgg(LocalDate.now());
+
+	    repCarr.save(carr);
 	}
 
 	@Override

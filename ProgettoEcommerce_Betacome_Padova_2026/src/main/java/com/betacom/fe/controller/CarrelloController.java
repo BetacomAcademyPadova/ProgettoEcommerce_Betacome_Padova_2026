@@ -24,18 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class CarrelloController {
     private final ICarrelloServices carrelloS;
 
-    @PostMapping("create")
-    public ResponseEntity<ResponseDTO> create(@RequestBody(required = true) @Validated(ValidationGroups.Create.class) CarrelloReq req) throws Exception {
-    	carrelloS.create(req);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("created...").build());
-    }
-
-    @DeleteMapping("delete/{idCarrello}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idCarrello) throws Exception {
-    	carrelloS.delete(idCarrello);
-        return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());
-    }
-
     @GetMapping("getById/{idCarrello}")
     public ResponseEntity<CarrelloDTO> getById(@PathVariable Integer idCarrello) throws Exception {
     	return ResponseEntity.ok(carrelloS.getById(idCarrello));
