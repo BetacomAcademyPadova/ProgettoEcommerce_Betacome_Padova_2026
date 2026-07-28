@@ -161,8 +161,9 @@ public class ProdottiImpl implements IProdottiServices {
 	        );
 	    }
 	    
-		if (lista == null || lista.isEmpty()) 
-	        throw new AcademyException(msgS.get("prodotti.ntfnd"));
+		if (lista == null || lista.isEmpty()) {
+		    return List.of();
+		}
 		
 		return lista.stream()
 	            .map(p -> {
