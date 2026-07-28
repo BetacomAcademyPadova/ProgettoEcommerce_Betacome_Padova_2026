@@ -26,31 +26,6 @@ public class CarrelloImpl implements ICarrelloServices {
     private final IUserRepository repUser;
     private final IMessaggioServices msgS;
 
-    @Transactional
-    @Override
-    public void create(CarrelloReq req) throws Exception {
-        User usr = repUser.findById(req.getUserId())
-            .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
-
-        if (repCarr.existsByUserId_UserId(req.getUserId()))
-            throw new AcademyException(msgS.get("carrello.user.esiste"));
-        
-        Carrello carr = new Carrello();
-        carr.setDataUltimoAgg(LocalDate.now());
-        carr.setUserId(usr);
-
-        repCarr.save(carr);
-    }
-
-    @Transactional
-    @Override
-    public void delete(Integer idCarrello) throws Exception {
-        Carrello carr = repCarr.findById(idCarrello)
-            .orElseThrow(() -> new AcademyException(msgS.get("carrello.non.esiste")));
-
-        repCarr.delete(carr);
-    }
-
     @Override
     public CarrelloDTO getById(Integer idCarrello) throws Exception {
         Carrello carr = repCarr.findById(idCarrello)
