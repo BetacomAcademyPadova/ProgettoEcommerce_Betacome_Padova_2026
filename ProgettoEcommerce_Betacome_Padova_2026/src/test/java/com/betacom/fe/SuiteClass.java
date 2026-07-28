@@ -13,6 +13,7 @@ import com.betacom.fe.tipo.NotificaTest;
 import com.betacom.fe.tipo.OrdineTest;
 import com.betacom.fe.tipo.ProdottiOrdineTest;
 import com.betacom.fe.tipo.ProdottoTest;
+import com.betacom.fe.tipo.RicevutaJwtTest;
 import com.betacom.fe.tipo.RicevutaTest;
 import com.betacom.fe.tipo.RuoliTest;
 import com.betacom.fe.tipo.ScontoTest;
@@ -44,7 +45,8 @@ import com.betacom.fe.user.UserTest;
 	RicevutaTest.class,
 	NotificaTest.class,
 	PagamentiControllerTest.class,
-	DeleteUserTest.class
+	DeleteUserTest.class,
+	RicevutaJwtTest.class
 })
 public class SuiteClass {
 }
