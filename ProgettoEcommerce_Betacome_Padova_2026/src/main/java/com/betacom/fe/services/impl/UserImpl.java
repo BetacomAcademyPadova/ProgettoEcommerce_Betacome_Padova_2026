@@ -26,6 +26,7 @@ import com.betacom.fe.models.Ruoli;
 import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.IAutenticazioneRepository;
 import com.betacom.fe.repositories.ICarrelloRepository;
+import com.betacom.fe.repositories.IProdottiRepository;
 import com.betacom.fe.repositories.IPwdResetRepository;
 import com.betacom.fe.repositories.IRuoliRepository;
 import com.betacom.fe.repositories.IUserRepository;
@@ -60,6 +61,7 @@ public class UserImpl implements IUserServices{
     private final IMessaggioServices msgS;
     private final PasswordEncoder passwordEncoder;
     private final ICarrelloRepository repCarr;
+    private final IProdottiRepository repProdotti;
 	
 	@Override
 	@Transactional
@@ -118,6 +120,11 @@ public class UserImpl implements IUserServices{
 	public void delete(Integer idUser) throws Exception {
 		User usr = repUser.findById(idUser)
 				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+		
+		boolean hasProdotti = repProdotti.existsByVenditore_UserId(idUser);
+		if (hasProdotti) 
+			throw new AcademyException("Questo venditore ha dei prodotti attivi e non può essere eliminato.");
+		
 		repUser.delete(usr);
 	}
 
