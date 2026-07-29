@@ -205,4 +205,13 @@ public class ProdottiImpl implements IProdottiServices {
 	    
 	    return dto;
 	}
+
+	@Transactional
+	@Override
+	public List<ProdottoDTO> getProdottiByVenditore(Integer userId) throws Exception {
+		List<Prodotti> prodotti = proR.findByVenditore_UserId(userId);
+	    return prodotti.stream()
+	            .map(this::getProdottoConPrezzoCalcolato)
+	            .toList();
+	}
 }

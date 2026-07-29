@@ -68,6 +68,11 @@ public class ProdottoController {
 	    return ResponseEntity.ok(proS.getById(idProdotto));
 	    }
 	
+	@GetMapping("venditore/{userId}")
+	public ResponseEntity<List<ProdottoDTO>> getProdottiByVenditore(@PathVariable Integer userId) throws Exception {
+	    return ResponseEntity.ok(proS.getProdottiByVenditore(userId));
+	}
+	
 	@GetMapping("getAll")
 	    public ResponseEntity<List<ProdottoDTO>> getAll() throws Exception {
 	    return ResponseEntity.ok(proS.getAll());
