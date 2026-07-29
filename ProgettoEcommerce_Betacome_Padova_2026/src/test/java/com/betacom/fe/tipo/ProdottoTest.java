@@ -232,5 +232,28 @@ public class ProdottoTest {
         log.info("Prezzo testato con successo: {}", dto.getPrezzo());
     }
     
+    @Test
+    @Order(11)
+    public void getProdottiByVenditoreTest() throws Exception {
+        log.debug("Test get prodotti by venditore");
+
+        Integer userId = 2;
+
+        MvcResult result = mockMvc.perform(
+                get("/rest/Prodotto/venditore/" + userId))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        List<ProdottoDTO> lista = objectMapper.readValue(
+                json,
+                new TypeReference<List<ProdottoDTO>>() {}
+        );
+
+        assertFalse(lista.isEmpty());
+
+        log.debug("Prodotti trovati per il venditore {}: {}", userId, lista.size());
+    }
 }
 
