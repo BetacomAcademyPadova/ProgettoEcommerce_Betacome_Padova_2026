@@ -169,7 +169,7 @@ public class ProdottiImpl implements IProdottiServices {
 	            .map(p -> {
 	                Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
 	                ProdottoDTO dto = ProdottoMapper.buildListByParams(p, req, s);
-	                
+	                dto.setPrezzoOriginale(p.getPrezzo());
 	                LocalDate oggi = LocalDate.now();
 	                if (s != null && !oggi.isBefore(s.getDataInizio()) && !oggi.isAfter(s.getDataFine())) 
 	                {
@@ -193,6 +193,8 @@ public class ProdottiImpl implements IProdottiServices {
 	            .orElse(null);
 
 	    ProdottoDTO dto = ProdottoMapper.toDTO(p, s);
+
+	    dto.setPrezzoOriginale(p.getPrezzo());
 
 	    if (s != null) 
 	    {
