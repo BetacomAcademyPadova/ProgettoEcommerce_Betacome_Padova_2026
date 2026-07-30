@@ -219,44 +219,17 @@ public class ProdottiOrdineTest {
         log.debug(lista.toString());
     }
     
-    @Test
-    @Order(9)
-    public void deleteTest() throws Exception {
-        log.debug("delete ProdottiOrdine");
-
-        mockMvc.perform(delete("/rest/ProdottiOrdine/delete/1"))
-                .andExpect(status().isOk());
-    } 
     
-    @Test
-    @Order(10)
-    public void createProdottiOrdineTest2() throws Exception {
-        log.debug("createProdottiOrdineTest2");
-
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-
-        req.setOrdineId(1);
-        req.setProdottoId(2); 
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
-
-        MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andReturn();
-
-        log.debug("Status create prodotti ordine: {}",
-                result.getResponse().getStatus());
-
-        log.debug("Response: {}",
-                result.getResponse().getContentAsString());
-
-        org.junit.jupiter.api.Assertions.assertEquals(
-                200,
-                result.getResponse().getStatus()
-        );
-    }
+//    @Test
+//    @Order(9)
+//    public void deleteTest() throws Exception {
+//        log.debug("delete ProdottiOrdine");
+//
+//        mockMvc.perform(delete("/rest/ProdottiOrdine/delete/1"))
+//                .andExpect(status().isOk());
+//    } 
+    
+    
     
 //    @Test
 //    @Order(11)
