@@ -12,6 +12,7 @@ import com.stripe.model.PaymentMethod;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import com.betacom.fe.dto.input.PaymentIntentReq;
+import com.betacom.fe.dto.input.RicevutaReq;
 import com.betacom.fe.dto.output.MetodoPagamentoDTO;
 import com.betacom.fe.dto.output.PaymentIntentDTO;
 import com.betacom.fe.exception.AcademyException;
@@ -25,6 +26,7 @@ import com.betacom.fe.repositories.IPagamentiRepository;
 import com.betacom.fe.repositories.IStatoPagamentoRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IPagamentiServices;
+import com.betacom.fe.services.interfaces.IRicevutaServices;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class PagamentiImpl implements IPagamentiServices {
     private final IStatoPagamentoRepository statoRep;
     private final IMetodoPagamentoRepository metodoRep;
     private final IMessaggioServices msgS;
+    private final IRicevutaServices ricevutaS;
 
     @Override
     @Transactional
@@ -120,6 +123,7 @@ public class PagamentiImpl implements IPagamentiServices {
 
         pagamento.setStatoPagamento(completato);
         pagRep.save(pagamento);
+        creaRicevute(pagamento.getOrdine().getIdOrdine());
         log.info("Pagamento {} confermato, metodo: {}", transazioneId, pagamento.getMetodoPagamento());
     }
 
@@ -162,5 +166,15 @@ public class PagamentiImpl implements IPagamentiServices {
 	                    .dettagli(m.getDettagli())
 	                    .build())
 	            .toList();
+	}
+	
+	private void creaRicevute(Integer idOrdine) throws Exception {
+
+	    RicevutaReq req = new RicevutaReq();
+	    req.setOrdineId(idOrdine);
+
+	    ricevutaS.create(req);
+
+	    log.info("Ricevute create per ordine {}", idOrdine);
 	}
 }
