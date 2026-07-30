@@ -84,24 +84,17 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
     public void update(ProdottiCarrelloReq req) throws Exception {
         ProdottiCarrello riga = repProdCarr.findById(req.getIdRiga())
             .orElseThrow(() -> new AcademyException(msgS.get("prodotti.carrello.non.esiste")));
-        
-        DivisioneProdotto divisione = repDiv.findById(req.getIdDivisioneProdotto())
-                .orElseThrow(() -> new AcademyException(msgS.get("divisione.prodotto.non.esiste")));
-        
-        Prodotti prodotto = repProd.findById(divisione.getProdotto().getIdProdotto())
-        		.orElseThrow(() -> new AcademyException(msgS.get("prodotto.non.esiste")));
 
-        controllaDisponibilita(riga.getDivisione(), req.getQuantita());
+        // la riga sa già a quale divisione punta: non serve chiederla al client
+        DivisioneProdotto divisione = riga.getDivisione();
+
+        controllaDisponibilita(divisione, req.getQuantita());
 
         riga.setQuantita(req.getQuantita());
-        ProdottoDTO pDto = proS.getById(prodotto.getIdProdotto());
-        riga.setPrezzo(pDto.getPrezzo());
-
         repProdCarr.save(riga);
 
         Carrello carrello = riga.getCarrello();
         carrello.setDataUltimoAgg(LocalDate.now());
-
         repCarr.save(carrello);
     }
 

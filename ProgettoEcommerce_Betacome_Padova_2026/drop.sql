@@ -68,9 +68,6 @@
        drop constraint if exists FKoryut1a41bxv1hvmqxv3few9q;
 
     alter table if exists prodotti_ordine 
-       drop constraint if exists FK459dtacis5888l6l2qyrsr2ib;
-
-    alter table if exists prodotti_ordine 
        drop constraint if exists FKgb812bitx3s292cna1852ykjg;
 
     alter table if exists pwd_reset 

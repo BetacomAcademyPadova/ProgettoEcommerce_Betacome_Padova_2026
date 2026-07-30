@@ -11,6 +11,8 @@ public class ProdottiCarrelloMapper {
             .idRiga(riga.getIdRiga())
             .idCarrello(riga.getCarrello().getIdCarrello())
             .idDivisioneProdotto(riga.getDivisione().getIdDivisione())
+            .quantita(riga.getQuantita())
+            .prezzo(riga.getPrezzo())
             .subtotale(subtotale)
             .build(); 
     }

@@ -12,19 +12,25 @@ import com.stripe.model.PaymentMethod;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import com.betacom.fe.dto.input.PaymentIntentReq;
+import com.betacom.fe.dto.input.RicevutaReq;
 import com.betacom.fe.dto.output.MetodoPagamentoDTO;
 import com.betacom.fe.dto.output.PaymentIntentDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.models.MetodoPagamento;
 import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Pagamenti;
+import com.betacom.fe.models.StatoOrdine;
 import com.betacom.fe.models.StatoPagamento;
+import com.betacom.fe.repositories.ICarrelloRepository;
 import com.betacom.fe.repositories.IMetodoPagamentoRepository;
 import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IPagamentiRepository;
+import com.betacom.fe.repositories.IProdottiCarrelloRepository;
+import com.betacom.fe.repositories.IStatoOrdineRepository;
 import com.betacom.fe.repositories.IStatoPagamentoRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IPagamentiServices;
+import com.betacom.fe.services.interfaces.IRicevutaServices;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +46,11 @@ public class PagamentiImpl implements IPagamentiServices {
     private final IStatoPagamentoRepository statoRep;
     private final IMetodoPagamentoRepository metodoRep;
     private final IMessaggioServices msgS;
+    private final IRicevutaServices ricevutaS;
+    private final IOrdineRepository ordineRep;
+    private final IStatoOrdineRepository statoOrdRep;
+    private final ICarrelloRepository carR;
+    private final IProdottiCarrelloRepository proCarR;
 
     @Override
     @Transactional
@@ -93,7 +104,11 @@ public class PagamentiImpl implements IPagamentiServices {
     public void markSucceeded(String transazioneId, String paymentMethodId) throws Exception {
         Pagamenti pagamento = pagRep.findByTransazioneId(transazioneId)
                 .orElseThrow(() -> new AcademyException(msgS.get("pagamento.no.exists")));
-
+        if (pagamento.getStatoPagamento() != null
+                && "Completato".equals(pagamento.getStatoPagamento().getStato())) {
+            log.info("Pagamento {} già completato, evento ignorato", transazioneId);
+            return;
+        }
         StatoPagamento completato = statoRep.findByStato("Completato")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
@@ -102,16 +117,14 @@ public class PagamentiImpl implements IPagamentiServices {
         if (paymentMethodId != null) {
             PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
 
-            // ALWAYS record what was used
             pagamento.setMetodoPagamento(pm.getType()); // "card", "satispay", ...
 
-            // Only if the user asked to save it: create the wallet row and link it
             if (Boolean.TRUE.equals(pagamento.getSalvato()) && "card".equals(pm.getType())) {
                 MetodoPagamento nuovoMP = new MetodoPagamento();
                 nuovoMP.setTipo(pm.getType());
                 nuovoMP.setDettagli(buildDettagli(pm));
                 nuovoMP.setIsPredefinito(false);
-                nuovoMP.setUserId(pagamento.getOrdine().getUserId()); // user comes from the order
+                nuovoMP.setUserId(pagamento.getOrdine().getUserId()); 
                 metodoRep.save(nuovoMP);
 
                 pagamento.setMetodoSalvato(nuovoMP);
@@ -120,13 +133,38 @@ public class PagamentiImpl implements IPagamentiServices {
 
         pagamento.setStatoPagamento(completato);
         pagRep.save(pagamento);
-        log.info("Pagamento {} confermato, metodo: {}", transazioneId, pagamento.getMetodoPagamento());
+
+        // l'ordine passa a Confermato
+        Ordini ordine = pagamento.getOrdine();
+        StatoOrdine confermato = statoOrdRep.findByStato("Confermato")
+                .orElseThrow(() -> new AcademyException(msgS.get("stato.ordine.non.esiste")));
+        ordine.setStato(confermato);
+        ordineRep.save(ordine);
+        
+     // svuota il carrello solo ora che il pagamento è confermato
+        carR.findByUserId_UserId(ordine.getUserId().getUserId())
+            .ifPresent(c -> proCarR.deleteByCarrelloIdCarrello(c.getIdCarrello()));
+
+     // emette la ricevuta (una per venditore)
+        // fuori dal percorso critico: il pagamento è già stato incassato da Stripe,
+        // un errore qui non deve annullare lo stato del pagamento
+        try {
+            RicevutaReq rReq = new RicevutaReq();
+            rReq.setOrdineId(ordine.getIdOrdine());
+            ricevutaS.create(rReq);
+        } catch (Exception e) {
+            log.error("Ricevuta non emessa per ordine {}: {}",
+                    ordine.getIdOrdine(), e.getMessage(), e);
+        }
+
+        log.info("Pagamento {} confermato, ordine {} confermato, ricevuta emessa",
+                transazioneId, ordine.getIdOrdine());
     }
 
-    // Human-readable description of the method
+
     private String buildDettagli(PaymentMethod pm) {
         if ("card".equals(pm.getType()) && pm.getCard() != null) {
-            return pm.getCard().getBrand() + " **** " + pm.getCard().getLast4(); // "visa **** 4242"
+            return pm.getCard().getBrand() + " **** " + pm.getCard().getLast4(); 
         }
         return pm.getType();
     }

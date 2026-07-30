@@ -52,7 +52,7 @@ public class RicevutaImpl implements IRicevutaServices{
 	    List<ProdottiOrdine> prodottiOrdine = proordR.findByOrdine(ordine);
 
 	    if (prodottiOrdine.isEmpty()) {
-	        throw new AcademyException(msgS.get("L'ordine non contiene prodotti"));
+	        throw new AcademyException(msgS.get("ordine.senza.prodotti"));
 	    }
 
 	    Map<User, List<ProdottiOrdine>> prodottiPerVenditore =
@@ -64,15 +64,16 @@ public class RicevutaImpl implements IRicevutaServices{
 
 	        User venditore = entry.getKey();
 	        List<ProdottiOrdine> prodottiVenditore = entry.getValue();
-
-	        float imponibile = 0F;
+	        
+	        float lordo = 0F;
 
 	        for (ProdottiOrdine po : prodottiVenditore) {
-	            imponibile += po.getPrezzo() * po.getQuantita();
+	            lordo += po.getPrezzo() * po.getQuantita();
 	        }
 
-	        float iva = imponibile * 0.22F;
-	        float totale = imponibile + iva;
+	        float imponibile = lordo / 1.22F;   // prezzi IVA inclusa
+	        float iva = lordo - imponibile;
+	        float totale = lordo;               // = quanto ha pagato il cliente
 
 	        Ricevuta ricevuta = new Ricevuta();
 
@@ -198,7 +199,15 @@ public class RicevutaImpl implements IRicevutaServices{
 	                .getNumeroFattura()
 	                .replace("FT-", "");
 
-	        progressivo = Integer.parseInt(numero) + 1;
+//	        progressivo = Integer.parseInt(numero) + 1;
+	        
+	        try {
+	            progressivo = Integer.parseInt(numero) + 1;
+	        } catch (NumberFormatException e) {
+	            log.warn("numero_fattura fuori formato FT-nnnn: {} — uso l'id come progressivo",
+	                    ultima.get().getNumeroFattura());
+	            progressivo = ultima.get().getIdFattura() + 1;
+	        }
 	    }
 
 	    return String.format("FT-%04d", progressivo);
