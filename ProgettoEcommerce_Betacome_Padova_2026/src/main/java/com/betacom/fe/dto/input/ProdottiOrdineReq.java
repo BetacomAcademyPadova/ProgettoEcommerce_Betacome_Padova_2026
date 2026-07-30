@@ -10,10 +10,6 @@ import lombok.ToString;
 @ToString
 public class ProdottiOrdineReq {
 
-    @NotNull(groups = ValidationGroups.Update.class, 
-            message = "prodottiord.no.id")
-    private Integer idItem;
-
     @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class},
             message = "prodottiord.no.ord")
     private Integer ordineId;

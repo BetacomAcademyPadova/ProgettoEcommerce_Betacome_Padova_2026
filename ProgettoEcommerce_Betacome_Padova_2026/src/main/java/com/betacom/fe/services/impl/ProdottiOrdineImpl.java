@@ -202,23 +202,23 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 //	    }
 //	}
 
-	@Transactional
-	@Override
-	public void delete(Integer idItem) throws Exception {
-
-	    ProdottiOrdine prodOrd = prordR.findById(idItem)
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("prodotto.ordine.non.esiste")));
-
-	    DivisioneProdotto divisione = prodOrd.getDivisioneOrdine();
-
-	    divisione.setQuantitaDisponibile(
-	            divisione.getQuantitaDisponibile() + prodOrd.getQuantita()
-	    );
-
-	    divR.save(divisione);
-	    prordR.delete(prodOrd);
-	}
+//	@Transactional
+//	@Override
+//	public void delete(Integer idItem) throws Exception {
+//
+//	    ProdottiOrdine prodOrd = prordR.findById(idItem)
+//	            .orElseThrow(() ->
+//	                    new AcademyException(msgS.get("prodotto.ordine.non.esiste")));
+//
+//	    DivisioneProdotto divisione = prodOrd.getDivisioneOrdine();
+//
+//	    divisione.setQuantitaDisponibile(
+//	            divisione.getQuantitaDisponibile() + prodOrd.getQuantita()
+//	    );
+//
+//	    divR.save(divisione);
+//	    prordR.delete(prodOrd);
+//	}
 
 
 	@Override

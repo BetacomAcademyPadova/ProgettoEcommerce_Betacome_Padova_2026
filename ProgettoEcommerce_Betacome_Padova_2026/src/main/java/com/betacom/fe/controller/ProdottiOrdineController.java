@@ -39,10 +39,10 @@ public class ProdottiOrdineController {
 //        return ResponseEntity.ok(ResponseDTO.builder().msg("updated...").build());
 //    }
 	
-    @DeleteMapping("delete/{idItem}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idItem) throws Exception {
-    	prodottiOrdineS.delete(idItem);
-    	return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());    }
+//    @DeleteMapping("delete/{idItem}")
+//    public ResponseEntity<ResponseDTO> delete(@PathVariable Integer idItem) throws Exception {
+//    	prodottiOrdineS.delete(idItem);
+//    	return ResponseEntity.ok(ResponseDTO.builder().msg("deleted...").build());    }
 
     @GetMapping("getById/{idItem}")
     public ResponseEntity<ProdottiOrdineDTO> getById(@PathVariable Integer idItem) throws Exception {
