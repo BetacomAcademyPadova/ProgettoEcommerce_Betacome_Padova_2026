@@ -59,7 +59,7 @@ public class RuoliImpl implements IRuoliServices{
 	@Transactional
 	public void update(RuoloReq req, Integer idRuolo) throws Exception {
 		Ruoli ruolo = ruoliRep.findById(idRuolo)
-				.orElseThrow(() -> new AcademyException(msgS.get("ruolo.no.exists")));
+				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
 		
 		ruolo.setRuolo(Normalizzazione.norm(req.getRuolo()));
 		ruoliRep.save(ruolo);

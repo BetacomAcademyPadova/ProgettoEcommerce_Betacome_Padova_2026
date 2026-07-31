@@ -48,7 +48,7 @@ public class PagamentiImpl implements IPagamentiServices {
     @Transactional
     public PaymentIntentDTO createPaymentIntent(PaymentIntentReq req) throws Exception, StripeException {
         Ordini ordine = ordRep.findById(req.getIdOrdine())
-                .orElseThrow(() -> new AcademyException(msgS.get("ordine.no.exists")));
+                .orElseThrow(() -> new AcademyException(msgS.get("ordine.non.esiste")));
 
         Pagamenti pagamento = pagRep.findByOrdineIdOrdine(req.getIdOrdine())
                 .orElseGet(Pagamenti::new);
@@ -157,7 +157,7 @@ public class PagamentiImpl implements IPagamentiServices {
 	@Override
 	public List<MetodoPagamentoDTO> getMetodiSalvatiByOrdine(Integer idOrdine) throws Exception {
 		Ordini ordine = ordRep.findById(idOrdine)
-	            .orElseThrow(() -> new AcademyException(msgS.get("ordine.no.exists")));
+	            .orElseThrow(() -> new AcademyException(msgS.get("ordine.non.esiste")));
 
 	    return metodoRep.findByUserId(ordine.getUserId()).stream()
 	            .map(m -> MetodoPagamentoDTO.builder()

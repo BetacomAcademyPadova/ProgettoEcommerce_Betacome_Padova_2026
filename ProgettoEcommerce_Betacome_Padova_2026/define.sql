@@ -54,7 +54,7 @@
 
     create table messaggi_sistema (
         lang varchar(4) not null,
-        code varchar(20) not null,
+        code varchar(50) not null,
         messagio varchar(255),
         primary key (lang, code)
     );
