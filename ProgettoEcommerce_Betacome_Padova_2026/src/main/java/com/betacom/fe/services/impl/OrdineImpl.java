@@ -75,11 +75,13 @@ public class OrdineImpl implements IOrdineServices {
 	    if (righe.isEmpty())
 	        throw new AcademyException(msgS.get("carrello.vuoto"));
 
-	    // 1. riusa l'ordine gia' in attesa di pagamento invece di crearne uno
+	    // riusa l'ordine già in attesa di pagamento invece di crearne uno
 	    //    nuovo ogni volta che si torna sulla pagina di conferma
 	    Ordini ord = ordR
 	        .findFirstByUserId_UserIdAndStato_IdStatoOrderByIdOrdineDesc(
 	                user.getUserId(), stato.getIdStato())
+	        // ma non toccare un ordine il cui pagamento è già andato a buon fine
+	        // (es. webhook ancora non arrivato): in quel caso serve un ordine nuovo
 	        .filter(o -> pagR.findByOrdineIdOrdine(o.getIdOrdine())
 	                .map(p -> p.getStatoPagamento() == null
 	                       || !"Completato".equals(p.getStatoPagamento().getStato()))
@@ -99,7 +101,7 @@ public class OrdineImpl implements IOrdineServices {
 	        proOrdR.flush();
 	    }
 
-	    //  testata dell'ordine, totale provvisorio
+	    // testata dell'ordine, totale provvisorio
 	    ord.setData(req.getData() != null ? req.getData() : LocalDate.now());
 	    ord.setUserId(user);
 	    ord.setIndirizzoFatturazione(indF);
@@ -127,18 +129,18 @@ public class OrdineImpl implements IOrdineServices {
 	        po.setDivisioneOrdine(div);
 	        po.setProdotto(div.getProdotto());
 	        po.setQuantita(riga.getQuantita());
-	        po.setPrezzo(riga.getPrezzo());      // prezzo congelato dal carrello
+	        po.setPrezzo(riga.getPrezzo());      
 	        po.setIndirizzoSpedizione(indS);
 	        proOrdR.save(po);
 
-	        //  scala la giacenza
+	        // scala la giacenza
 	        div.setQuantitaDisponibile(div.getQuantitaDisponibile() - riga.getQuantita());
 	        divR.save(div);
 
 	        totale += riga.getPrezzo() * riga.getQuantita();
 	    }
 
-	    // totale calcolato dal server, non dal browser
+	    // totale calcolato dal server
 	    salvato.setTotale(totale);
 	    ordR.save(salvato);
 

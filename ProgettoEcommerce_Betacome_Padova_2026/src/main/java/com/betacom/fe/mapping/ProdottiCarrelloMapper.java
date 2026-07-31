@@ -8,12 +8,12 @@ public class ProdottiCarrelloMapper {
         Float subtotale = riga.getPrezzo() * riga.getQuantita();
 
         return ProdottiCarrelloDTO.builder()
-                .idRiga(riga.getIdRiga())
-                .idCarrello(riga.getCarrello().getIdCarrello())
-                .idDivisioneProdotto(riga.getDivisione().getIdDivisione())
-                .quantita(riga.getQuantita())
-                .prezzo(riga.getPrezzo())
-                .subtotale(subtotale)
-                .build(); 
+            .idRiga(riga.getIdRiga())
+            .idCarrello(riga.getCarrello().getIdCarrello())
+            .idDivisioneProdotto(riga.getDivisione().getIdDivisione())
+            .quantita(riga.getQuantita())
+            .prezzo(riga.getPrezzo())
+            .subtotale(subtotale)
+            .build(); 
     }
 }

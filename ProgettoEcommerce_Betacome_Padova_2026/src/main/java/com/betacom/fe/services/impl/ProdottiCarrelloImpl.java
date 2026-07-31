@@ -88,17 +88,16 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
         // la riga sa gia' a quale divisione punta: non serve chiederla al client
         DivisioneProdotto divisione = riga.getDivisione();
 
+        // la riga sa già a quale divisione punta: non serve chiederla al client
+        divisione = riga.getDivisione();
+
         controllaDisponibilita(divisione, req.getQuantita());
 
-        // il prezzo resta quello congelato al momento dell'aggiunta al carrello:
-        // non viene riletto a ogni modifica di quantita'
         riga.setQuantita(req.getQuantita());
-
         repProdCarr.save(riga);
 
         Carrello carrello = riga.getCarrello();
         carrello.setDataUltimoAgg(LocalDate.now());
-
         repCarr.save(carrello);
     }
 
