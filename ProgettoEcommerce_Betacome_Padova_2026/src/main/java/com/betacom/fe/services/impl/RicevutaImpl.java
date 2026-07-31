@@ -14,12 +14,10 @@ import com.betacom.fe.dto.output.RicevutaDTO;
 import com.betacom.fe.exception.AcademyException;
 import com.betacom.fe.mapping.ProdottiOrdineMapper;
 import com.betacom.fe.mapping.RicevutaMapper;
-import com.betacom.fe.models.Autenticazione;
 import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.ProdottiOrdine;
 import com.betacom.fe.models.Ricevuta;
 import com.betacom.fe.models.User;
-import com.betacom.fe.repositories.IAutenticazioneRepository;
 import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IProdottiOrdineRepository;
 import com.betacom.fe.repositories.IRicevutaRepository;
@@ -33,339 +31,197 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RicevutaImpl implements IRicevutaServices{
+public class RicevutaImpl implements IRicevutaServices {
+
 	private final IOrdineRepository ordR;
 	private final IProdottiOrdineRepository proordR;
 	private final IRicevutaRepository ricR;
 	private final IMessaggioServices msgS;
-	private final IAutenticazioneRepository authR;
 
-	
 	@Transactional
 	@Override
 	public void create(RicevutaReq req) throws Exception {
 
-	    Ordini ordine = ordR.findById(req.getOrdineId())
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("ordine.non.esiste")));
+		Ordini ordine = ordR.findById(req.getOrdineId())
+				.orElseThrow(() -> new AcademyException(msgS.get("ordine.non.esiste")));
 
-	    List<ProdottiOrdine> prodottiOrdine = proordR.findByOrdine(ordine);
+		List<ProdottiOrdine> prodottiOrdine = proordR.findByOrdine(ordine);
 
-	    if (prodottiOrdine.isEmpty()) {
-	        throw new AcademyException(msgS.get("ordine.senza.prodotti"));
-	    }
+		if (prodottiOrdine.isEmpty()) {
+			throw new AcademyException(msgS.get("L'ordine non contiene prodotti"));
+		}
 
-	    Map<User, List<ProdottiOrdine>> prodottiPerVenditore =
-	            prodottiOrdine.stream()
-	                    .collect(Collectors.groupingBy(
-	                            po -> po.getProdotto().getVenditore()));
+		Map<User, List<ProdottiOrdine>> prodottiPerVenditore = prodottiOrdine.stream()
+				.collect(Collectors.groupingBy(po -> po.getProdotto().getVenditore()));
 
-	    for (Map.Entry<User, List<ProdottiOrdine>> entry : prodottiPerVenditore.entrySet()) {
+		for (Map.Entry<User, List<ProdottiOrdine>> entry : prodottiPerVenditore.entrySet()) {
 
-	        User venditore = entry.getKey();
-	        List<ProdottiOrdine> prodottiVenditore = entry.getValue();
-	        
-	        float lordo = 0F;
+			User venditore = entry.getKey();
 
-	        for (ProdottiOrdine po : prodottiVenditore) {
-	            lordo += po.getPrezzo() * po.getQuantita();
-	        }
+			List<ProdottiOrdine> prodottiVenditore = entry.getValue();
 
-	        float imponibile = lordo / 1.22F;   // prezzi IVA inclusa
-	        float iva = lordo - imponibile;
-	        float totale = lordo;               // = quanto ha pagato il cliente
+			float imponibile = 0F;
 
-	        Ricevuta ricevuta = new Ricevuta();
+			for (ProdottiOrdine po : prodottiVenditore) {
 
-	        ricevuta.setOrdine(ordine);
-	        ricevuta.setVenditore(venditore);
-	        ricevuta.setNumeroFattura(generaNumeroFattura());
-	        ricevuta.setDataEmissione(LocalDate.now());
-	        ricevuta.setImponibile(imponibile);
-	        ricevuta.setIva(iva);
-	        ricevuta.setTotale(totale);
+				imponibile += po.getPrezzo() * po.getQuantita();
+			}
 
-	        ricR.save(ricevuta);
-	    }
+			float iva = imponibile * 0.22F;
+			float totale = imponibile + iva;
+
+			Ricevuta ricevuta = new Ricevuta();
+
+			ricevuta.setOrdine(ordine);
+			ricevuta.setVenditore(venditore);
+
+			ricevuta.setNumeroFattura(generaNumeroFattura());
+
+			ricevuta.setDataEmissione(LocalDate.now());
+
+			ricevuta.setImponibile(imponibile);
+
+			ricevuta.setIva(iva);
+
+			ricevuta.setTotale(totale);
+
+			ricR.save(ricevuta);
+		}
 	}
-	
-//	@Transactional
-//	@Override
-//	public void update(RicevutaReq req) throws Exception {
-//
-//	    Ricevuta ricevuta = ricR.findById(req.getIdFattura())
-//	            .orElseThrow(() ->
-//	                    new AcademyException(msgS.get("Ricevuta non trovata")));
-//
-//	    List<ProdottiOrdine> prodottiRicevuta = proordR.findByOrdine(ricevuta.getOrdine())
-//	            .stream()
-//	            .filter(po -> po.getProdotto()
-//	                    .getVenditore()
-//	                    .equals(ricevuta.getVenditore()))
-//	            .toList();
-//
-//	    if (prodottiRicevuta.isEmpty()) {
-//	        throw new AcademyException(
-//	                msgS.get("Nessun prodotto presente nella ricevuta"));
-//	    }
-//
-//	    float imponibile = (float) prodottiRicevuta.stream()
-//	            .mapToDouble(po -> po.getPrezzo() * po.getQuantita())
-//	            .sum();
-//
-//	    float iva = imponibile * 0.22F;
-//	    float totale = imponibile + iva;
-//
-//	    ricevuta.setImponibile(imponibile);
-//	    ricevuta.setIva(iva);
-//	    ricevuta.setTotale(totale);
-//
-//	    ricR.save(ricevuta);
-//	}
-	
+
 	@Override
 	public RicevutaDTO getById(Integer idRicevuta) throws Exception {
 
-	    Ricevuta ric = ricR.findById(idRicevuta)
-	            .orElseThrow(() ->
-	                    new AcademyException(msgS.get("Ricevuta non trovata")));
+		Ricevuta ricevuta = ricR.findById(idRicevuta)
+				.orElseThrow(() -> new AcademyException(msgS.get("Ricevuta non trovata")));
 
-	    RicevutaDTO dto = RicevutaMapper.toDTO(ric);
+		RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
 
-	    List<ProdottiOrdineDTO> prodotti = proordR.findByOrdine(ric.getOrdine())
-	            .stream()
-	            .filter(po -> po.getProdotto()
-	                    .getVenditore()
-	                    .equals(ric.getVenditore()))
-	            .map(po -> {
-	                ProdottiOrdineDTO dtoProdotto = new ProdottiOrdineDTO();
+		List<ProdottiOrdineDTO> prodotti = proordR.findByOrdine(ricevuta.getOrdine()).stream()
 
-	                dtoProdotto.setProdotto(
-	                        po.getProdotto().getDescrizione()
-	                );
+				.filter(po -> po.getProdotto().getVenditore().equals(ricevuta.getVenditore()))
 
-	                dtoProdotto.setQuantita(
-	                        po.getQuantita()
-	                );
+				.map(ProdottiOrdineMapper::toDTO)
 
-	                dtoProdotto.setPrezzo(
-	                        po.getPrezzo()
-	                );
+				.toList();
 
-	                return dtoProdotto;
-	            })
-	            .collect(Collectors.toList());
+		dto.setProdotti(prodotti);
 
-	    dto.setProdotti(prodotti);
-
-	    return dto;
-	}
-	
-//	@Override
-//	public List<RicevutaDTO> getAll() throws Exception {
-//
-//	    return ricR.findAll()
-//	            .stream()
-//	            .map(ricevuta -> {
-//
-//	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
-//
-//	                List<ProdottiOrdineDTO> prodotti = proordR
-//	                        .findByOrdine(ricevuta.getOrdine())
-//	                        .stream()
-//	                        .filter(po -> po.getProdotto()
-//	                                .getVenditore()
-//	                                .equals(ricevuta.getVenditore()))
-//	                        .map(ProdottiOrdineMapper::toDTO)
-//	                        .toList();
-//
-//	                dto.setProdotti(prodotti);
-//
-//	                return dto;
-//
-//	            })
-//	            .toList();
-//	}
-	
-	private String generaNumeroFattura() {
-
-	    Optional<Ricevuta> ultima = ricR.findTopByOrderByIdFatturaDesc();
-
-	    int progressivo = 1;
-
-	    if (ultima.isPresent() && ultima.get().getNumeroFattura() != null) {
-
-	        String numero = ultima.get()
-	                .getNumeroFattura()
-	                .replace("FT-", "");
-
-//	        progressivo = Integer.parseInt(numero) + 1;
-	        
-	        try {
-	            progressivo = Integer.parseInt(numero) + 1;
-	        } catch (NumberFormatException e) {
-	            log.warn("numero_fattura fuori formato FT-nnnn: {} — uso l'id come progressivo",
-	                    ultima.get().getNumeroFattura());
-	            progressivo = ultima.get().getIdFattura() + 1;
-	        }
-	    }
-
-	    return String.format("FT-%04d", progressivo);
+		return dto;
 	}
 
 	@Override
 	public List<RicevutaDTO> getByUserId(Integer userId) throws Exception {
 
-	    List<Ricevuta> ricevute = ricR.findByOrdineUserIdUserIdOrderByDataEmissioneDesc(userId);
+		List<Ricevuta> ricevute = ricR.findByOrdineUserIdUserIdOrderByDataEmissioneDesc(userId);
 
-	    return ricevute.stream()
-	            .map(ricevuta -> {
+		return ricevute.stream().map(ricevuta -> {
 
-	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
+			RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
 
-	                List<ProdottiOrdineDTO> prodotti =
-	                        proordR.findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .map(ProdottiOrdineMapper::toDTO)
-	                        .toList();
+			List<ProdottiOrdineDTO> prodotti = proordR.findByOrdine(ricevuta.getOrdine()).stream()
 
-	                dto.setProdotti(prodotti);
-	                return dto;
+					.filter(po -> po.getProdotto().getVenditore().equals(ricevuta.getVenditore()))
 
-	            }).toList();
+					.map(ProdottiOrdineMapper::toDTO)
+
+					.toList();
+
+			dto.setProdotti(prodotti);
+
+			return dto;
+
+		}).toList();
 	}
 
 	@Override
-	public List<RicevutaDTO> getByUserIdAndDateRange(
-	        Integer userId,
-	        LocalDate dataInizio,
-	        LocalDate dataFine
-	) throws Exception {
+	public List<RicevutaDTO> getByUserIdAndDateRange(Integer userId, LocalDate dataInizio, LocalDate dataFine)
+			throws Exception {
 
-	    List<Ricevuta> ricevute =
-	            ricR.findByOrdineUserIdUserIdAndDataEmissioneBetween(
-	                    userId,
-	                    dataInizio,
-	                    dataFine
-	            );
+		List<Ricevuta> ricevute = ricR.findByOrdineUserIdUserIdAndDataEmissioneBetween(userId, dataInizio, dataFine);
 
+		return ricevute.stream().map(ricevuta -> {
 
-	    return ricevute.stream()
-	            .map(ricevuta -> {
+			RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
 
-	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
+			List<ProdottiOrdineDTO> prodotti = proordR.findByOrdine(ricevuta.getOrdine()).stream()
 
-	                List<ProdottiOrdineDTO> prodotti =
-	                        proordR.findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .map(ProdottiOrdineMapper::toDTO)
-	                        .toList();
+					.filter(po -> po.getProdotto().getVenditore().equals(ricevuta.getVenditore()))
 
-	                dto.setProdotti(prodotti);
-	                return dto;
+					.map(ProdottiOrdineMapper::toDTO)
 
-	            }).toList();
+					.toList();
+
+			dto.setProdotti(prodotti);
+
+			return dto;
+
+		}).toList();
 	}
 
 	@Override
-	public List<RicevutaDTO> getRicevuteVenditore(
-	        Integer venditoreId
-	) throws Exception {
+	public List<RicevutaDTO> getRicevuteVenditore(Integer venditoreId) throws Exception {
 
-	    List<Ricevuta> ricevute = ricR.findByVenditoreUserIdOrderByDataEmissioneDesc(venditoreId);
+		List<Ricevuta> ricevute = ricR.findByVenditoreUserIdOrderByDataEmissioneDesc(venditoreId);
 
-	    return ricevute.stream()
-	            .map(ricevuta -> {
+		return ricevute.stream().map(ricevuta -> {
 
-	                RicevutaDTO dto =
-	                        RicevutaMapper.toDTO(ricevuta);
+			RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
 
-	                List<ProdottiOrdineDTO> prodotti =
-	                        proordR.findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .filter(po ->
-	                                po.getProdotto()
-	                                .getVenditore()
-	                                .getUserId()
-	                                .equals(venditoreId)
-	                        )
-	                        .map(ProdottiOrdineMapper::toDTO)
-	                        .toList();
+			List<ProdottiOrdineDTO> prodotti = proordR.findByOrdine(ricevuta.getOrdine()).stream()
 
-	                dto.setProdotti(prodotti);
-	                return dto;
-	            }).toList();
+					.filter(po -> po.getProdotto().getVenditore().getUserId().equals(venditoreId))
+
+					.map(ProdottiOrdineMapper::toDTO)
+
+					.toList();
+
+			dto.setProdotti(prodotti);
+
+			return dto;
+
+		}).toList();
 	}
 
 	@Override
-	public List<RicevutaDTO> getRicevuteVenditoreByDateRange(
-	        Integer venditoreId,
-	        LocalDate dataInizio,
-	        LocalDate dataFine
-	) throws Exception {
+	public List<RicevutaDTO> getRicevuteVenditoreByDateRange(Integer venditoreId, LocalDate dataInizio,
+			LocalDate dataFine) throws Exception {
 
-	    List<Ricevuta> ricevute =
-	            ricR.findByVenditoreUserIdAndDataEmissioneBetween(
-	                    venditoreId,
-	                    dataInizio,
-	                    dataFine
-	            );
+		List<Ricevuta> ricevute = ricR.findByVenditoreUserIdAndDataEmissioneBetween(venditoreId, dataInizio, dataFine);
 
-	    return ricevute.stream()
-	            .map(ricevuta -> {
+		return ricevute.stream().map(ricevuta -> {
 
-	                RicevutaDTO dto =
-	                        RicevutaMapper.toDTO(ricevuta);
+			RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
 
-	                List<ProdottiOrdineDTO> prodotti =
-	                        proordR
-	                        .findByOrdine(ricevuta.getOrdine())
-	                        .stream()
-	                        .filter(po ->
-	                                po.getProdotto()
-	                                .getVenditore()
-	                                .getUserId()
-	                                .equals(venditoreId)
-	                        )
-	                        .map(ProdottiOrdineMapper::toDTO)
-	                        .toList();
+			List<ProdottiOrdineDTO> prodotti = proordR.findByOrdine(ricevuta.getOrdine()).stream()
 
-	                dto.setProdotti(prodotti);
-	                return dto;
-	            }).toList();
+					.filter(po -> po.getProdotto().getVenditore().getUserId().equals(venditoreId))
+
+					.map(ProdottiOrdineMapper::toDTO)
+
+					.toList();
+
+			dto.setProdotti(prodotti);
+
+			return dto;
+
+		}).toList();
 	}
 
-//	@Override
-//	public List<RicevutaDTO> getByVenditore(Integer venditoreId) throws Exception {
-//
-//	    List<Ricevuta> ricevute = ricR.findByVenditoreUserId(venditoreId);
-//
-//	    return ricevute.stream()
-//	            .map(ricevuta -> {
-//
-//	                RicevutaDTO dto = RicevutaMapper.toDTO(ricevuta);
-//
-//	                List<ProdottiOrdineDTO> prodotti = proordR
-//	                        .findByOrdine(ricevuta.getOrdine())
-//	                        .stream()
-//	                        .filter(po -> po.getProdotto()
-//	                                .getVenditore()
-//	                                .getUserId()
-//	                                .equals(venditoreId))
-//	                        .map(po -> {
-//	                            ProdottiOrdineDTO prodottoDTO = new ProdottiOrdineDTO();
-//	                            prodottoDTO.setProdotto(po.getProdotto().getDescrizione());
-//	                            prodottoDTO.setQuantita(po.getQuantita());
-//	                            prodottoDTO.setPrezzo(po.getPrezzo());
-//	                            return prodottoDTO;
-//	                        }).toList();
-//	                dto.setProdotti(prodotti);
-//	                return dto;
-//	            }).toList();
-//	}
+	private String generaNumeroFattura() {
 
+		Optional<Ricevuta> ultima = ricR.findTopByOrderByIdFatturaDesc();
 
+		int progressivo = 1;
 
-	
+		if (ultima.isPresent() && ultima.get().getNumeroFattura() != null) {
+
+			String numero = ultima.get().getNumeroFattura().replace("FT-", "");
+
+			progressivo = Integer.parseInt(numero) + 1;
+		}
+
+		return String.format("FT-%04d", progressivo);
+	}
 
 }

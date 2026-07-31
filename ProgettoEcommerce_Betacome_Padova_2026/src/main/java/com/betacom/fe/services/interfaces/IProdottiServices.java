@@ -15,6 +15,7 @@ public interface IProdottiServices {
 	void delete(Integer idProdotto) throws Exception;
 	ProdottoDTO getById(Integer idProdotto) throws Exception;
 	List<ProdottoDTO> getAll() throws Exception;
+	List<ProdottoDTO> getProdottiByVenditore(Integer userId) throws Exception;
 	
 	List<ProdottoDTO> search(
 			ProdottoReq pReq, 

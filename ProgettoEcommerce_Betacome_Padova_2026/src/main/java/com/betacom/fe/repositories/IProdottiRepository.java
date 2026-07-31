@@ -57,4 +57,6 @@ public interface IProdottiRepository extends JpaRepository<Prodotti, Integer>
             @Param("larghezza") Integer larghezza);
 	
 	boolean existsByVenditore_UserId(Integer userId);
+	
+	List<Prodotti> findByVenditore_UserId(Integer userId);
 }

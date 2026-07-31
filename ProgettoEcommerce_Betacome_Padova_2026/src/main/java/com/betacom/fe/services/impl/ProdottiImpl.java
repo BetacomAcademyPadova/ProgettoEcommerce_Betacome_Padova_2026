@@ -169,7 +169,7 @@ public class ProdottiImpl implements IProdottiServices {
 	            .map(p -> {
 	                Sconto s = scontoR.findByIdProdotto(p.getIdProdotto());
 	                ProdottoDTO dto = ProdottoMapper.buildListByParams(p, req, s);
-	                
+	                dto.setPrezzoOriginale(p.getPrezzo());
 	                LocalDate oggi = LocalDate.now();
 	                if (s != null && !oggi.isBefore(s.getDataInizio()) && !oggi.isAfter(s.getDataFine())) 
 	                {
@@ -194,6 +194,8 @@ public class ProdottiImpl implements IProdottiServices {
 
 	    ProdottoDTO dto = ProdottoMapper.toDTO(p, s);
 
+	    dto.setPrezzoOriginale(p.getPrezzo());
+
 	    if (s != null) 
 	    {
 	        float percentuale = s.getValore() / 100.0f;
@@ -204,5 +206,14 @@ public class ProdottiImpl implements IProdottiServices {
 	    }
 	    
 	    return dto;
+	}
+
+	@Transactional
+	@Override
+	public List<ProdottoDTO> getProdottiByVenditore(Integer userId) throws Exception {
+		List<Prodotti> prodotti = proR.findByVenditore_UserId(userId);
+	    return prodotti.stream()
+	            .map(this::getProdottoConPrezzoCalcolato)
+	            .toList();
 	}
 }

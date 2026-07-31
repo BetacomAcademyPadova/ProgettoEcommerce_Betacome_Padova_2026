@@ -29,7 +29,7 @@ public class CarrelloImpl implements ICarrelloServices {
     @Override
     public CarrelloDTO getById(Integer idCarrello) throws Exception {
         Carrello carr = repCarr.findById(idCarrello)
-            .orElseThrow(() -> new AcademyException(msgS.get("carrello.non.esiste")));
+            .orElseThrow(() -> new AcademyException(msgS.get("carrello.no.id")));
 
         return CarrelloMapper.toDTO(carr);
     }
@@ -37,7 +37,7 @@ public class CarrelloImpl implements ICarrelloServices {
     @Override
     public CarrelloDTO getByUser(Integer idUser) throws Exception {
         Carrello carr = repCarr.findByUserId_UserId(idUser)
-                .orElseThrow(() -> new Exception("carrello.non.trovato"));
+                .orElseThrow(() -> new Exception("carrello.ntfnd"));
 
         return CarrelloMapper.toDTO(carr);
     }

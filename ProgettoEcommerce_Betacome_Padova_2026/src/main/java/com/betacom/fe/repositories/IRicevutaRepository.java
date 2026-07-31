@@ -7,7 +7,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Ricevuta;
+import com.betacom.fe.models.User;
 
 @Repository
 public interface IRicevutaRepository extends JpaRepository<Ricevuta, Integer>{
