@@ -100,7 +100,7 @@ public class NotificaImpl implements INotificaServices {
 	public void inviaRichiesta(Integer userId, String messaggio) throws Exception 
 	{
     	User utente = userR.findById(userId)
-                .orElseThrow(() -> new AcademyException(msgS.get("user.no.exists")));
+                .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
     	
     	StatoNotifica statoInAttesa = statoNotificaR.findByStato("IN ATTESA")
                 .orElseThrow(() -> new Exception("Stato 'IN ATTESA' non presente nel database"));

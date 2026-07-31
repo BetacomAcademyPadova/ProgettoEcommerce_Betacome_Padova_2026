@@ -99,7 +99,7 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void update(UserReq req) throws Exception {
 		User usr = repUser.findById(req.getUserId())
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 	    Optional.ofNullable(req.getEmail())
         .filter(email -> !email.equals(usr.getEmail()))
         .ifPresent(email -> {
@@ -119,7 +119,7 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void delete(Integer idUser) throws Exception {
 		User usr = repUser.findById(idUser)
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 		
 		boolean hasProdotti = repProdotti.existsByVenditore_UserId(idUser);
 		if (hasProdotti) 
@@ -137,7 +137,7 @@ public class UserImpl implements IUserServices{
 		User utente = repUser.findById(repAut.findById(idUser)
 		                .orElseThrow(() -> new AcademyException(msgS.get("login.error")))
 		                .getUser().getUserId()
-					).orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+					).orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 
 		 UserDTO dto = new UserDTO();
 		 dto.setUserId(utente.getUserId());
@@ -181,7 +181,7 @@ public class UserImpl implements IUserServices{
 		Autenticazione idUser = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
 		User utente = repUser.findById(idUser.getUser().getUserId())
-				.orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 		Ruoli r = ruoloR.findByRuolo(Normalizzazione.norm(ruolo))
 				.orElseThrow(() -> new AcademyException(msgS.get("role.no.exists")));
 		utente.setRuolo(r);
@@ -193,7 +193,7 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void changePwd(ChangePwdReq req) throws Exception {
 	    Autenticazione user = repAut.findByUsername(req.getUsername())
-	            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+	            .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 
 	    if (!passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
 	        throw new AcademyException(msgS.get("user.wrong.password"));
@@ -209,7 +209,7 @@ public class UserImpl implements IUserServices{
 	@Transactional
 	public void changeUsername(ChangePwdReq req) throws Exception {
 		Autenticazione user = repAut.findByUsername(req.getUsername())
-	            .orElseThrow(() -> new AcademyException(msgS.get("user.no.present")));
+	            .orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 
 	    Optional.ofNullable(req.getNewUsername().trim())
 	            .filter(newUsername -> !newUsername.equals(user.getUsername()))

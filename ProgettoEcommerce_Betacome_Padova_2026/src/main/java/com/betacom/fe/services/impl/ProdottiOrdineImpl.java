@@ -55,7 +55,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 
 	    Prodotti prodotto = proR.findById(req.getProdottoId())
 	            .orElseThrow(() -> new AcademyException(
-	                    msgS.get("prodo.non.esiste")
+	                    msgS.get("prod.non.esiste")
 	            ));
 
 	    Indirizzi indirizzo = indR.findById(req.getIndirizzoSpedizioneId())
