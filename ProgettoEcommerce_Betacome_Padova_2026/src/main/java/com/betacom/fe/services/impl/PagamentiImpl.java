@@ -1,7 +1,6 @@
 package com.betacom.fe.services.impl;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -47,6 +46,10 @@ public class PagamentiImpl implements IPagamentiServices {
     private final IMetodoPagamentoRepository metodoRep;
     private final IMessaggioServices msgS;
     private final IRicevutaServices ricevutaS;
+    private final IOrdineRepository ordineRep;
+    private final IStatoOrdineRepository statoOrdRep;
+    private final ICarrelloRepository carR;
+    private final IProdottiCarrelloRepository proCarR;
 
     @Override
     @Transactional
@@ -129,8 +132,32 @@ public class PagamentiImpl implements IPagamentiServices {
 
         pagamento.setStatoPagamento(completato);
         pagRep.save(pagamento);
-        creaRicevute(pagamento.getOrdine().getIdOrdine());
-        log.info("Pagamento {} confermato, metodo: {}", transazioneId, pagamento.getMetodoPagamento());
+
+        // l'ordine passa a Confermato
+        Ordini ordine = pagamento.getOrdine();
+        StatoOrdine confermato = statoOrdRep.findByStato("Confermato")
+                .orElseThrow(() -> new AcademyException(msgS.get("stato.ordine.non.esiste")));
+        ordine.setStato(confermato);
+        ordineRep.save(ordine);
+        
+     // svuota il carrello solo ora che il pagamento è confermato
+        carR.findByUserId_UserId(ordine.getUserId().getUserId())
+            .ifPresent(c -> proCarR.deleteByCarrelloIdCarrello(c.getIdCarrello()));
+
+        // emette la ricevuta (una per venditore)
+        // fuori dal percorso critico: il pagamento e' gia' stato incassato da Stripe,
+        // un errore qui non deve annullare lo stato del pagamento
+        try {
+            RicevutaReq rReq = new RicevutaReq();
+            rReq.setOrdineId(ordine.getIdOrdine());
+            ricevutaS.create(rReq);
+        } catch (Exception e) {
+            log.error("Ricevuta non emessa per ordine {}: {}",
+                    ordine.getIdOrdine(), e.getMessage(), e);
+        }
+
+        log.info("Pagamento {} confermato, ordine {} confermato, ricevuta emessa",
+                transazioneId, ordine.getIdOrdine());
     }
 
 
@@ -172,15 +199,5 @@ public class PagamentiImpl implements IPagamentiServices {
 	                    .dettagli(m.getDettagli())
 	                    .build())
 	            .toList();
-	}
-	
-	private void creaRicevute(Integer idOrdine) throws Exception {
-
-	    RicevutaReq req = new RicevutaReq();
-	    req.setOrdineId(idOrdine);
-
-	    ricevutaS.create(req);
-
-	    log.info("Ricevute create per ordine {}", idOrdine);
 	}
 }

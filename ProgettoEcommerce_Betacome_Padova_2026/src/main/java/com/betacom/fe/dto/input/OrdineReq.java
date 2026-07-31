@@ -29,6 +29,9 @@ public class OrdineReq {
     @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "indirizzo.spedizione.no.disp")
     private Integer indirizzoSpedizioneId;
 
+    @NotNull(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "indirizzo.spedizione.no.disp")
+    private Integer indirizzoSpedizioneId;
+
     @NotNull(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "stato.no.disp")
     private Integer statoId;
 }

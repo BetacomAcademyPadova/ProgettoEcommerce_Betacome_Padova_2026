@@ -105,6 +105,7 @@ public class OrdineImpl implements IOrdineServices {
 	    ord.setData(req.getData() != null ? req.getData() : LocalDate.now());
 	    ord.setUserId(user);
 	    ord.setIndirizzoFatturazione(indF);
+	    ord.setIndirizzoSpedizione(indS);
 	    ord.setStato(stato);
 	    ord.setTotale(0F);
 
@@ -145,7 +146,7 @@ public class OrdineImpl implements IOrdineServices {
 
 	    return salvato.getIdOrdine();
 	}
-
+	
 	@Transactional
 	@Override
 	public OrdineDTO getById(Integer idOrdine) throws Exception {
