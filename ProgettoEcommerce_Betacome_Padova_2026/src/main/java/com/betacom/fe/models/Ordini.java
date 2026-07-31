@@ -38,6 +38,10 @@ public class Ordini {
     private Indirizzi indirizzoFatturazione;
     
     @ManyToOne
+    @JoinColumn(name = "indirizzo_spedizione", nullable = false)
+    private Indirizzi indirizzoSpedizione;
+    
+    @ManyToOne
     @JoinColumn(name="stato_ordine")
     private StatoOrdine stato;
 }
