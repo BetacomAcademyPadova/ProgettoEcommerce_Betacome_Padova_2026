@@ -91,17 +91,16 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
         Prodotti prodotto = repProd.findById(divisione.getProdotto().getIdProdotto())
         		.orElseThrow(() -> new AcademyException(msgS.get("prodotto.no.id")));
 
-        controllaDisponibilita(riga.getDivisione(), req.getQuantita());
+        // la riga sa già a quale divisione punta: non serve chiederla al client
+        DivisioneProdotto divisione = riga.getDivisione();
+
+        controllaDisponibilita(divisione, req.getQuantita());
 
         riga.setQuantita(req.getQuantita());
-        ProdottoDTO pDto = proS.getById(prodotto.getIdProdotto());
-        riga.setPrezzo(pDto.getPrezzo());
-
         repProdCarr.save(riga);
 
         Carrello carrello = riga.getCarrello();
         carrello.setDataUltimoAgg(LocalDate.now());
-
         repCarr.save(carrello);
     }
 

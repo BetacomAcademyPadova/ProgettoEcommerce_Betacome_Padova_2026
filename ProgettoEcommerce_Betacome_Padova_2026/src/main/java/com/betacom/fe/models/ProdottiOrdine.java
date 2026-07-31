@@ -36,13 +36,9 @@ public class ProdottiOrdine {
     @Column(nullable = false)
     private Float prezzo;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "indirizzo_spedizione", nullable = false)
     private Indirizzi indirizzoSpedizione;
-
-    @ManyToOne
-    @JoinColumn(name = "prodotto_carrello")
-    private ProdottiCarrello prodottiCarrello;
 
     @ManyToOne
     @JoinColumn(name = "divisione_ordine", nullable = false)

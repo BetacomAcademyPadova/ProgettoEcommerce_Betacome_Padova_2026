@@ -18,7 +18,6 @@ public class OrdineReq {
     @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class},message = "data.no.disp")
     private LocalDate data;
 
-    @NotNull( groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "totale.no.disp")
     private Float totale;
 
     @NotNull(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "user.no.disp")
@@ -26,6 +25,9 @@ public class OrdineReq {
 
     @NotNull(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "indirizzo.fatturazione.no.disp")
     private Integer indirizzoFatturazioneId;
+    
+    @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "indirizzo.spedizione.no.disp")
+    private Integer indirizzoSpedizioneId;
 
     @NotNull(groups = {ValidationGroups.Create.class,ValidationGroups.Update.class},message = "stato.no.disp")
     private Integer statoId;

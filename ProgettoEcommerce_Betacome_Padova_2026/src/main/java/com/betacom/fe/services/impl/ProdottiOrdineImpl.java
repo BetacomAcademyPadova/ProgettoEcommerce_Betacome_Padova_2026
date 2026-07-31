@@ -109,7 +109,7 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices{
 	    prodottoOrdine.setProdotto(prodotto);
 	    prodottoOrdine.setIndirizzoSpedizione(indirizzo);
 	    prodottoOrdine.setDivisioneOrdine(divisione);
-	    prodottoOrdine.setProdottiCarrello(prodottiCar);
+//	    prodottoOrdine.setProdottiCarrello(prodottiCar);
 
 	    prodottoOrdine.setQuantita(quantita);
 	    prodottoOrdine.setPrezzo(prodotto.getPrezzo());
