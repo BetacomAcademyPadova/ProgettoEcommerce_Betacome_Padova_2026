@@ -92,7 +92,7 @@ public class ProdottiCarrelloImpl implements IProdottiCarrelloServices {
         		.orElseThrow(() -> new AcademyException(msgS.get("prodotto.no.id")));
 
         // la riga sa già a quale divisione punta: non serve chiederla al client
-        DivisioneProdotto divisione = riga.getDivisione();
+        divisione = riga.getDivisione();
 
         controllaDisponibilita(divisione, req.getQuantita());
 
