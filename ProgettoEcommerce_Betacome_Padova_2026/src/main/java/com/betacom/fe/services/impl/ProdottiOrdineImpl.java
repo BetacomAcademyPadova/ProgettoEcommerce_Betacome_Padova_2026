@@ -171,4 +171,22 @@ public class ProdottiOrdineImpl implements IProdottiOrdineServices {
 
 	}
 
+	@Override
+	public List<ProdottiOrdineDTO> getByOrdine(Integer idOrdine, Integer userId) throws Exception {
+
+	    return prordR.findByOrdineCliente(idOrdine, userId)
+	            .stream()
+	            .map(ProdottiOrdineMapper::toDTO)
+	            .toList();
+	}
+
+	@Override
+	public List<ProdottiOrdineDTO> getByOrdineVenditore(Integer idOrdine, Integer userId) throws Exception {
+
+	    return prordR.findByOrdineVenditore(idOrdine, userId)
+	            .stream()
+	            .map(ProdottiOrdineMapper::toDTO)
+	            .toList();
+	}
+
 }

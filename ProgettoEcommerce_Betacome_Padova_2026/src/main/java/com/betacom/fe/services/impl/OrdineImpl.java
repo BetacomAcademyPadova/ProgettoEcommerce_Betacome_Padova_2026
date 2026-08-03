@@ -170,9 +170,18 @@ public class OrdineImpl implements IOrdineServices {
 	@Override
 	public List<OrdineDTO> getAllByUserId(Integer userId) throws Exception {
 
-	    return ordR.findByUserId_UserId(userId)
+	    return ordR.findByUserId_UserIdOrderByDataDesc(userId)
 	            .stream()
 	            .map(o -> OrdineMapper.toDTO(o))
+	            .toList();
+	}
+
+	@Override
+	public List<OrdineDTO> getAllByVenditore(Integer userId) throws Exception {
+
+	    return ordR.findOrdiniVenditore(userId)
+	            .stream()
+	            .map(OrdineMapper::toDTO)
 	            .toList();
 	}
 

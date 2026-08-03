@@ -20,5 +20,6 @@ public class OrdineDTO {
 	private Integer idOrdine;
 	private LocalDate data;
 	private Float totale;
+	private String statoOrdine;
 
 }

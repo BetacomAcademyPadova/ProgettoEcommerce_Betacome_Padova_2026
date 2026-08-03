@@ -11,4 +11,5 @@ public interface IOrdineServices {
 	OrdineDTO getById(Integer idOrdine) throws Exception;
 	List<OrdineDTO> getAll() throws Exception;
 	List<OrdineDTO> getAllByUserId(Integer UserId) throws Exception;
+	List<OrdineDTO> getAllByVenditore(Integer userId) throws Exception;
 }

@@ -29,5 +29,15 @@ public interface IProdottiOrdineServices {
             LocalDate dataInizio,
             LocalDate dataFine
     ) throws Exception;
+    
+    List<ProdottiOrdineDTO> getByOrdine(
+            Integer idOrdine,
+            Integer userId
+    ) throws Exception;
+
+    List<ProdottiOrdineDTO> getByOrdineVenditore(
+            Integer idOrdine,
+            Integer userId
+    ) throws Exception;
 
 }

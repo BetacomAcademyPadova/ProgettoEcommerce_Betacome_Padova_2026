@@ -83,5 +83,27 @@ public class ProdottiOrdineController {
 
 		return ResponseEntity.ok(prodottiOrdineS.getByVenditore(userId, inizio, fine));
 	}
+	
+	@GetMapping("ordine/{idOrdine}/{userId}")
+	public ResponseEntity<List<ProdottiOrdineDTO>> getByOrdine(
+	        @PathVariable Integer idOrdine,
+	        @PathVariable Integer userId
+	) throws Exception {
+
+	    return ResponseEntity.ok(
+	            prodottiOrdineS.getByOrdine(idOrdine, userId)
+	    );
+	}
+
+	@GetMapping("ordine/venditore/{idOrdine}/{userId}")
+	public ResponseEntity<List<ProdottiOrdineDTO>> getByOrdineVenditore(
+	        @PathVariable Integer idOrdine,
+	        @PathVariable Integer userId
+	) throws Exception {
+
+	    return ResponseEntity.ok(
+	            prodottiOrdineS.getByOrdineVenditore(idOrdine, userId)
+	    );
+	}
 
 }
