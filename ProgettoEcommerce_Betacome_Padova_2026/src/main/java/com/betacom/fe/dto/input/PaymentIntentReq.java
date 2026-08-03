@@ -11,5 +11,4 @@ import lombok.ToString;
 public class PaymentIntentReq {
     @NotNull(groups = ValidationGroups.Create.class, message = "ordine.empty")
     private Integer idOrdine;
-    private Boolean salvaMetodo;
 }

@@ -71,7 +71,6 @@ public class PagamentiControllerTest {
 
         PaymentIntentReq req = new PaymentIntentReq();
         req.setIdOrdine(1);
-        req.setSalvaMetodo(true);
 
         PaymentIntent fakeIntent = Mockito.mock(PaymentIntent.class);
         Mockito.when(fakeIntent.getId()).thenReturn("pi_test_123");
@@ -116,72 +115,7 @@ public class PagamentiControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    @Order(4)
-//    public void createIntentGiaCompletatoTest() throws Exception {
-//        log.debug("createIntentGiaCompletatoTest");
-//
-//        IndirizzoReq indReq2 = new IndirizzoReq();
-//        indReq2.setIdUser(2);
-//        indReq2.setVia("Via Test Pagamenti");
-//        indReq2.setCitta("Padova");
-//        indReq2.setCap("35100");
-//        indReq2.setPredefinito(false);
-//
-//        mockMvc.perform(post("/rest/Indirizzi/create")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(indReq2)))
-//                .andExpect(status().isOk());
-//        
-//        OrdineReq ordineReq = new OrdineReq();
-//        ordineReq.setData(LocalDate.now());
-//        ordineReq.setUserId(2);                 
-//        ordineReq.setIndirizzoFatturazioneId(4); 
-//        ordineReq.setStatoId(1);
-//        ordineReq.setTotale(20.0f);
-//
-//        mockMvc.perform(post("/rest/Ordine/create")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(ordineReq)))
-//                .andExpect(status().isOk());
-//
-//       
-//        PaymentIntentReq req = new PaymentIntentReq();
-//        req.setIdOrdine(2);
-//        req.setSalvaMetodo(false);
-//
-//        PaymentIntent fakeIntent = Mockito.mock(PaymentIntent.class);
-//        Mockito.when(fakeIntent.getId()).thenReturn("pi_gia_completato");
-//        Mockito.when(fakeIntent.getClientSecret()).thenReturn("secret_whatever");
-//
-//        try (MockedStatic<PaymentIntent> stripeMock = Mockito.mockStatic(PaymentIntent.class)) {
-//            stripeMock.when(() -> PaymentIntent.create(Mockito.any(PaymentIntentCreateParams.class)))
-//                      .thenReturn(fakeIntent);
-//
-//            mockMvc.perform(post("/rest/Pagamenti/create-intent")
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .content(objectMapper.writeValueAsString(req)))
-//                    .andExpect(status().isOk());
-//        }
-//
-//        // "Completato" doesn't exist anywhere else in the suite — needs to be seeded here
-//        StatoPagReq statoCompletatoReq = new StatoPagReq();
-//        statoCompletatoReq.setStatoPag("Completato");
-//
-//        mockMvc.perform(post("/rest/StatoPagamento/create")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(statoCompletatoReq)))
-//                .andExpect(status().isOk());
-//
-//        pagS.markSucceeded("pi_gia_completato", null);
-//
-//        // Try to pay AGAIN for the same order — should be rejected
-//        mockMvc.perform(post("/rest/Pagamenti/create-intent")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(req)))
-//                .andExpect(status().isBadRequest());
-//    }
-    
+
     @Test
     @Order(4)
     public void createIntentGiaCompletatoTest() throws Exception {
@@ -234,7 +168,6 @@ public class PagamentiControllerTest {
 
         PaymentIntentReq req = new PaymentIntentReq();
         req.setIdOrdine(idOrdine);
-        req.setSalvaMetodo(false);
 
         PaymentIntent fakeIntent = Mockito.mock(PaymentIntent.class);
         Mockito.when(fakeIntent.getId()).thenReturn("pi_gia_completato");
@@ -275,7 +208,6 @@ public class PagamentiControllerTest {
 
         PaymentIntentReq req = new PaymentIntentReq();
         // idOrdine intentionally left null
-        req.setSalvaMetodo(true);
 
         mockMvc.perform(post("/rest/Pagamenti/create-intent")
                         .contentType(MediaType.APPLICATION_JSON)
