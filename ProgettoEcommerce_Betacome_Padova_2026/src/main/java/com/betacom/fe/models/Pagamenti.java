@@ -30,13 +30,6 @@ public class Pagamenti {
     @Column(name = "metodo_pagamento")
     private String metodoPagamento;
 
-    @Column(nullable = false)
-    private Boolean salvato = false;
-
-    @ManyToOne
-    @JoinColumn(name = "metodo_salvato")
-    private MetodoPagamento metodoSalvato;
-
     @Column(nullable=false)
     private Float importo;
 
