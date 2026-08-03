@@ -45,5 +45,13 @@ public class OrdineController {
 	public ResponseEntity<List<OrdineDTO>> getAllByUserId(@PathVariable Integer userId) throws Exception {
 	    return ResponseEntity.ok(ordS.getAllByUserId(userId));
 	}
+	
+	@GetMapping("/venditore/{userId}")
+	public ResponseEntity<List<OrdineDTO>> getByVenditore(
+	        @PathVariable Integer userId) throws Exception {
+
+	    return ResponseEntity.ok(ordS.getAllByVenditore(userId));
+
+	}
 
 }
