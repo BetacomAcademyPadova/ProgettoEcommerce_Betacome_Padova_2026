@@ -33,17 +33,17 @@ import com.betacom.fe.user.UserTest;
 	StatoOrdineTest.class,
 	UserTest.class,
 	IndirizzoTest.class,
-	OrdineTest.class,
 	ProdottoTest.class,
 	DivisioneProdottoTest.class,
+	UploadTest.class,
 	ScontoTest.class,
 	CarrelloTest.class,
 	ProdottiCarrelloTest.class,
-	ProdottiOrdineTest.class,
-	UploadTest.class,
-	RicevutaTest.class,
 	NotificaTest.class,
+	OrdineTest.class,
+	ProdottiOrdineTest.class,
 	PagamentiControllerTest.class,
+	RicevutaTest.class,
 	DeleteUserTest.class
 })
 public class SuiteClass {

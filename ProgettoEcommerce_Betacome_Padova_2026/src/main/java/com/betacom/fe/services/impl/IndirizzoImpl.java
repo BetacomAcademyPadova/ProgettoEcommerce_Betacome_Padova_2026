@@ -33,6 +33,14 @@ public class IndirizzoImpl implements IIndirizzoServices{
 	public void create(IndirizzoReq req) throws Exception {
 		User usr = userR.findById(req.getIdUser())
 				.orElseThrow(()->new AcademyException(msgS.get("user.non.esiste")));
+		
+	    if (Boolean.TRUE.equals(req.getPredefinito())) {
+	        indR.findByUserIdAndPredefinito(usr, true)
+	            .ifPresent(ind -> {
+	                ind.setPredefinito(false);
+	                indR.save(ind);
+	            });
+	    }
 		Indirizzi ind = new Indirizzi();
 		ind.setCap(req.getCap());
 		ind.setCitta(req.getCitta());
@@ -48,7 +56,17 @@ public class IndirizzoImpl implements IIndirizzoServices{
 	public void update(IndirizzoReq req) throws Exception {
 		Indirizzi ind = indR.findById(req.getIdIndirizzo())
 				.orElseThrow(()->new AcademyException(msgS.get("indirizzo.non.esiste")));
-
+		
+	    if (Boolean.TRUE.equals(req.getPredefinito())) {
+	        indR.findByUserIdAndPredefinito(ind.getUserId(), true)
+	            .ifPresent(indPredefinito -> {
+	                if (!indPredefinito.getIdIndirizzo().equals(ind.getIdIndirizzo())) {
+	                    indPredefinito.setPredefinito(false);
+	                    indR.save(indPredefinito);
+	                }
+	            });
+	    }
+	    
 		Optional.ofNullable(req.getCap()).ifPresent(t -> ind.setCap(t));
 		Optional.ofNullable(req.getCitta()).ifPresent(t -> ind.setCitta(t));
 		Optional.ofNullable(req.getPredefinito()).ifPresent(t -> ind.setPredefinito(t));

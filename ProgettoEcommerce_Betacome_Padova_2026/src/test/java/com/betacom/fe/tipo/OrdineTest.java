@@ -46,6 +46,7 @@ public class OrdineTest {
         OrdineReq req = new OrdineReq();
         req.setData(LocalDate.now());
         req.setIndirizzoFatturazioneId(3);
+        req.setIndirizzoSpedizioneId(3);
         req.setStatoId(1);
         req.setTotale(300.0f);
         req.setUserId(2);
