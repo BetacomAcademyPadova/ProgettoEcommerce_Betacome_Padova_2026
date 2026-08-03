@@ -1,6 +1,3 @@
---INSERT INTO messaggi_sistema (lang, code, messagio) Values('','','')
---usare il formato sopra per aggiungere dati alla tabella messaggi
-
 INSERT INTO messaggi_sistema (lang, code, messagio)
 VALUES ('IT', 'user.non.esiste', 'L''utente non esiste');
 
