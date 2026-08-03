@@ -34,192 +34,168 @@ import tools.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProdottiOrdineTest {
-	
+
 	@Autowired
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    
-    @Autowired
-    private IProdottiCarrelloRepository procarR;
-    
-    @Test
-    @Order(1)
-    public void createProdottiOrdineTest() throws Exception {
-        log.debug("createProdottiOrdineTest");
+	@Autowired
+	private ObjectMapper objectMapper;
 
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setOrdineId(1);
-        req.setProdottoId(2);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
+	@Autowired
+	private IProdottiCarrelloRepository procarR;
 
-        mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk());
-    }
-    
-    @Test
-    @Order(2)
-    public void createProdottiOrdineTestError() throws Exception {
-        log.debug("createProdottiOrdineTestError");
+	@Test
+	@Order(1)
+	public void createProdottiOrdineTest() throws Exception {
+		log.debug("createProdottiOrdineTest");
 
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setOrdineId(2);
-        req.setProdottoId(2);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
+		ProdottiOrdineReq req = new ProdottiOrdineReq();
+		req.setOrdineId(1);
+		req.setProdottoId(2);
+		req.setIndirizzoSpedizioneId(3);
+		req.setProdottiCarrelloId(2);
+		req.setDivisioneOrdineId(2);
 
-        MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+		mockMvc.perform(post("/rest/ProdottiOrdine/create").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))).andExpect(status().isOk());
+	}
 
-        String json = result.getResponse().getContentAsString();
-        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+	@Test
+	@Order(2)
+	public void createProdottiOrdineTestError() throws Exception {
+		log.debug("createProdottiOrdineTestError");
 
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(3)
-    public void createProdottiOrdineTestError2() throws Exception {
-        log.debug("createProdottiOrdineTestError2");
+		ProdottiOrdineReq req = new ProdottiOrdineReq();
+		req.setOrdineId(2);
+		req.setProdottoId(2);
+		req.setIndirizzoSpedizioneId(3);
+		req.setProdottiCarrelloId(2);
+		req.setDivisioneOrdineId(2);
 
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setOrdineId(1);
-        req.setProdottoId(1);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
+		MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))).andExpect(status().isBadRequest()).andReturn();
 
-        MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 
-        String json = result.getResponse().getContentAsString();
-        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		log.debug(dto.getMsg());
+	}
 
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(4)
-    public void createProdottiOrdineTestError3() throws Exception {
-        log.debug("createProdottiOrdineTestError3");
+	@Test
+	@Order(3)
+	public void createProdottiOrdineTestError2() throws Exception {
+		log.debug("createProdottiOrdineTestError2");
 
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setOrdineId(2);
-        req.setProdottoId(1);
-        req.setIndirizzoSpedizioneId(1);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(2);
+		ProdottiOrdineReq req = new ProdottiOrdineReq();
+		req.setOrdineId(1);
+		req.setProdottoId(1);
+		req.setIndirizzoSpedizioneId(3);
+		req.setProdottiCarrelloId(2);
+		req.setDivisioneOrdineId(2);
 
-        MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+		MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))).andExpect(status().isBadRequest()).andReturn();
 
-        String json = result.getResponse().getContentAsString();
-        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(5)
-    public void createProdottiOrdineTestError4() throws Exception {
-        log.debug("createProdottiOrdineTestError4");
+		log.debug(dto.getMsg());
+	}
 
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setOrdineId(2);
-        req.setProdottoId(1);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(1);
-        req.setDivisioneOrdineId(2);
+	@Test
+	@Order(4)
+	public void createProdottiOrdineTestError3() throws Exception {
+		log.debug("createProdottiOrdineTestError3");
 
-        MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+		ProdottiOrdineReq req = new ProdottiOrdineReq();
+		req.setOrdineId(2);
+		req.setProdottoId(1);
+		req.setIndirizzoSpedizioneId(1);
+		req.setProdottiCarrelloId(2);
+		req.setDivisioneOrdineId(2);
 
-        String json = result.getResponse().getContentAsString();
-        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))).andExpect(status().isBadRequest()).andReturn();
 
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(6)
-    public void createProdottiOrdineTestError5() throws Exception {
-        log.debug("createProdottiOrdineTestError5");
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 
-        ProdottiOrdineReq req = new ProdottiOrdineReq();
-        req.setOrdineId(2);
-        req.setProdottoId(1);
-        req.setIndirizzoSpedizioneId(3);
-        req.setProdottiCarrelloId(2);
-        req.setDivisioneOrdineId(1);
+		log.debug(dto.getMsg());
+	}
 
-        MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+	@Test
+	@Order(5)
+	public void createProdottiOrdineTestError4() throws Exception {
+		log.debug("createProdottiOrdineTestError4");
 
-        String json = result.getResponse().getContentAsString();
-        ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		ProdottiOrdineReq req = new ProdottiOrdineReq();
+		req.setOrdineId(2);
+		req.setProdottoId(1);
+		req.setIndirizzoSpedizioneId(3);
+		req.setProdottiCarrelloId(1);
+		req.setDivisioneOrdineId(2);
 
-        log.debug(dto.getMsg());
-    }
-    
-    @Test
-    @Order(7)
-    public void getByIdProdottiOrdineTest() throws Exception {
-        log.debug("getByIdProdottiOrdineTest");
+		MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))).andExpect(status().isBadRequest()).andReturn();
 
-        MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/getById/1"))
-                .andExpect(status().isOk())
-                .andReturn();
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 
-        String json = result.getResponse().getContentAsString();
-        ProdottiOrdineDTO dto = objectMapper.readValue(json, ProdottiOrdineDTO.class);
+		log.debug(dto.getMsg());
+	}
 
-        log.debug(dto.toString());
-    }
-    
-    @Test
-    @Order(8)
-    public void getAllTest() throws Exception {
-        log.debug("getAll ProdottiOrdine");
+	@Test
+	@Order(6)
+	public void createProdottiOrdineTestError5() throws Exception {
+		log.debug("createProdottiOrdineTestError5");
 
-        MvcResult result = mockMvc.perform(
-                        get("/rest/ProdottiOrdine/getAll"))
-                .andExpect(status().isOk())
-                .andReturn();
+		ProdottiOrdineReq req = new ProdottiOrdineReq();
+		req.setOrdineId(2);
+		req.setProdottoId(1);
+		req.setIndirizzoSpedizioneId(3);
+		req.setProdottiCarrelloId(2);
+		req.setDivisioneOrdineId(1);
 
-        String json = result.getResponse().getContentAsString();
+		MvcResult result = mockMvc.perform(post("/rest/ProdottiOrdine/create").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))).andExpect(status().isBadRequest()).andReturn();
 
-        List<ProdottiOrdineDTO> lista = objectMapper.readValue(
-                json,
-                new TypeReference<List<ProdottiOrdineDTO>>() {}
-        );
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 
-        assertFalse(lista.isEmpty());
+		log.debug(dto.getMsg());
+	}
 
-        log.debug(lista.toString());
-    }
-    
-    
+	@Test
+	@Order(7)
+	public void getByIdProdottiOrdineTest() throws Exception {
+		log.debug("getByIdProdottiOrdineTest");
+
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/getById/1")).andExpect(status().isOk())
+				.andReturn();
+
+		String json = result.getResponse().getContentAsString();
+		ProdottiOrdineDTO dto = objectMapper.readValue(json, ProdottiOrdineDTO.class);
+
+		log.debug(dto.toString());
+	}
+
+	@Test
+	@Order(8)
+	public void getAllTest() throws Exception {
+		log.debug("getAll ProdottiOrdine");
+
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/getAll")).andExpect(status().isOk()).andReturn();
+
+		String json = result.getResponse().getContentAsString();
+
+		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
+		});
+
+		assertFalse(lista.isEmpty());
+
+		log.debug(lista.toString());
+	}
+
 //    @Test
 //    @Order(9)
 //    public void deleteTest() throws Exception {
@@ -228,9 +204,7 @@ public class ProdottiOrdineTest {
 //        mockMvc.perform(delete("/rest/ProdottiOrdine/delete/1"))
 //                .andExpect(status().isOk());
 //    } 
-    
-    
-    
+
 //    @Test
 //    @Order(11)
 //    public void updateProdottiOrdineTest() throws Exception {
@@ -359,5 +333,77 @@ public class ProdottiOrdineTest {
 //
 //        log.debug(dto.getMsg());
 //    }
+
+	@Test
+	@Order(9)
+	public void getByClienteTest() throws Exception {
+
+		log.debug("getByCliente ProdottiOrdine");
+
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/1")).andExpect(status().isOk())
+				.andReturn();
+
+		String json = result.getResponse().getContentAsString();
+
+		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
+		});
+
+		log.debug(lista.toString());
+
+		assertFalse(lista.isEmpty());
+	}
+
+	@Test
+	@Order(10)
+	public void getByClienteDateTest() throws Exception {
+
+		log.debug("getByCliente con filtro date");
+
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/1/2025-01-01/2026-12-31"))
+				.andExpect(status().isOk()).andReturn();
+
+		String json = result.getResponse().getContentAsString();
+
+		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
+		});
+
+		log.debug(lista.toString());
+	}
+
+	@Test
+	@Order(11)
+	public void getByVenditoreTest() throws Exception {
+
+		log.debug("getByVenditore ProdottiOrdine");
+
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/1")).andExpect(status().isOk())
+				.andReturn();
+
+		String json = result.getResponse().getContentAsString();
+
+		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
+		});
+
+		log.debug(lista.toString());
+
+		assertFalse(lista.isEmpty());
+	}
+
+	@Test
+	@Order(12)
+	public void getByVenditoreDateTest() throws Exception {
+
+		log.debug("getByVenditore con filtro date");
+
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/1/2025-01-01/2026-12-31"))
+				.andExpect(status().isOk()).andReturn();
+
+		String json = result.getResponse().getContentAsString();
+
+		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
+		});
+
+		log.debug(lista.toString());
+	}
 
 }
