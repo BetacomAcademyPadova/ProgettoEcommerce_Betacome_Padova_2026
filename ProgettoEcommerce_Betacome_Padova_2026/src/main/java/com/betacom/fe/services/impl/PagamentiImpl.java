@@ -1,7 +1,6 @@
 package com.betacom.fe.services.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -12,16 +11,13 @@ import com.stripe.param.PaymentIntentCreateParams;
 
 import com.betacom.fe.dto.input.PaymentIntentReq;
 import com.betacom.fe.dto.input.RicevutaReq;
-import com.betacom.fe.dto.output.MetodoPagamentoDTO;
 import com.betacom.fe.dto.output.PaymentIntentDTO;
 import com.betacom.fe.exception.AcademyException;
-import com.betacom.fe.models.MetodoPagamento;
 import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Pagamenti;
 import com.betacom.fe.models.StatoOrdine;
 import com.betacom.fe.models.StatoPagamento;
 import com.betacom.fe.repositories.ICarrelloRepository;
-import com.betacom.fe.repositories.IMetodoPagamentoRepository;
 import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IPagamentiRepository;
 import com.betacom.fe.repositories.IProdottiCarrelloRepository;
@@ -43,10 +39,8 @@ public class PagamentiImpl implements IPagamentiServices {
     private final IPagamentiRepository pagRep;
     private final IOrdineRepository ordRep;
     private final IStatoPagamentoRepository statoRep;
-    private final IMetodoPagamentoRepository metodoRep;
     private final IMessaggioServices msgS;
     private final IRicevutaServices ricevutaS;
-    private final IOrdineRepository ordineRep;
     private final IStatoOrdineRepository statoOrdRep;
     private final ICarrelloRepository carR;
     private final IProdottiCarrelloRepository proCarR;
@@ -55,16 +49,18 @@ public class PagamentiImpl implements IPagamentiServices {
     @Transactional
     public PaymentIntentDTO createPaymentIntent(PaymentIntentReq req) throws Exception, StripeException {
         Ordini ordine = ordRep.findById(req.getIdOrdine())
-                .orElseThrow(() -> new AcademyException(msgS.get("ordine.non.esiste")));
+                .orElseThrow(() -> new AcademyException(msgS.get("ordine.no.exists")));
 
+        // riusa la riga esistente: tornando indietro a modificare l'ordine
+        // non si creano righe doppie in pagamenti
         Pagamenti pagamento = pagRep.findByOrdineIdOrdine(req.getIdOrdine())
                 .orElseGet(Pagamenti::new);
-        
+
         if (pagamento.getStatoPagamento() != null
                 && "Completato".equals(pagamento.getStatoPagamento().getStato())) {
             throw new AcademyException(msgS.get("pagamento.gia.completato"));
         }
-        
+
         long amountInCents = Math.round(ordine.getTotale() * 100);
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
@@ -87,7 +83,6 @@ public class PagamentiImpl implements IPagamentiServices {
         pagamento.setStatoPagamento(inAttesa);
         pagamento.setDataPagamento(null);
         pagamento.setMetodoPagamento(null);
-        pagamento.setSalvato(Boolean.TRUE.equals(req.getSalvaMetodo()));
         pagRep.save(pagamento);
 
         log.info("PaymentIntent creato: {} per ordine {}", intent.getId(), req.getIdOrdine());
@@ -103,31 +98,21 @@ public class PagamentiImpl implements IPagamentiServices {
     public void markSucceeded(String transazioneId, String paymentMethodId) throws Exception {
         Pagamenti pagamento = pagRep.findByTransazioneId(transazioneId)
                 .orElseThrow(() -> new AcademyException(msgS.get("pagamento.no.exists")));
+
         if (pagamento.getStatoPagamento() != null
                 && "Completato".equals(pagamento.getStatoPagamento().getStato())) {
-            log.info("Pagamento {} già completato, evento ignorato", transazioneId);
+            log.info("Pagamento {} gia' completato, evento ignorato", transazioneId);
             return;
         }
+
         StatoPagamento completato = statoRep.findByStato("Completato")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
 
         pagamento.setDataPagamento(LocalDateTime.now());
-        
+
         if (paymentMethodId != null) {
             PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
-
-            pagamento.setMetodoPagamento(pm.getType()); // "card", "satispay", ...
-
-            if (Boolean.TRUE.equals(pagamento.getSalvato()) && "card".equals(pm.getType())) {
-                MetodoPagamento nuovoMP = new MetodoPagamento();
-                nuovoMP.setTipo(pm.getType());
-                nuovoMP.setDettagli(buildDettagli(pm));
-                nuovoMP.setIsPredefinito(false);
-                nuovoMP.setUserId(pagamento.getOrdine().getUserId()); 
-                metodoRep.save(nuovoMP);
-
-                pagamento.setMetodoSalvato(nuovoMP);
-            }
+            pagamento.setMetodoPagamento(pm.getType()); // "card", "klarna", "paypal"
         }
 
         pagamento.setStatoPagamento(completato);
@@ -138,9 +123,9 @@ public class PagamentiImpl implements IPagamentiServices {
         StatoOrdine confermato = statoOrdRep.findByStato("Confermato")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.ordine.non.esiste")));
         ordine.setStato(confermato);
-        ordineRep.save(ordine);
-        
-     // svuota il carrello solo ora che il pagamento è confermato
+        ordRep.save(ordine);
+
+        // svuota il carrello solo ora che il pagamento e' confermato
         carR.findByUserId_UserId(ordine.getUserId().getUserId())
             .ifPresent(c -> proCarR.deleteByCarrelloIdCarrello(c.getIdCarrello()));
 
@@ -160,14 +145,6 @@ public class PagamentiImpl implements IPagamentiServices {
                 transazioneId, ordine.getIdOrdine());
     }
 
-
-    private String buildDettagli(PaymentMethod pm) {
-        if ("card".equals(pm.getType()) && pm.getCard() != null) {
-            return pm.getCard().getBrand() + " **** " + pm.getCard().getLast4(); 
-        }
-        return pm.getType();
-    }
-    
     @Override
     @Transactional
     public void markFailed(String transazioneId, String paymentMethodId) throws Exception {
@@ -176,28 +153,17 @@ public class PagamentiImpl implements IPagamentiServices {
 
         StatoPagamento fallito = statoRep.findByStato("Fallito")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
-        
+
         pagamento.setDataPagamento(LocalDateTime.now());
+
         if (paymentMethodId != null) {
             PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
             pagamento.setMetodoPagamento(pm.getType());
         }
+
         pagamento.setStatoPagamento(fallito);
         pagRep.save(pagamento);
+
         log.info("Pagamento {} fallito", transazioneId);
     }
-
-	@Override
-	public List<MetodoPagamentoDTO> getMetodiSalvatiByOrdine(Integer idOrdine) throws Exception {
-		Ordini ordine = ordRep.findById(idOrdine)
-	            .orElseThrow(() -> new AcademyException(msgS.get("ordine.non.esiste")));
-
-	    return metodoRep.findByUserId(ordine.getUserId()).stream()
-	            .map(m -> MetodoPagamentoDTO.builder()
-	                    .idMetodo(m.getIdMetodo())
-	                    .tipo(m.getTipo())
-	                    .dettagli(m.getDettagli())
-	                    .build())
-	            .toList();
-	}
 }

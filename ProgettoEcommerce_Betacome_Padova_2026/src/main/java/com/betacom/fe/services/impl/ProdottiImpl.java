@@ -173,7 +173,7 @@ public class ProdottiImpl implements IProdottiServices {
 	                LocalDate oggi = LocalDate.now();
 	                if (s != null && !oggi.isBefore(s.getDataInizio()) && !oggi.isAfter(s.getDataFine())) 
 	                {
-	                    float prezzoScontato = p.getPrezzo() * (1 - (s.getValore() / 100.0f));
+	                	float prezzoScontato = Math.round(p.getPrezzo() * (1 - (s.getValore() / 100.0f)) * 100) / 100f;
 	                    dto.setPrezzo(prezzoScontato);
 	                }
 	                return dto;

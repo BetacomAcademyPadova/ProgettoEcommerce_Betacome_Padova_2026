@@ -7,14 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Configurazione pubblica di Stripe esposta al frontend.
+ * Contiene solo la publishable key: nessun dato sensibile.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-public class MetodoPagamentoDTO {
-    private Integer idMetodo;
-    private String tipo;      // "card", "satispay" 
-    private String dettagli;  // "visa **** 4242"
+public class StripeConfigDTO {
+    private String publishableKey;
 }
