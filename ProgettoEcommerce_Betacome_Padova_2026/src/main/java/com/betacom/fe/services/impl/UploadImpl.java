@@ -119,4 +119,43 @@ public class UploadImpl implements IUploadServices{
 	            .toList();
 	}
 
+	@Override
+	public void deleteImage(Integer idImmagine) throws Exception {
+
+	    Immagini immagine = imgR.findById(idImmagine)
+	            .orElseThrow(() -> new AcademyException("immagine_not_found"));
+	    Integer idProdotto = immagine.getProdotto().getIdProdotto();
+	    boolean eraPrincipale = immagine.getPrincipale();
+	    Path filePath = Paths.get(immagine.getPercorso());
+
+	    try {
+
+	        Files.deleteIfExists(filePath);
+
+	    } catch (IOException e) {
+
+	        log.error("Errore cancellazione file", e);
+	        throw new AcademyException("image_delete_error");
+
+	    }
+
+	    imgR.delete(immagine);
+
+	    if (eraPrincipale) {
+	        List<Immagini> immaginiRimanenti =
+	                imgR.findByProdottoIdProdotto(idProdotto);
+	        if (!immaginiRimanenti.isEmpty()) {
+	            Immagini nuovaPrincipale =
+	                    immaginiRimanenti.get(0);
+
+	            nuovaPrincipale.setPrincipale(true);
+
+	            imgR.save(nuovaPrincipale);
+
+	        }
+
+	    }
+
+	}
+
 }
