@@ -40,6 +40,9 @@ public class User {
     @Column(nullable=false)
     private String telefono;
     
+    @Column(name = "stripe_customer_id")
+    private String stripeCustomerId;
+    
     @ManyToOne
     @JoinColumn(name = "ruolo")
     private Ruoli ruolo;

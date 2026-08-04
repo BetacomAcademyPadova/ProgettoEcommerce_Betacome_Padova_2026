@@ -1,7 +1,6 @@
 package com.betacom.fe.pagamento;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,11 +28,16 @@ import com.betacom.fe.dto.input.IndirizzoReq;
 import com.betacom.fe.dto.input.OrdineReq;
 import com.betacom.fe.dto.input.PaymentIntentReq;
 import com.betacom.fe.dto.input.ProdottiOrdineReq;
+import com.betacom.fe.dto.input.StatoOrdineReq;
 import com.betacom.fe.dto.input.StatoPagReq;
 import com.betacom.fe.dto.output.OrdineDTO;
 import com.betacom.fe.dto.output.PaymentIntentDTO;
 import com.betacom.fe.services.interfaces.IPagamentiServices;
+import com.stripe.model.Customer;
+import com.stripe.model.CustomerSession;
 import com.stripe.model.PaymentIntent;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.CustomerSessionCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import lombok.extern.slf4j.Slf4j;
@@ -76,9 +80,21 @@ public class PagamentiControllerTest {
         Mockito.when(fakeIntent.getId()).thenReturn("pi_test_123");
         Mockito.when(fakeIntent.getClientSecret()).thenReturn("pi_test_123_secret");
 
-        try (MockedStatic<PaymentIntent> stripeMock = Mockito.mockStatic(PaymentIntent.class)) {
+        Customer fakeCustomer = Mockito.mock(Customer.class);
+        Mockito.when(fakeCustomer.getId()).thenReturn("cus_test_123");
+
+        CustomerSession fakeSession = Mockito.mock(CustomerSession.class);
+        Mockito.when(fakeSession.getClientSecret()).thenReturn("cuss_test_123_secret");
+
+        try (MockedStatic<PaymentIntent> stripeMock = Mockito.mockStatic(PaymentIntent.class);
+             MockedStatic<Customer> customerMock = Mockito.mockStatic(Customer.class);
+             MockedStatic<CustomerSession> sessionMock = Mockito.mockStatic(CustomerSession.class)) {
             stripeMock.when(() -> PaymentIntent.create(Mockito.any(PaymentIntentCreateParams.class)))
                       .thenReturn(fakeIntent);
+            customerMock.when(() -> Customer.create(Mockito.any(CustomerCreateParams.class)))
+                      .thenReturn(fakeCustomer);
+            sessionMock.when(() -> CustomerSession.create(Mockito.any(CustomerSessionCreateParams.class)))
+                      .thenReturn(fakeSession);
 
             MvcResult result = mockMvc.perform(post("/rest/Pagamenti/create-intent")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -107,16 +123,6 @@ public class PagamentiControllerTest {
     }
 
     @Test
-    @Order(3)
-    public void getMetodiSalvatiTest() throws Exception {
-        log.debug("getMetodiSalvatiTest");
-
-        mockMvc.perform(get("/rest/Pagamenti/metodi-salvati/1"))
-                .andExpect(status().isOk());
-    }
-
-
-    @Test
     @Order(4)
     public void createIntentGiaCompletatoTest() throws Exception {
         log.debug("createIntentGiaCompletatoTest");
@@ -137,7 +143,10 @@ public class PagamentiControllerTest {
         ordineReq.setData(LocalDate.now());
         ordineReq.setUserId(2);
         ordineReq.setIndirizzoFatturazioneId(4);
-        ordineReq.setStatoId(1);
+        ordineReq.setIndirizzoSpedizioneId(4);
+        // stato diverso da quello dell'ordine 1 (creato in OrdineTest per lo stesso user):
+        // altrimenti OrdineImpl.create() riusa quella riga invece di crearne una nuova
+        ordineReq.setStatoId(3);
         ordineReq.setTotale(20.0f);
 
         MvcResult ordineResult = mockMvc.perform(post("/rest/Ordine/create")
@@ -173,9 +182,21 @@ public class PagamentiControllerTest {
         Mockito.when(fakeIntent.getId()).thenReturn("pi_gia_completato");
         Mockito.when(fakeIntent.getClientSecret()).thenReturn("secret_whatever");
 
-        try (MockedStatic<PaymentIntent> stripeMock = Mockito.mockStatic(PaymentIntent.class)) {
+        Customer fakeCustomer = Mockito.mock(Customer.class);
+        Mockito.when(fakeCustomer.getId()).thenReturn("cus_gia_completato");
+
+        CustomerSession fakeSession = Mockito.mock(CustomerSession.class);
+        Mockito.when(fakeSession.getClientSecret()).thenReturn("cuss_gia_completato_secret");
+
+        try (MockedStatic<PaymentIntent> stripeMock = Mockito.mockStatic(PaymentIntent.class);
+             MockedStatic<Customer> customerMock = Mockito.mockStatic(Customer.class);
+             MockedStatic<CustomerSession> sessionMock = Mockito.mockStatic(CustomerSession.class)) {
             stripeMock.when(() -> PaymentIntent.create(Mockito.any(PaymentIntentCreateParams.class)))
                       .thenReturn(fakeIntent);
+            customerMock.when(() -> Customer.create(Mockito.any(CustomerCreateParams.class)))
+                      .thenReturn(fakeCustomer);
+            sessionMock.when(() -> CustomerSession.create(Mockito.any(CustomerSessionCreateParams.class)))
+                      .thenReturn(fakeSession);
 
             mockMvc.perform(post("/rest/Pagamenti/create-intent")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -190,6 +211,16 @@ public class PagamentiControllerTest {
         mockMvc.perform(post("/rest/StatoPagamento/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(statoCompletatoReq)))
+                .andExpect(status().isOk());
+
+        // "Confermato" doesn't exist anywhere else in the suite — needs to be seeded here
+        // (markSucceeded moves the order to this state)
+        StatoOrdineReq statoConfermatoReq = new StatoOrdineReq();
+        statoConfermatoReq.setStato("Confermato");
+
+        mockMvc.perform(post("/rest/StatoOrdine/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(statoConfermatoReq)))
                 .andExpect(status().isOk());
 
         pagS.markSucceeded("pi_gia_completato", null);

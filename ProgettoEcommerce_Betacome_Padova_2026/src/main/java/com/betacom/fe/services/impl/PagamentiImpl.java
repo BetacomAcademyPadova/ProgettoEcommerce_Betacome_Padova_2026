@@ -5,8 +5,12 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.CustomerSession;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.CustomerSessionCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import com.betacom.fe.dto.input.PaymentIntentReq;
@@ -17,12 +21,14 @@ import com.betacom.fe.models.Ordini;
 import com.betacom.fe.models.Pagamenti;
 import com.betacom.fe.models.StatoOrdine;
 import com.betacom.fe.models.StatoPagamento;
+import com.betacom.fe.models.User;
 import com.betacom.fe.repositories.ICarrelloRepository;
 import com.betacom.fe.repositories.IOrdineRepository;
 import com.betacom.fe.repositories.IPagamentiRepository;
 import com.betacom.fe.repositories.IProdottiCarrelloRepository;
 import com.betacom.fe.repositories.IStatoOrdineRepository;
 import com.betacom.fe.repositories.IStatoPagamentoRepository;
+import com.betacom.fe.repositories.IUserRepository;
 import com.betacom.fe.services.interfaces.IMessaggioServices;
 import com.betacom.fe.services.interfaces.IPagamentiServices;
 import com.betacom.fe.services.interfaces.IRicevutaServices;
@@ -44,6 +50,7 @@ public class PagamentiImpl implements IPagamentiServices {
     private final IStatoOrdineRepository statoOrdRep;
     private final ICarrelloRepository carR;
     private final IProdottiCarrelloRepository proCarR;
+    private final IUserRepository userRep;
 
     @Override
     @Transactional
@@ -60,6 +67,8 @@ public class PagamentiImpl implements IPagamentiServices {
                 && "Completato".equals(pagamento.getStatoPagamento().getStato())) {
             throw new AcademyException(msgS.get("pagamento.gia.completato"));
         }
+        
+        String customerId = getOrCreateStripeCustomer(ordine.getUserId());
 
         long amountInCents = Math.round(ordine.getTotale() * 100);
 
@@ -69,10 +78,34 @@ public class PagamentiImpl implements IPagamentiServices {
                 .addPaymentMethodType("card")
                 .addPaymentMethodType("klarna")
                 .addPaymentMethodType("paypal")
+                .setCustomer(customerId)
                 .putMetadata("idOrdine", req.getIdOrdine().toString())
                 .build();
 
         PaymentIntent intent = PaymentIntent.create(params);
+        
+        CustomerSession session = CustomerSession.create(
+                CustomerSessionCreateParams.builder()
+                        .setCustomer(customerId)
+                        .setComponents(
+                                CustomerSessionCreateParams.Components.builder()
+                                        .setPaymentElement(
+                                                CustomerSessionCreateParams.Components.PaymentElement.builder()
+                                                        .setEnabled(true)
+                                                        .setFeatures(
+                                                                CustomerSessionCreateParams.Components.PaymentElement.Features.builder()
+                                                                        .setPaymentMethodSave(
+                                                                                CustomerSessionCreateParams.Components.PaymentElement.Features.PaymentMethodSave.ENABLED)
+                                                                        .setPaymentMethodSaveUsage(
+                                                                                CustomerSessionCreateParams.Components.PaymentElement.Features.PaymentMethodSaveUsage.ON_SESSION)
+                                                                        .setPaymentMethodRedisplay(
+                                                                                CustomerSessionCreateParams.Components.PaymentElement.Features.PaymentMethodRedisplay.ENABLED)
+                                                                        .setPaymentMethodRemove(
+                                                                                CustomerSessionCreateParams.Components.PaymentElement.Features.PaymentMethodRemove.ENABLED)
+                                                                        .build())
+                                                        .build())
+                                        .build())
+                        .build());
 
         StatoPagamento inAttesa = statoRep.findByStato("In Attesa")
                 .orElseThrow(() -> new AcademyException(msgS.get("stato.no.exists")));
@@ -85,12 +118,32 @@ public class PagamentiImpl implements IPagamentiServices {
         pagamento.setMetodoPagamento(null);
         pagRep.save(pagamento);
 
-        log.info("PaymentIntent creato: {} per ordine {}", intent.getId(), req.getIdOrdine());
+        log.info("PaymentIntent creato: {} per ordine {} (customer {})", intent.getId(), req.getIdOrdine(), customerId);
 
         return PaymentIntentDTO.builder()
                 .clientSecret(intent.getClientSecret())
                 .idPagamento(pagamento.getIdPagamento())
+                .customerSessionClientSecret(session.getClientSecret())
                 .build();
+    }
+    
+    private String getOrCreateStripeCustomer(User user) throws StripeException {
+        if (user.getStripeCustomerId() != null && !user.getStripeCustomerId().isBlank()) {
+            return user.getStripeCustomerId();
+        }
+ 
+        Customer customer = Customer.create(
+                CustomerCreateParams.builder()
+                        .setEmail(user.getEmail())
+                        .setName(user.getNome() + " " + user.getCognome())
+                        .putMetadata("userId", user.getUserId().toString())
+                        .build());
+ 
+        user.setStripeCustomerId(customer.getId());
+        userRep.save(user);
+ 
+        log.info("Creato Customer Stripe {} per utente {}", customer.getId(), user.getUserId());
+        return customer.getId();
     }
 
     @Override
