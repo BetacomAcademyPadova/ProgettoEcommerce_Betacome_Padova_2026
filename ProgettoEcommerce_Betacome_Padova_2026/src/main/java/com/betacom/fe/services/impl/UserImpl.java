@@ -103,7 +103,8 @@ public class UserImpl implements IUserServices{
 	    Optional.ofNullable(req.getEmail()).filter(email -> !email.equals(usr.getEmail()))
 	        .ifPresent(email -> {
 	            repUser.findByEmail(email)
-	                    .ifPresent(u -> { throw new AcademyException(msgS.get("email.present"));});
+	                    .ifPresent(u -> { throw new AcademyException(msgS.get("email.present"));
+	                    });
 	            usr.setEmail(email);
 	        });
 		Optional.ofNullable(req.getNome()).ifPresent(t -> usr.setNome(t));
@@ -128,13 +129,11 @@ public class UserImpl implements IUserServices{
 	@Override
 	public UserDTO getById(Integer idUser) throws Exception {
 		
-		Autenticazione aut = repAut.findById(idUser)
+		Autenticazione aut = repAut.findByUserUserId(idUser)
                 .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
 		
-		User utente = repUser.findById(repAut.findById(idUser)
-		                .orElseThrow(() -> new AcademyException(msgS.get("login.error")))
-		                .getUser().getUserId()
-					).orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
+		User utente = repUser.findById(aut.getUser().getUserId())
+				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
 
 		 UserDTO dto = new UserDTO();
 		 dto.setUserId(utente.getUserId());
@@ -154,16 +153,21 @@ public class UserImpl implements IUserServices{
 	            .map(u -> UserMapper.toDTO(u))
 	            .toList();
 	}
-
 	@Override
 	public LoginDTO login(LogInReq req) throws Exception {
+
 	    Autenticazione aut = repAut.findByUsername(req.getUsername())
 	            .orElseThrow(() -> new AcademyException(msgS.get("login.error")));
+
 	    if (!passwordEncoder.matches(req.getPassword(), aut.getPassword())) {
 	        throw new AcademyException(msgS.get("login.error"));
 	    }
-	    String token = jwtService.generateToken(aut.getUsername());
-	    
+
+	    String token = jwtService.generateToken(
+	            aut.getUsername(),
+	            aut.getUser().getRuolo().getRuolo()
+	    );
+
 	    UserDTO userDto = UserMapper.toDTO(aut.getUser());
 	    userDto.setUsername(aut.getUsername());
 

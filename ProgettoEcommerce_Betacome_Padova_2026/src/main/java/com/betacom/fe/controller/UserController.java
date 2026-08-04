@@ -98,4 +98,6 @@ public class UserController {
         userS.resetPassword(req);
         return ResponseEntity.ok(ResponseDTO.builder().msg("password changed...").build());
     }
+    
+    
 }
