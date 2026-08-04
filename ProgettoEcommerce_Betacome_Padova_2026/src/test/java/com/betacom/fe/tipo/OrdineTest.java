@@ -120,4 +120,26 @@ public class OrdineTest {
 
         log.debug(list.toString());
     }
+    
+    @Test
+    @Order(5)
+    public void getAllByVenditoreTest() throws Exception {
+
+        log.debug("getAllByVenditoreTest");
+
+        MvcResult result = mockMvc.perform(
+                get("/rest/Ordine/venditore/2"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        List<OrdineDTO> list = objectMapper.readValue(
+                json,
+                new TypeReference<List<OrdineDTO>>() {});
+
+        log.debug(list.toString());
+
+        assertFalse(list.isEmpty());
+    }
 }

@@ -338,19 +338,20 @@ public class ProdottiOrdineTest {
 	@Order(9)
 	public void getByClienteTest() throws Exception {
 
-		log.debug("getByCliente ProdottiOrdine");
+	    Integer userId = 2;
 
-		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/2")).andExpect(status().isOk())
-				.andReturn();
+	    MvcResult result = mockMvc.perform(
+	            get("/rest/ProdottiOrdine/cliente/" + userId))
+	            .andExpect(status().isOk())
+	            .andReturn();
 
-		String json = result.getResponse().getContentAsString();
+	    List<ProdottiOrdineDTO> lista = objectMapper.readValue(
+	            result.getResponse().getContentAsString(),
+	            new TypeReference<List<ProdottiOrdineDTO>>() {});
 
-		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
-		});
+	    log.debug(lista.toString());
 
-		log.debug(lista.toString());
-
-		assertFalse(lista.isEmpty());
+	    assertFalse(lista.isEmpty());
 	}
 
 	@Test
@@ -374,21 +375,22 @@ public class ProdottiOrdineTest {
 	@Order(11)
 	public void getByVenditoreTest() throws Exception {
 
-		log.debug("getByVenditore ProdottiOrdine");
+	    Integer userId = 2;
 
-		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/2")).andExpect(status().isOk())
-				.andReturn();
+	    MvcResult result = mockMvc.perform(
+	            get("/rest/ProdottiOrdine/venditore/" + userId))
+	            .andExpect(status().isOk())
+	            .andReturn();
 
-		String json = result.getResponse().getContentAsString();
+	    List<ProdottiOrdineDTO> lista = objectMapper.readValue(
+	            result.getResponse().getContentAsString(),
+	            new TypeReference<List<ProdottiOrdineDTO>>() {});
 
-		List<ProdottiOrdineDTO> lista = objectMapper.readValue(json, new TypeReference<List<ProdottiOrdineDTO>>() {
-		});
+	    log.debug(lista.toString());
 
-		log.debug(lista.toString());
-
-		assertFalse(lista.isEmpty());
+	    assertFalse(lista.isEmpty());
 	}
-
+	
 	@Test
 	@Order(12)
 	public void getByVenditoreDateTest() throws Exception {
@@ -404,6 +406,52 @@ public class ProdottiOrdineTest {
 		});
 
 		log.debug(lista.toString());
+	}
+	
+	@Test
+	@Order(13)
+	public void getByOrdineTest() throws Exception {
+
+	    log.debug("getByOrdine");
+
+	    Integer idOrdine = 1;
+	    Integer userId = 2;
+
+	    MvcResult result = mockMvc.perform(
+	            get("/rest/ProdottiOrdine/ordine/" + idOrdine + "/" + userId))
+	            .andExpect(status().isOk())
+	            .andReturn();
+
+	    String json = result.getResponse().getContentAsString();
+
+	    List<ProdottiOrdineDTO> lista = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<ProdottiOrdineDTO>>() {
+	            });
+
+	    log.debug(lista.toString());
+
+	    assertFalse(lista.isEmpty());
+	}
+	
+	@Test
+	@Order(14)
+	public void getByOrdineVenditoreTest() throws Exception {
+
+	    log.debug("getByOrdineVenditore");
+
+	    MvcResult result = mockMvc.perform(
+	            get("/rest/ProdottiOrdine/ordine/venditore/1/2"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+
+	    String json = result.getResponse().getContentAsString();
+
+	    List<ProdottiOrdineDTO> lista = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<ProdottiOrdineDTO>>() {});
+
+	    log.debug(lista.toString());
 	}
 
 }
