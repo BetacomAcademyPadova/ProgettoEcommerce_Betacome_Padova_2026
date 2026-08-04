@@ -106,4 +106,5 @@ public class ProdottoController {
 
 	    return ResponseEntity.ok(proS.search(pReq, dReq, sReq, sconti));
 	}
+	
 }
