@@ -44,7 +44,7 @@ public class StatoOrdineTest {
 	@Order(1)
 	public void createTest() throws Exception{
 		log.debug("create");
-		List<String> ruoli = List.of("In attesa di pagamento", "Annullato", "Spedito", "test update", "Test Delete");
+		List<String> ruoli = List.of("In attesa di pagamento", "Annullato", "Confermato", "Spedito", "test update", "Test Delete");
 		ruoli.forEach(s ->{
 			StatoOrdineReq req = new StatoOrdineReq();
 			req.setStato(s);
