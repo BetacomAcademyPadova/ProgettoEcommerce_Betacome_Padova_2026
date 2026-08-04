@@ -213,16 +213,6 @@ public class PagamentiControllerTest {
                         .content(objectMapper.writeValueAsString(statoCompletatoReq)))
                 .andExpect(status().isOk());
 
-        // "Confermato" doesn't exist anywhere else in the suite — needs to be seeded here
-        // (markSucceeded moves the order to this state)
-        StatoOrdineReq statoConfermatoReq = new StatoOrdineReq();
-        statoConfermatoReq.setStato("Confermato");
-
-        mockMvc.perform(post("/rest/StatoOrdine/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(statoConfermatoReq)))
-                .andExpect(status().isOk());
-
         pagS.markSucceeded("pi_gia_completato", null);
 
         // Try to pay AGAIN for the same order — should be rejected
