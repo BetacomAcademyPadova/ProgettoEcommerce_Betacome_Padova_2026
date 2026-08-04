@@ -1,4 +1,4 @@
-package com.betacom.fe.services.interfaces;
+ package com.betacom.fe.services.interfaces;
 
 import java.util.List;
 
@@ -10,4 +10,5 @@ public interface IUploadServices {
 	String saveImage(MultipartFile file, Integer idProdotto) throws Exception;
 	String buildUrl(String filename);
 	List<ImmagineDTO> getImages(Integer id);
+	void deleteImage(Integer idImmagine) throws Exception;
 }
