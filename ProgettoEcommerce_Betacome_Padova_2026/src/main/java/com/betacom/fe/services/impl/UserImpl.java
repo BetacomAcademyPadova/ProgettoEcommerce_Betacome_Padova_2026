@@ -100,15 +100,12 @@ public class UserImpl implements IUserServices{
 	public void update(UserReq req) throws Exception {
 		User usr = repUser.findById(req.getUserId())
 				.orElseThrow(() -> new AcademyException(msgS.get("user.non.esiste")));
-	    Optional.ofNullable(req.getEmail())
-        .filter(email -> !email.equals(usr.getEmail()))
-        .ifPresent(email -> {
-            repUser.findByEmail(email)
-                    .ifPresent(u -> {
-                        throw new AcademyException(msgS.get("email.present"));
-                    });
-            usr.setEmail(email);
-        });
+	    Optional.ofNullable(req.getEmail()).filter(email -> !email.equals(usr.getEmail()))
+	        .ifPresent(email -> {
+	            repUser.findByEmail(email)
+	                    .ifPresent(u -> { throw new AcademyException(msgS.get("email.present"));});
+	            usr.setEmail(email);
+	        });
 		Optional.ofNullable(req.getNome()).ifPresent(t -> usr.setNome(t));
 		Optional.ofNullable(req.getCognome()).ifPresent(t -> usr.setCognome(t));
 		Optional.ofNullable(req.getTelefono()).ifPresent(t -> usr.setTelefono(t));

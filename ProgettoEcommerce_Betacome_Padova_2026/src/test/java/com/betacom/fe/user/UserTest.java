@@ -125,6 +125,24 @@ public class UserTest {
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .content(objectMapper.writeValueAsString(req)))
 	            .andExpect(status().isOk());
+	    
+	    req = new UserReq();
+	    req.setUserId(3);
+	    req.setEmail("user1@mail.it");
+
+	    mockMvc.perform(put("/rest/User/update")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .content(objectMapper.writeValueAsString(req)))
+	            .andExpect(status().isBadRequest());
+
+	    req = new UserReq();
+	    req.setUserId(3);
+	    req.setEmail("user4@mail.it");
+
+	    mockMvc.perform(put("/rest/User/update")
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .content(objectMapper.writeValueAsString(req)))
+	            .andExpect(status().isOk());
 	}
 	
 	@Test
