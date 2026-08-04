@@ -15,4 +15,6 @@ import lombok.ToString;
 public class PaymentIntentDTO {
     private String clientSecret;
     private Integer idPagamento;
+    private String customerSessionClientSecret;
+
 }

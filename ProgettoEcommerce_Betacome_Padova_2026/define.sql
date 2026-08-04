@@ -188,6 +188,7 @@
         cognome varchar(255) not null,
         email varchar(255) not null unique,
         nome varchar(255) not null,
+        stripe_customer_id varchar(255),
         telefono varchar(255) not null,
         primary key (user_id)
     );

@@ -340,7 +340,7 @@ public class ProdottiOrdineTest {
 
 		log.debug("getByCliente ProdottiOrdine");
 
-		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/1")).andExpect(status().isOk())
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/2")).andExpect(status().isOk())
 				.andReturn();
 
 		String json = result.getResponse().getContentAsString();
@@ -359,7 +359,7 @@ public class ProdottiOrdineTest {
 
 		log.debug("getByCliente con filtro date");
 
-		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/1/2025-01-01/2026-12-31"))
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/cliente/2/2025-01-01/2026-12-31"))
 				.andExpect(status().isOk()).andReturn();
 
 		String json = result.getResponse().getContentAsString();
@@ -376,7 +376,7 @@ public class ProdottiOrdineTest {
 
 		log.debug("getByVenditore ProdottiOrdine");
 
-		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/1")).andExpect(status().isOk())
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/2")).andExpect(status().isOk())
 				.andReturn();
 
 		String json = result.getResponse().getContentAsString();
@@ -395,7 +395,7 @@ public class ProdottiOrdineTest {
 
 		log.debug("getByVenditore con filtro date");
 
-		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/1/2025-01-01/2026-12-31"))
+		MvcResult result = mockMvc.perform(get("/rest/ProdottiOrdine/venditore/2/2025-01-01/2026-12-31"))
 				.andExpect(status().isOk()).andReturn();
 
 		String json = result.getResponse().getContentAsString();
